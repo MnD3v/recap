@@ -1,0 +1,702 @@
+'use client';
+
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+} from "firebase/firestore";
+import { RequireAuth } from "@/components/RequireAuth";
+import { useAuth } from "@/components/AuthProvider";
+import { db } from "@/lib/firebase";
+
+type Tutorial = {
+  id: string;
+  title: string;
+  description: string;
+  technicalDescription: string;
+  videoUrl: string;
+  createdAt: Date;
+  ownerName?: string | null;
+};
+
+type StudentWatchData = {
+  userId: string;
+  totalMinutesWatched: number;
+  lastUpdated: Date;
+};
+
+type TutorialEngagement = {
+  tutorialId: string;
+  tutorialTitle: string;
+  students: StudentWatchData[];
+};
+
+const initialForm = {
+  title: "",
+  description: "",
+  technicalDescription: "",
+  videoUrl: "",
+};
+
+export default function AdminPage() {
+  const { user } = useAuth();
+  const [formValues, setFormValues] = useState(initialForm);
+  const [tutorials, setTutorials] = useState<Tutorial[]>([]);
+  const [engagementData, setEngagementData] = useState<TutorialEngagement[]>([]);
+  const [selectedTutorialId, setSelectedTutorialId] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
+    "idle",
+  );
+  const [formError, setFormError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"form" | "engagement">("form");
+  const [pendingDelete, setPendingDelete] = useState<Tutorial | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tutorialsQuery = query(
+      collection(db, "tutorials"),
+      orderBy("createdAt", "desc"),
+    );
+
+    const unsubscribe = onSnapshot(
+      tutorialsQuery,
+      (snapshot) => {
+        const nextTutorials: Tutorial[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const timestamp = data.createdAt as Timestamp | undefined;
+
+          return {
+            id: doc.id,
+            title: data.title ?? "",
+            description: data.description ?? "",
+            technicalDescription: data.technicalDescription ?? "",
+            videoUrl: data.videoUrl ?? "",
+            ownerName: data.ownerName ?? null,
+            createdAt: timestamp?.toDate
+              ? timestamp.toDate()
+              : new Date(data.createdAt ?? Date.now()),
+          };
+        });
+
+        setTutorials(nextTutorials);
+      },
+      (error) => {
+        console.error("Erreur lors de la récupération des tutoriels", error);
+      },
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch engagement data for all tutorials
+  useEffect(() => {
+    const fetchEngagementData = async () => {
+      try {
+        const allUsers = await getDocs(collection(db, "users"));
+        const engagement: TutorialEngagement[] = [];
+
+        for (const userDoc of allUsers.docs) {
+          const watchSessionsCollection = collection(userDoc.ref, "watchSessions");
+          const sessions = await getDocs(watchSessionsCollection);
+
+          for (const sessionDoc of sessions.docs) {
+            const data = sessionDoc.data();
+            const tutorialId = sessionDoc.id;
+
+            let tutorialEngagement = engagement.find((e) => e.tutorialId === tutorialId);
+            if (!tutorialEngagement) {
+              const tutorialData = tutorials.find((t) => t.id === tutorialId);
+              tutorialEngagement = {
+                tutorialId,
+                tutorialTitle: tutorialData?.title || "Tutoriel sans titre",
+                students: [],
+              };
+              engagement.push(tutorialEngagement);
+            }
+
+            tutorialEngagement.students.push({
+              userId: userDoc.id,
+              totalMinutesWatched: data.totalMinutesWatched || 0,
+              lastUpdated: data.lastUpdated?.toDate?.() || new Date(),
+            });
+          }
+        }
+
+        setEngagementData(engagement);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données d'engagement:", error);
+      }
+    };
+
+    if (tutorials.length > 0) {
+      fetchEngagementData();
+    }
+  }, [tutorials]);
+
+  const totalTutorials = useMemo(() => tutorials.length, [tutorials]);
+
+  const selectedEngagement = useMemo(
+    () => engagementData.find((e) => e.tutorialId === selectedTutorialId),
+    [engagementData, selectedTutorialId],
+  );
+
+  const handleChange =
+    (field: keyof typeof initialForm) =>
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormValues((prev) => ({
+        ...prev,
+        [field]: event.target.value,
+      }));
+    };
+
+  const resetForm = () => {
+    setFormValues(initialForm);
+  };
+
+  const handleDeleteTutorial = (tutorial: Tutorial) => {
+    setDeleteError(null);
+    setPendingDelete(tutorial);
+  };
+
+  const confirmDeleteTutorial = async () => {
+    if (!pendingDelete) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteDoc(doc(db, "tutorials", pendingDelete.id));
+      if (selectedTutorialId === pendingDelete.id) {
+        setSelectedTutorialId(null);
+      }
+      setPendingDelete(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression du tutoriel:", error);
+      setDeleteError("Impossible de supprimer ce tutoriel. Veuillez réessayer.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError(null);
+
+    if (!formValues.title || !formValues.videoUrl) {
+      setFormError("Merci de renseigner au minimum un titre et un lien vidéo.");
+      return;
+    }
+
+    const urlPattern =
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/[^\s]+$/i;
+
+    if (!urlPattern.test(formValues.videoUrl)) {
+      setFormError(
+        "Veuillez saisir un lien YouTube valide (ex: https://youtu.be/...).",
+      );
+      return;
+    }
+
+    try {
+      setStatus("saving");
+
+      await addDoc(collection(db, "tutorials"), {
+        title: formValues.title.trim(),
+        description: formValues.description.trim(),
+        videoUrl: formValues.videoUrl.trim(),
+        ownerId: user?.uid ?? null,
+        ownerEmail: user?.email ?? null,
+        ownerName: user?.displayName ?? null,
+        createdAt: Timestamp.now(),
+      });
+
+      resetForm();
+      setStatus("saved");
+      setTimeout(() => setStatus("idle"), 1500);
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+      setFormError(
+        "Un incident est survenu lors de l'enregistrement. Merci de réessayer.",
+      );
+      setTimeout(() => setStatus("idle"), 1500);
+    }
+  };
+
+  return (
+    <RequireAuth>
+      <div className="min-h-screen bg-slate-50/60 pb-24">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pt-12">
+          <header className="flex flex-col gap-6 rounded-[36px] border border-slate-200 bg-white p-10 shadow-[0_32px_80px_rgba(15,23,42,0.08)] md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                Espace administration
+              </p>
+              <h1 className="mt-4 text-4xl font-semibold text-slate-900">
+                Bibliothèque des tutoriels &amp; suivi d&apos;engagement
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
+                Centralisez vos ressources pédagogiques, ajoutez des descriptions
+                détaillées et associez chaque vidéo YouTube en moins de deux minutes.
+                Ces contenus alimentent automatiquement l&apos;interface étudiante.
+              </p>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-4 text-sm text-slate-600">
+              <p className="font-semibold text-slate-900">Équipe pédagogique</p>
+              <p className="mt-1">{user?.displayName ?? user?.email}</p>
+              <p className="mt-2 text-xs text-slate-500">
+                {totalTutorials} contenu(s) actuellement dans votre catalogue.
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setActiveTab("form")}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+                  activeTab === "form"
+                    ? "bg-slate-900 text-white"
+                    : "border border-slate-200 text-slate-900 hover:border-slate-300"
+                }`}
+              >
+                Ajouter un contenu
+              </button>
+              <button
+                onClick={() => setActiveTab("engagement")}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+                  activeTab === "engagement"
+                    ? "bg-slate-900 text-white"
+                    : "border border-slate-200 text-slate-900 hover:border-slate-300"
+                }`}
+              >
+                Engagement ({engagementData.length})
+              </button>
+            </div>
+          </header>
+
+          {activeTab === "form" && (
+          <section className="grid gap-8 rounded-[32px] border border-slate-200 bg-white p-10 shadow-[0_32px_80px_rgba(15,23,42,0.06)] lg:grid-cols-[1.2fr_1fr]">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Ajouter un contenu
+                </h2>
+                <p className="mt-2 text-sm text-slate-500">
+                  Renseignez les informations nécessaires pour intégrer un nouveau
+                  tutoriel dans votre parcours Recap.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-slate-700"
+                  htmlFor="title"
+                >
+                  Titre du cours
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  value={formValues.title}
+                  onChange={handleChange("title")}
+                  placeholder="Leadership Studio — Module 03"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-slate-700"
+                  htmlFor="description"
+                >
+                  Description détaillée
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={5}
+                  value={formValues.description}
+                  onChange={handleChange("description")}
+                  placeholder="Objectifs pédagogiques, activités proposées, points de vigilance..."
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-slate-700"
+                  htmlFor="technicalDescription"
+                >
+                  Description technique (pour l&apos;IA)
+                </label>
+                <textarea
+                  id="technicalDescription"
+                  name="technicalDescription"
+                  rows={4}
+                  value={formValues.technicalDescription}
+                  onChange={handleChange("technicalDescription")}
+                  placeholder="Détails techniques, concepts clés, vocabulaire important pour l'IA..."
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-slate-700"
+                  htmlFor="videoUrl"
+                >
+                  Lien vidéo YouTube
+                </label>
+                <input
+                  id="videoUrl"
+                  name="videoUrl"
+                  type="url"
+                  value={formValues.videoUrl}
+                  onChange={handleChange("videoUrl")}
+                  placeholder="https://youtu.be/..."
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  required
+                />
+              </div>
+
+              {formError ? (
+                <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+                  {formError}
+                </div>
+              ) : null}
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={status === "saving"}
+                  className="flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-slate-800 disabled:cursor-wait disabled:opacity-80"
+                >
+                  {status === "saving" ? "Enregistrement..." : "Ajouter au catalogue"}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                >
+                  Réinitialiser
+                </button>
+                {status === "saved" ? (
+                  <span className="text-sm font-medium text-emerald-600">
+                    Contenu enregistré
+                  </span>
+                ) : null}
+                {status === "error" ? (
+                  <span className="text-sm font-medium text-rose-600">
+                    Erreur lors de l&apos;enregistrement
+                  </span>
+                ) : null}
+              </div>
+            </form>
+
+            <aside className="flex flex-col gap-5 rounded-3xl border border-slate-200 bg-slate-50/90 p-6 shadow-inner">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  Prévisualisation
+                </p>
+                <h3 className="mt-2 text-xl font-semibold text-slate-900">
+                  Playlist en cours
+                </h3>
+                <p className="mt-2 text-sm text-slate-500">
+                  Les ressources ajoutées ici apparaissent instantanément côté
+                  étudiant.
+                </p>
+              </div>
+              <div className="flex-1 space-y-4">
+                {tutorials.length === 0 ? (
+                  <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white px-6 text-center text-sm text-slate-400">
+                    <p>Ajoutez un premier contenu pour le visualiser ici.</p>
+                  </div>
+                ) : (
+                  tutorials.map((tutorial) => (
+                    <div
+                      key={tutorial.id}
+                      className="rounded-3xl border border-white/80 bg-white px-5 py-4 shadow-[0_20px_60px_rgba(15,23,42,0.06)]"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-400">
+                            {tutorial.createdAt.toLocaleDateString("fr-FR", {
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </p>
+                          <p className="mt-2 text-lg font-semibold text-slate-900">
+                            {tutorial.title}
+                          </p>
+                          {tutorial.description ? (
+                            <p className="mt-1 text-sm text-slate-600">
+                              {tutorial.description}
+                            </p>
+                          ) : null}
+                          {tutorial.ownerName ? (
+                            <p className="mt-2 text-xs text-slate-400">
+                              Publié par {tutorial.ownerName}
+                            </p>
+                          ) : null}
+                        </div>
+                        <div className="flex flex-shrink-0 flex-col gap-2">
+                          <a
+                            href={tutorial.videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100"
+                          >
+                            Ouvrir la vidéo
+                            <svg
+                              className="h-3.5 w-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 5h10m0 0v10m0-10L5 19"
+                              />
+                            </svg>
+                          </a>
+                          <a
+                            href={`/stats/${tutorial.id}`}
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600 transition hover:bg-emerald-100"
+                          >
+                            Voir les stats
+                            <svg
+                              className="h-3.5 w-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                              />
+                            </svg>
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteTutorial(tutorial)}
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-100"
+                          >
+                            Supprimer
+                            <svg
+                              className="h-3.5 w-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </aside>
+          </section>
+          )}
+
+          {activeTab === "engagement" && (
+          <section className="rounded-[32px] border border-slate-200 bg-white p-10 shadow-[0_32px_80px_rgba(15,23,42,0.06)]">
+            <h3 className="text-2xl font-semibold text-slate-900">
+              Suivi d&apos;engagement par tutoriel
+            </h3>
+            <p className="mt-2 text-sm text-slate-500">
+              Consultez le temps de visionnage de chaque étudiant pour chaque tutoriel
+            </p>
+
+            {engagementData.length === 0 ? (
+              <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-12 text-center text-sm text-slate-500">
+                Aucune donnée d&apos;engagement pour le moment. Les étudiants doivent visionner des tutoriels pour que les données apparaissent.
+              </div>
+            ) : (
+              <div className="mt-6 space-y-6">
+                {/* Tutorial Selection */}
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                  <p className="mb-3 text-sm font-semibold text-slate-700">Sélectionner un tutoriel</p>
+                  <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+                    {engagementData.map((engagement) => (
+                      <button
+                        key={engagement.tutorialId}
+                        onClick={() => setSelectedTutorialId(engagement.tutorialId)}
+                        className={`rounded-lg px-4 py-3 text-left text-sm font-medium transition ${
+                          selectedTutorialId === engagement.tutorialId
+                            ? "border-2 border-indigo-600 bg-indigo-50 text-indigo-900"
+                            : "border border-slate-300 bg-white text-slate-900 hover:border-slate-400"
+                        }`}
+                      >
+                        <p className="font-semibold">{engagement.tutorialTitle}</p>
+                        <p className="text-xs text-slate-500">
+                          {engagement.students.length} étudiant(s)
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Selected Tutorial Details */}
+                {selectedEngagement && (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6">
+                    <h4 className="text-lg font-semibold text-slate-900">
+                      {selectedEngagement.tutorialTitle}
+                    </h4>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {selectedEngagement.students.length} étudiant(s) ayant suivi ce tutoriel
+                    </p>
+
+                    {selectedEngagement.students.length === 0 ? (
+                      <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+                        Aucun suivi enregistré pour ce tutoriel.
+                      </div>
+                    ) : (
+                      <div className="mt-6 overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b border-slate-200">
+                              <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">
+                                ID Étudiant
+                              </th>
+                              <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                                Minutes visionnées
+                              </th>
+                              <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                                Dernière activité
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {selectedEngagement.students
+                              .sort(
+                                (a, b) => b.totalMinutesWatched - a.totalMinutesWatched,
+                              )
+                              .map((student) => (
+                                <tr
+                                  key={student.userId}
+                                  className="border-b border-slate-200 transition hover:bg-slate-50"
+                                >
+                                  <td className="px-4 py-4 text-sm font-mono text-slate-600">
+                                    {student.userId.substring(0, 12)}...
+                                  </td>
+                                  <td className="px-4 py-4 text-right">
+                                    <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600">
+                                      {student.totalMinutesWatched} min
+                                    </span>
+                                  </td>
+                                  <td className="px-4 py-4 text-right text-sm text-slate-600">
+                                    {student.lastUpdated.toLocaleDateString(
+                                      "fr-FR",
+                                      {
+                                        day: "2-digit",
+                                        month: "short",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      },
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+          )}
+        </div>
+      </div>
+
+      {pendingDelete ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/10 text-rose-400">
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v4m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-400">
+                  Confirmation
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-white">
+                  Supprimer ce tutoriel ?
+                </h2>
+              </div>
+            </div>
+
+            <p className="mt-6 text-sm leading-relaxed text-slate-300">
+              Vous êtes sur le point de supprimer{" "}
+              <span className="font-semibold text-white">
+                {pendingDelete.title || "ce tutoriel"}
+              </span>
+              . Cette action est définitive et retirera immédiatement la ressource des
+              espaces étudiants.
+            </p>
+
+            {deleteError ? (
+              <div className="mt-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                {deleteError}
+              </div>
+            ) : null}
+
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => (isDeleting ? null : setPendingDelete(null))}
+                className="rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-white transition hover:border-slate-500 hover:bg-slate-800"
+                disabled={isDeleting}
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteTutorial}
+                className="rounded-full bg-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/30 transition hover:bg-rose-400 disabled:cursor-wait disabled:opacity-70"
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Suppression..." : "Confirmer la suppression"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </RequireAuth>
+  );
+}
+
