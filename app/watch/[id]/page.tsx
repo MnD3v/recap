@@ -8,6 +8,9 @@ import {
   getDoc,
   setDoc,
   Timestamp,
+  query,
+  orderBy,
+  onSnapshot,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { RequireAuth } from '@/components/RequireAuth';
@@ -42,6 +45,7 @@ export default function WatchPage() {
   const [error, setError] = useState<string | null>(null);
   const [minutesWatched, setMinutesWatched] = useState(0);
   const [videoId, setVideoId] = useState<string | null>(null);
+  const [otherTutorials, setOtherTutorials] = useState<Tutorial[]>([]);
 
   const handleStartQuiz = () => {
     router.push(`/quiz/${tutorialId}`);
@@ -95,6 +99,39 @@ export default function WatchPage() {
     };
 
     fetchTutorial();
+  }, [tutorialId]);
+
+  // Fetch other tutorials
+  useEffect(() => {
+    const tutorialsQuery = query(
+      collection(db, 'tutorials'),
+      orderBy('createdAt', 'asc')
+    );
+
+    const unsubscribe = onSnapshot(
+      tutorialsQuery,
+      (snapshot) => {
+        const allTutorials: Tutorial[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title ?? 'Tutoriel sans titre',
+            description: data.description ?? '',
+            videoUrl: data.videoUrl ?? '',
+            ownerName: data.ownerName ?? null,
+          };
+        });
+
+        // Filter out the current tutorial
+        const filtered = allTutorials.filter(t => t.id !== tutorialId);
+        setOtherTutorials(filtered);
+      },
+      (error) => {
+        console.error('Erreur lors de la récupération des autres tutoriels', error);
+      }
+    );
+
+    return () => unsubscribe();
   }, [tutorialId]);
 
   // Track watch time every minute
@@ -202,12 +239,7 @@ export default function WatchPage() {
             <p className="text-lg font-semibold text-white">
               {error || 'Tutoriel non trouvé'}
             </p>
-            <button
-              onClick={() => router.back()}
-              className="mt-4 rounded-full bg-white px-5 py-2 text-sm font-semibold text-black transition hover:bg-gray-200"
-            >
-              Retour
-            </button>
+          
           </div>
         </div>
       </RequireAuth>
@@ -226,18 +258,13 @@ export default function WatchPage() {
               {tutorial.ownerName ? `Par ${tutorial.ownerName}` : 'Ressource pédagogique'}
             </p>
           </div>
-          <button
-            onClick={() => router.back()}
-            className="rounded-full border border-gray-700 px-5 py-2 text-sm font-semibold text-white transition hover:border-gray-600 hover:bg-gray-900"
-          >
-            ← Retour
-          </button>
+         
         </header>
 
-        <main className="mx-auto w-full max-w-6xl px-6 pb-24">
+        <main className="mx-auto w-full max-w-6xl px-2 md:px-6 pb-24">
           <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
             {/* Video Player */}
-            <section className="rounded-3xl border border-gray-800 bg-gray-950 p-6 shadow-sm">
+            <section className="rounded-3xl border border-gray-800 bg-gray-950 p-3 md:p-6 shadow-sm">
               <div className="aspect-video rounded-2xl bg-gray-900">
                 {videoId ? (
                   <iframe
@@ -290,26 +317,7 @@ export default function WatchPage() {
                   </p>
                 </div>
 
-                <a
-                  href={`/stats/${tutorialId}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition hover:border-gray-600 hover:bg-gray-800"
-                >
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    />
-                  </svg>
-                  Voir les statistiques
-                </a>
+            
               </div>
             </section>
 
@@ -347,6 +355,78 @@ export default function WatchPage() {
               </div>
             </aside>
           </div>
+
+          {/* Other Tutorials Section */}
+          {otherTutorials.length > 0 && (
+            <section className="mt-16">
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-white">
+                  Autres tutoriels disponibles
+                </h2>
+                <p className="mt-2 text-sm text-gray-400">
+                  Continuez votre apprentissage avec ces ressources
+                </p>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {otherTutorials.map((item) => (
+                  <article
+                    key={item.id}
+                    className="group relative overflow-hidden rounded-3xl border border-gray-800 bg-gray-950 p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
+                  >
+                    <div
+                      className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"
+                      style={{
+                        background:
+                          'linear-gradient(to bottom, rgba(59,130,246,0.2), rgba(0,0,0,0), rgba(0,0,0,0))',
+                      }}
+                    />
+                    <div>
+                      <h3 className="mb-3 text-xl font-semibold text-white">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-gray-300 line-clamp-3">
+                        {item.description || 'Description à compléter pour guider vos étudiants.'}
+                      </p>
+                      {item.videoUrl ? (
+                        <a
+                          href={`/watch/${item.id}`}
+                          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 transition hover:text-indigo-300"
+                        >
+                          Visionner le tutoriel
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 5h10m0 0v10m0-10L5 19"
+                            />
+                          </svg>
+                        </a>
+                      ) : (
+                        <span className="mt-6 inline-block text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">
+                          Lien en cours d&apos;ajout
+                        </span>
+                      )}
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs font-medium text-gray-500">
+                          {item.ownerName
+                            ? `Par ${item.ownerName}`
+                            : 'Par votre équipe'}
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
         </main>
       </div>
     </RequireAuth>

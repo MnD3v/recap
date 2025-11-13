@@ -176,24 +176,18 @@ export default function Home() {
           </nav>
         </header>
 
-        <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-24">
+        <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 md:px-6 pb-24">
         
-
           <section
             id="tutorials"
-            className="grid gap-8 rounded-[36px] border border-gray-700 bg-gray-900 p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
+            className="grid gap-8 rounded-[36px] border border-gray-700 bg-gray-900 p-4 md:p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
           >
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">
-                  {hasTutorials
-                    ? "Vos ressources publiées"
-                    : "Publiez votre premier tutoriel"}
-                </p>
+           
                 <h2 className="text-3xl font-semibold text-white">
-                  {hasTutorials
-                    ? "Vos tutoriels sont prêts à être consultés"
-                    : "Ajoutez une ressource pour lancer votre parcours"}
+                  Vos tutoriels sont prêts à être consultés
+                   
                 </h2>
               </div>
             </div>

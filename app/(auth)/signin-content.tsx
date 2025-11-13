@@ -41,13 +41,10 @@ export function SignInContent() {
             Recap — Portail Enseignant
           </div>
           <h1 className="text-4xl font-semibold text-white">
-            Rejoignez vos cohortes et pilotez l&apos;engagement en temps réel.
+            Recapitulez vos tutoriels et mesurez l&apos;attention de vos étudiants.
           </h1>
           <p className="max-w-lg text-sm text-gray-300">
-            Retrouvez vos tutoriels, vos tableaux de bord d'attention, et les
-            bilans hebdomadaires. Identifiez les étudiants investis et ceux qui
-            requièrent un accompagnement renforcé avant même votre prochaine
-            séance.
+            Recap aide les enseignants à diffuser des tutoriels vidéo haut de gamme et à suivre l&apos;attention de chaque étudiant en temps réel.
           </p>
           <div className="rounded-3xl border border-gray-700 bg-gray-800/50 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur">
             <p className="text-sm font-semibold text-white">

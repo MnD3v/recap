@@ -16,9 +16,9 @@ export const RequireAuth = ({ children }: { children: React.ReactNode }) => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-500">
+      <div className="flex min-h-screen items-center justify-center bg-black text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-200 border-t-slate-500" />
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-black border-t-white" />
           <p className="text-sm font-medium">Chargement de votre espace...</p>
         </div>
       </div>
