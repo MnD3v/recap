@@ -34,10 +34,10 @@ export function SignInContent() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
+    <div className="flex min-h-screen bg-black">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-16 lg:flex-row lg:items-center">
         <div className="flex-1 space-y-6">
-          <div className="inline-flex items-center gap-3 rounded-full border border-gray-700 bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-gray-400 shadow-sm">
+          <div className="inline-flex items-center gap-3 rounded-full border border-gray-700 bg-black px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-gray-400 shadow-sm">
             Recap — Portail Enseignant
           </div>
           <h1 className="text-4xl font-semibold text-white">
@@ -46,7 +46,7 @@ export function SignInContent() {
           <p className="max-w-lg text-sm text-gray-300">
             Recap aide les enseignants à diffuser des tutoriels vidéo haut de gamme et à suivre l&apos;attention de chaque étudiant en temps réel.
           </p>
-          <div className="rounded-3xl border border-gray-700 bg-gray-800/50 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur">
+          <div className="rounded-3xl border border-gray-700 bg-black p-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur">
             <p className="text-sm font-semibold text-white">
               Nouveau sur Recap ?
             </p>
@@ -78,7 +78,7 @@ export function SignInContent() {
         <div className="flex-1">
           <form
             onSubmit={handleSubmit}
-            className="space-y-6 rounded-[32px] border border-gray-700 bg-gray-900 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
+            className="space-y-6 rounded-[32px] border border-gray-700 bg-black p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
           >
             <div>
               <h2 className="text-2xl font-semibold text-white">
@@ -99,7 +99,7 @@ export function SignInContent() {
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                className="w-full rounded-2xl border border-gray-700 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
               />
             </div>
             <div className="space-y-2">
@@ -121,18 +121,18 @@ export function SignInContent() {
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                  className="w-full rounded-2xl border border-gray-700 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-black focus:ring-2 focus:ring-gray-700"
               />
             </div>
             {error ? (
-              <div className="rounded-2xl border border-rose-900 bg-rose-900/30 px-4 py-3 text-sm text-rose-400">
+              <div className="rounded-2xl border border-rose-900 bg-black px-4 py-3 text-sm text-rose-400">
                 {error}
               </div>
             ) : null}
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white  transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? "Connexion..." : "Se connecter"}
             </button>

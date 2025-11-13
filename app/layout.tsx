@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat_Alternates } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserratAlternates = Montserrat_Alternates({
+  variable: "--font-montserrat-alternates",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,12 +22,21 @@ export const metadata: Metadata = {
     siteName: "Recap",
     type: "website",
     locale: "fr_FR",
+    images: [
+      {
+        url: "https://i.ibb.co/Q7CF4bkN/Group-3-1.png",
+        width: 1200,
+        height: 630,
+        alt: "Recap - Plateforme d'engagement pédagogique",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Recap | Analyse de l'engagement pédagogique",
     description:
       "Plateforme premium pour héberger vos tutoriels et comprendre l'engagement des étudiants.",
+    images: ["https://i.ibb.co/Q7CF4bkN/Group-3-1.png"],
   },
 };
 
@@ -41,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${montserratAlternates.variable} antialiased`}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

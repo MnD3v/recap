@@ -264,7 +264,7 @@ export default function WatchPage() {
         <main className="mx-auto w-full max-w-6xl px-2 md:px-6 pb-24">
           <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
             {/* Video Player */}
-            <section className="rounded-3xl border border-gray-800 bg-gray-950 p-3 md:p-6 shadow-sm">
+            <section className="rounded-3xl border border-gray-800 bg-black p-3 md:p-6 shadow-sm">
               <div className="aspect-video rounded-2xl bg-gray-900">
                 {videoId ? (
                   <iframe
@@ -305,7 +305,7 @@ export default function WatchPage() {
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-4">
+                <div className="rounded-2xl border border-gray-800 bg-black p-4">
                   <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                     Votre progression
                   </p>
@@ -323,7 +323,7 @@ export default function WatchPage() {
 
             {/* Sidebar Info */}
             <aside className="space-y-4">
-              <div className="rounded-2xl border border-gray-800 bg-gray-950 p-6 shadow-sm">
+              <div className="rounded-2xl border border-gray-800 bg-black p-6 shadow-sm">
                 <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                   À propos
                 </p>
@@ -345,7 +345,7 @@ export default function WatchPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-gray-700 bg-gray-900 p-6 shadow-sm">
+              <div className="rounded-2xl border border-gray-700 bg-black p-6 shadow-sm">
                 <p className="text-xs font-semibold uppercase tracking-widest text-gray-300">
                   💡 Info
                 </p>
@@ -372,7 +372,7 @@ export default function WatchPage() {
                 {otherTutorials.map((item) => (
                   <article
                     key={item.id}
-                    className="group relative overflow-hidden rounded-3xl border border-gray-800 bg-gray-950 p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
+                    className="group relative overflow-hidden rounded-3xl border border-gray-800 bg-black p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
                   >
                     <div
                       className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"

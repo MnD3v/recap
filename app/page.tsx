@@ -180,7 +180,7 @@ export default function Home() {
         
           <section
             id="tutorials"
-            className="grid gap-8 rounded-[36px] border border-gray-700 bg-gray-900 p-4 md:p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
+            className="grid gap-8 rounded-[36px] border border-gray-700 bg-black p-4 md:p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
           >
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
@@ -196,7 +196,7 @@ export default function Home() {
                 {tutorialCards.map((item) => (
                   <article
                     key={item.id}
-                    className="group relative overflow-hidden rounded-3xl border border-gray-700 bg-gray-800 p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
+                    className="group relative overflow-hidden rounded-3xl border border-gray-700 bg-black p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
                   >
                     <div
                       className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"
@@ -242,7 +242,7 @@ export default function Home() {
                         </span>
                       )}
                       <div className="mt-4 flex items-center justify-between">
-                        <span className="rounded-full bg-gray-700 text-xs font-medium text-gray-400">
+                        <span className="rounded-full bg-black text-xs font-medium text-gray-400">
                           {item.ownerName
                             ? `Publié par ${item.ownerName}`
                             : "Publié par votre équipe"}
@@ -253,7 +253,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-3xl border border-dashed border-gray-600 bg-gray-800/50 px-6 py-12 text-center text-sm text-gray-400">
+              <div className="rounded-3xl border border-dashed border-gray-600 bg-black px-6 py-12 text-center text-sm text-gray-400">
                 Aucune ressource n&apos;est encore publiée. Rendez-vous dans
                 l&apos;espace administration pour ajouter votre premier tutoriel.
               </div>
