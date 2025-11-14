@@ -268,11 +268,6 @@ export default function WatchPage() {
     };
 
     fetchAllPublicQuestions();
-
-    // Refresh every 30 seconds to get new questions
-    const intervalId = setInterval(fetchAllPublicQuestions, 30000);
-
-    return () => clearInterval(intervalId);
   }, [tutorialId]);
 
   // Fetch Video FAQs for this tutorial
