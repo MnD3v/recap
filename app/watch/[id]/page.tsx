@@ -93,6 +93,7 @@ export default function WatchPage() {
   const [respondingToQuestion, setRespondingToQuestion] = useState<string | null>(null);
   const [responseText, setResponseText] = useState('');
   const [loadingPublicQuestions, setLoadingPublicQuestions] = useState(true);
+  const [expandedResponses, setExpandedResponses] = useState<Set<string>>(new Set());
 
   // Filtrer les questions par type
   const comprehensionQuestions = userQuestions.filter(q => q.type === 'comprehension' || !q.type);
@@ -450,6 +451,18 @@ export default function WatchPage() {
         await fetchResponsesForQuestion(questionId, questionUserId);
       }
     }
+  };
+
+  const toggleExpandResponses = (questionId: string) => {
+    setExpandedResponses((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
   };
 
   // Track watch time every minute
@@ -896,6 +909,14 @@ export default function WatchPage() {
                 {allPublicQuestions.map((question, index) => {
                   const responses = questionResponses[question.id] || [];
                   const isResponding = respondingToQuestion === question.id;
+                  const isExpanded = expandedResponses.has(question.id);
+                  const firstResponse = responses[0];
+                  const hasMoreResponses = responses.length > 1;
+                  
+                  // Auto-load responses for display
+                  if (responses.length === 0 && !questionResponses[question.id]) {
+                    fetchResponsesForQuestion(question.id, question.userId);
+                  }
                   
                   return (
                     <article
@@ -922,27 +943,47 @@ export default function WatchPage() {
                             </p>
                           </div>
                           <p className="mt-2 text-base text-gray-200">{question.question}</p>
-                          
-                          {/* Action Button */}
-                          <button
-                            onClick={() => toggleResponseSection(question.id, question.userId)}
-                            className="mt-4 inline-flex items-center gap-2 rounded-full border border-indigo-900/50 bg-indigo-950 px-4 py-2 text-xs font-semibold text-indigo-400 transition hover:border-indigo-800 hover:bg-indigo-900"
-                          >
-                            💬 Répondre ({responses.length})
-                          </button>
                         </div>
                       </div>
 
-                      {/* Responses Section */}
-                      {isResponding && (
-                        <div className="mt-6 space-y-4 border-t border-gray-800 pt-6">
-                          {/* Existing Responses */}
-                          {responses.length > 0 && (
-                            <div className="space-y-3">
-                              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                {responses.length} réponse(s)
-                              </p>
-                              {responses.map((response) => (
+                      {/* First Response (always visible if exists) */}
+                      {firstResponse && (
+                        <div className="mt-4 ml-14">
+                          <div className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-4">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-700 text-xs font-bold text-white">
+                              {firstResponse.userName?.charAt(0) || 'U'}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-semibold text-white">{firstResponse.userName}</p>
+                                <span className="text-xs text-gray-500">·</span>
+                                <p className="text-xs text-gray-400">
+                                  {firstResponse.createdAt.toDate().toLocaleDateString('fr-FR', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                  })}
+                                </p>
+                              </div>
+                              <p className="mt-1 text-sm text-gray-300">{firstResponse.response}</p>
+                            </div>
+                          </div>
+
+                          {/* Show all responses button */}
+                          {hasMoreResponses && (
+                            <button
+                              onClick={() => toggleExpandResponses(question.id)}
+                              className="mt-3 text-xs font-semibold text-indigo-400 transition hover:text-indigo-300"
+                            >
+                              {isExpanded ? '▼ Masquer' : `▶ Voir toutes les réponses (${responses.length})`}
+                            </button>
+                          )}
+
+                          {/* Additional Responses (when expanded) */}
+                          {isExpanded && hasMoreResponses && (
+                            <div className="mt-3 space-y-3">
+                              {responses.slice(1).map((response) => (
                                 <div
                                   key={response.id}
                                   className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-4"
@@ -969,8 +1010,27 @@ export default function WatchPage() {
                               ))}
                             </div>
                           )}
+                        </div>
+                      )}
 
-                          {/* Response Form */}
+                      {/* Action Buttons */}
+                      <div className="mt-4 ml-14 flex items-center gap-3">
+                        <button
+                          onClick={() => toggleResponseSection(question.id, question.userId)}
+                          className="inline-flex items-center gap-2 rounded-full border border-indigo-900/50 bg-indigo-950 px-4 py-2 text-xs font-semibold text-indigo-400 transition hover:border-indigo-800 hover:bg-indigo-900"
+                        >
+                          💬 Répondre
+                        </button>
+                        {responses.length > 0 && (
+                          <span className="text-xs text-gray-500">
+                            {responses.length} réponse{responses.length > 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Response Form */}
+                      {isResponding && (
+                        <div className="mt-6 ml-14 space-y-4 border-t border-gray-800 pt-6">
                           <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
                             <textarea
                               value={responseText}
