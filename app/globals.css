@@ -80,56 +80,41 @@ body {
   }
 }
 
-/* Educational Loading Animations */
-@keyframes bookFlip {
-  0%, 100% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(180deg);
-  }
+/* Simple Loader Animation */
+.loader {
+  height: 15px;
+  aspect-ratio: 4;
+  --_g: no-repeat radial-gradient(farthest-side, #6366f1 90%, #0000);
+  background: 
+    var(--_g) left, 
+    var(--_g) right;
+  background-size: 25% 100%;
+  display: grid;
 }
 
-@keyframes pageFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-10px) rotate(5deg);
-  }
+.loader:before,
+.loader:after {
+  content: "";
+  height: inherit;
+  aspect-ratio: 1;
+  grid-area: 1/1;
+  margin: auto;
+  border-radius: 50%;
+  transform-origin: -100% 50%;
+  background: #6366f1;
+  animation: l49 1s infinite linear;
 }
 
-@keyframes pencilWrite {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
+.loader:after {
+  transform-origin: 200% 50%;
+  --s: -1;
+  animation-delay: -0.5s;
+}
+
+@keyframes l49 {
+  58%,
   100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-@keyframes dotPulse {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
-
-@keyframes graduationFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
+    transform: rotate(calc(var(--s, 1) * 1turn));
   }
 }
 
