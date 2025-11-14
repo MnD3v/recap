@@ -92,6 +92,7 @@ export default function WatchPage() {
   const [deletingQuestion, setDeletingQuestion] = useState<{ id: string; question: string } | null>(null);
   const [respondingToQuestion, setRespondingToQuestion] = useState<string | null>(null);
   const [responseText, setResponseText] = useState('');
+  const [loadingPublicQuestions, setLoadingPublicQuestions] = useState(true);
 
   // Filtrer les questions par type
   const comprehensionQuestions = userQuestions.filter(q => q.type === 'comprehension' || !q.type);
@@ -225,6 +226,7 @@ export default function WatchPage() {
 
     const fetchAllPublicQuestions = async () => {
       try {
+        setLoadingPublicQuestions(true);
         const usersSnapshot = await getDocs(collection(db, 'users'));
         const allQuestions: UserQuestion[] = [];
 
@@ -260,6 +262,8 @@ export default function WatchPage() {
         setAllPublicQuestions(allQuestions);
       } catch (error) {
         console.error('Erreur lors de la récupération des questions publiques:', error);
+      } finally {
+        setLoadingPublicQuestions(false);
       }
     };
 
@@ -858,7 +862,27 @@ export default function WatchPage() {
           </div>
 
           {/* Community Q&A Section */}
-          {allPublicQuestions.length > 0 && (
+          {loadingPublicQuestions ? (
+            <section className="mt-16 animate-fade-in">
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-white">
+                  💬 Questions & Réponses de la communauté
+                </h2>
+                <p className="mt-2 text-sm text-gray-400">
+                  Chargement des questions...
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-gray-800 bg-gray-950 p-12">
+                <div className="flex flex-col items-center justify-center text-center">
+                  <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-gray-800 border-t-indigo-500"></div>
+                  <p className="text-sm text-gray-400">
+                    Récupération des questions de la communauté...
+                  </p>
+                </div>
+              </div>
+            </section>
+          ) : allPublicQuestions.length > 0 ? (
             <section className="mt-16 animate-fade-in">
               <div className="mb-8">
                 <h2 className="text-2xl font-semibold text-white">
@@ -982,7 +1006,7 @@ export default function WatchPage() {
                 })}
               </div>
             </section>
-          )}
+          ) : null}
 
           {/* Video FAQs Section */}
           {videoFAQs.length > 0 && (
