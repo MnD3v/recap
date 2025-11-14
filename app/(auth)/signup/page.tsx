@@ -4,12 +4,14 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
 
 const SignUpPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,6 +25,15 @@ const SignUpPage = () => {
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       if (credential.user && name) {
         await updateProfile(credential.user, { displayName: name });
+        
+        // Save additional user info to Firestore
+        await setDoc(doc(db, 'users', credential.user.uid), {
+          uid: credential.user.uid,
+          email: credential.user.email,
+          displayName: name,
+          phoneNumber: phone,
+          createdAt: new Date(),
+        });
       }
       router.replace("/");
     } catch (error) {
@@ -118,6 +129,24 @@ const SignUpPage = () => {
                 onChange={(event) => setEmail(event.target.value)}
                 className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
               />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300" htmlFor="phone">
+                Numéro WhatsApp
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                autoComplete="tel"
+                required
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                placeholder="+33 6 12 34 56 78"
+                className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+              />
+              <p className="text-xs text-gray-400">
+                Votre numéro WhatsApp pour les notifications importantes.
+              </p>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300" htmlFor="password">
