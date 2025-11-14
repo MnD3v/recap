@@ -231,26 +231,26 @@ export default function AdminPage() {
 
   return (
     <RequireAuth>
-      <div className="min-h-screen bg-slate-50/60 pb-24">
+      <div className="min-h-screen bg-black pb-24">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pt-12">
-          <header className="flex flex-col gap-6 rounded-[36px] border border-slate-200 bg-white p-10 shadow-[0_32px_80px_rgba(15,23,42,0.08)] md:flex-row md:items-center md:justify-between">
+          <header className="flex flex-col gap-6 rounded-[36px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)] md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
                 Espace administration
               </p>
-              <h1 className="mt-4 text-4xl font-semibold text-slate-900">
+              <h1 className="mt-4 text-4xl font-semibold text-white">
                 Bibliothèque des tutoriels &amp; suivi d&apos;engagement
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-gray-300">
                 Centralisez vos ressources pédagogiques, ajoutez des descriptions
                 détaillées et associez chaque vidéo YouTube en moins de deux minutes.
                 Ces contenus alimentent automatiquement l&apos;interface étudiante.
               </p>
             </div>
-            <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-4 text-sm text-slate-600">
-              <p className="font-semibold text-slate-900">Équipe pédagogique</p>
+            <div className="rounded-3xl border border-gray-800 bg-gray-900 px-6 py-4 text-sm text-gray-300">
+              <p className="font-semibold text-white">Équipe pédagogique</p>
               <p className="mt-1">{user?.displayName ?? user?.email}</p>
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-gray-400">
                 {totalTutorials} contenu(s) actuellement dans votre catalogue.
               </p>
             </div>
@@ -259,8 +259,8 @@ export default function AdminPage() {
                 onClick={() => setActiveTab("form")}
                 className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
                   activeTab === "form"
-                    ? "bg-slate-900 text-white"
-                    : "border border-slate-200 text-slate-900 hover:border-slate-300"
+                    ? "bg-white text-black"
+                    : "border border-gray-700 text-white hover:border-gray-600"
                 }`}
               >
                 Ajouter un contenu
@@ -269,8 +269,8 @@ export default function AdminPage() {
                 onClick={() => setActiveTab("engagement")}
                 className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
                   activeTab === "engagement"
-                    ? "bg-slate-900 text-white"
-                    : "border border-slate-200 text-slate-900 hover:border-slate-300"
+                    ? "bg-white text-black"
+                    : "border border-gray-700 text-white hover:border-gray-600"
                 }`}
               >
                 Engagement ({engagementData.length})
@@ -279,13 +279,13 @@ export default function AdminPage() {
           </header>
 
           {activeTab === "form" && (
-          <section className="grid gap-8 rounded-[32px] border border-slate-200 bg-white p-10 shadow-[0_32px_80px_rgba(15,23,42,0.06)] lg:grid-cols-[1.2fr_1fr]">
+          <section className="grid gap-8 rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)] lg:grid-cols-[1.2fr_1fr]">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <h2 className="text-2xl font-semibold text-slate-900">
+                <h2 className="text-2xl font-semibold text-white">
                   Ajouter un contenu
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-gray-400">
                   Renseignez les informations nécessaires pour intégrer un nouveau
                   tutoriel dans votre parcours Recap.
                 </p>
@@ -293,7 +293,7 @@ export default function AdminPage() {
 
               <div className="space-y-2">
                 <label
-                  className="text-sm font-medium text-slate-700"
+                  className="text-sm font-medium text-gray-300"
                   htmlFor="title"
                 >
                   Titre du cours
@@ -304,14 +304,14 @@ export default function AdminPage() {
                   value={formValues.title}
                   onChange={handleChange("title")}
                   placeholder="Leadership Studio — Module 03"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
                   required
                 />
               </div>
 
               <div className="space-y-2">
                 <label
-                  className="text-sm font-medium text-slate-700"
+                  className="text-sm font-medium text-gray-300"
                   htmlFor="description"
                 >
                   Description détaillée
@@ -323,13 +323,13 @@ export default function AdminPage() {
                   value={formValues.description}
                   onChange={handleChange("description")}
                   placeholder="Objectifs pédagogiques, activités proposées, points de vigilance..."
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
-                  className="text-sm font-medium text-slate-700"
+                  className="text-sm font-medium text-gray-300"
                   htmlFor="technicalDescription"
                 >
                   Description technique (pour l&apos;IA)
@@ -341,13 +341,13 @@ export default function AdminPage() {
                   value={formValues.technicalDescription}
                   onChange={handleChange("technicalDescription")}
                   placeholder="Détails techniques, concepts clés, vocabulaire important pour l'IA..."
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
-                  className="text-sm font-medium text-slate-700"
+                  className="text-sm font-medium text-gray-300"
                   htmlFor="videoUrl"
                 >
                   Lien vidéo YouTube
@@ -359,13 +359,13 @@ export default function AdminPage() {
                   value={formValues.videoUrl}
                   onChange={handleChange("videoUrl")}
                   placeholder="https://youtu.be/..."
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
                   required
                 />
               </div>
 
               {formError ? (
-                <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+                <div className="rounded-2xl border border-red-900/50 bg-red-950/50 px-4 py-3 text-sm text-red-400">
                   {formError}
                 </div>
               ) : null}
@@ -374,82 +374,82 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   disabled={status === "saving"}
-                  className="flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-slate-800 disabled:cursor-wait disabled:opacity-80"
+                  className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-white/15 transition hover:bg-gray-200 disabled:cursor-wait disabled:opacity-80"
                 >
                   {status === "saving" ? "Enregistrement..." : "Ajouter au catalogue"}
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                  className="rounded-full border border-gray-700 px-5 py-3 text-sm font-semibold text-gray-300 transition hover:border-gray-600 hover:text-white"
                 >
                   Réinitialiser
                 </button>
                 {status === "saved" ? (
-                  <span className="text-sm font-medium text-emerald-600">
+                  <span className="text-sm font-medium text-emerald-400">
                     Contenu enregistré
                   </span>
                 ) : null}
                 {status === "error" ? (
-                  <span className="text-sm font-medium text-rose-600">
+                  <span className="text-sm font-medium text-red-400">
                     Erreur lors de l&apos;enregistrement
                   </span>
                 ) : null}
               </div>
             </form>
 
-            <aside className="flex flex-col gap-5 rounded-3xl border border-slate-200 bg-slate-50/90 p-6 shadow-inner">
+            <aside className="flex flex-col gap-5 rounded-3xl border border-gray-800 bg-gray-900 p-6 shadow-inner">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
                   Prévisualisation
                 </p>
-                <h3 className="mt-2 text-xl font-semibold text-slate-900">
+                <h3 className="mt-2 text-xl font-semibold text-white">
                   Playlist en cours
                 </h3>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-gray-400">
                   Les ressources ajoutées ici apparaissent instantanément côté
                   étudiant.
                 </p>
               </div>
               <div className="flex-1 space-y-4">
                 {tutorials.length === 0 ? (
-                  <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white px-6 text-center text-sm text-slate-400">
+                  <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border border-dashed border-gray-700 bg-gray-950 px-6 text-center text-sm text-gray-500">
                     <p>Ajoutez un premier contenu pour le visualiser ici.</p>
                   </div>
                 ) : (
                   tutorials.map((tutorial) => (
                     <div
                       key={tutorial.id}
-                      className="rounded-3xl border border-white/80 bg-white px-5 py-4 shadow-[0_20px_60px_rgba(15,23,42,0.06)]"
+                      className="rounded-3xl border border-gray-800 bg-black px-5 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
-                          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-400">
+                          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-gray-400">
                             {tutorial.createdAt.toLocaleDateString("fr-FR", {
                               month: "long",
                               day: "numeric",
                             })}
                           </p>
-                          <p className="mt-2 text-lg font-semibold text-slate-900">
+                          <p className="mt-2 text-lg font-semibold text-white">
                             {tutorial.title}
                           </p>
                           {tutorial.description ? (
-                            <p className="mt-1 text-sm text-slate-600">
+                            <p className="mt-1 text-sm text-gray-300">
                               {tutorial.description}
                             </p>
                           ) : null}
                           {tutorial.ownerName ? (
-                            <p className="mt-2 text-xs text-slate-400">
+                            <p className="mt-2 text-xs text-gray-400">
                               Publié par {tutorial.ownerName}
                             </p>
                           ) : null}
                         </div>
-                        <div className="flex flex-shrink-0 flex-col gap-2">
+                        <div className="flex shrink-0 flex-col gap-2">
                           <a
                             href={tutorial.videoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100"
+                            className="inline-flex items-center gap-2 rounded-full border border-indigo-900/50 bg-indigo-950 px-3 py-1 text-xs font-semibold text-indigo-400 transition hover:border-indigo-800 hover:bg-indigo-900"
                           >
                             Ouvrir la vidéo
                             <svg
@@ -469,7 +469,7 @@ export default function AdminPage() {
                           </a>
                           <a
                             href={`/stats/${tutorial.id}`}
-                            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600 transition hover:bg-emerald-100"
+                            className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/50 bg-emerald-950 px-3 py-1 text-xs font-semibold text-emerald-400 transition hover:border-emerald-800 hover:bg-emerald-900"
                           >
                             Voir les stats
                             <svg
@@ -490,7 +490,7 @@ export default function AdminPage() {
                           <button
                             type="button"
                             onClick={() => handleDeleteTutorial(tutorial)}
-                            className="inline-flex items-center justify-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-100"
+                            className="inline-flex items-center justify-center gap-2 rounded-full border border-red-900/50 bg-red-950 px-3 py-1 text-xs font-semibold text-red-400 transition hover:border-red-800 hover:bg-red-900"
                           >
                             Supprimer
                             <svg
@@ -519,23 +519,23 @@ export default function AdminPage() {
           )}
 
           {activeTab === "engagement" && (
-          <section className="rounded-[32px] border border-slate-200 bg-white p-10 shadow-[0_32px_80px_rgba(15,23,42,0.06)]">
-            <h3 className="text-2xl font-semibold text-slate-900">
+          <section className="rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
+            <h3 className="text-2xl font-semibold text-white">
               Suivi d&apos;engagement par tutoriel
             </h3>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-gray-400">
               Consultez le temps de visionnage de chaque étudiant pour chaque tutoriel
             </p>
 
             {engagementData.length === 0 ? (
-              <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-12 text-center text-sm text-slate-500">
+              <div className="mt-8 rounded-2xl border border-dashed border-gray-700 bg-gray-900 px-6 py-12 text-center text-sm text-gray-400">
                 Aucune donnée d&apos;engagement pour le moment. Les étudiants doivent visionner des tutoriels pour que les données apparaissent.
               </div>
             ) : (
               <div className="mt-6 space-y-6">
                 {/* Tutorial Selection */}
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                  <p className="mb-3 text-sm font-semibold text-slate-700">Sélectionner un tutoriel</p>
+                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
+                  <p className="mb-3 text-sm font-semibold text-gray-300">Sélectionner un tutoriel</p>
                   <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
                     {engagementData.map((engagement) => (
                       <button
@@ -543,12 +543,12 @@ export default function AdminPage() {
                         onClick={() => setSelectedTutorialId(engagement.tutorialId)}
                         className={`rounded-lg px-4 py-3 text-left text-sm font-medium transition ${
                           selectedTutorialId === engagement.tutorialId
-                            ? "border-2 border-indigo-600 bg-indigo-50 text-indigo-900"
-                            : "border border-slate-300 bg-white text-slate-900 hover:border-slate-400"
+                            ? "border-2 border-indigo-600 bg-indigo-950 text-indigo-300"
+                            : "border border-gray-700 bg-black text-gray-300 hover:border-gray-600"
                         }`}
                       >
                         <p className="font-semibold">{engagement.tutorialTitle}</p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-gray-500">
                           {engagement.students.length} étudiant(s)
                         </p>
                       </button>
@@ -558,30 +558,30 @@ export default function AdminPage() {
 
                 {/* Selected Tutorial Details */}
                 {selectedEngagement && (
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                    <h4 className="text-lg font-semibold text-slate-900">
+                  <div className="rounded-2xl border border-gray-800 bg-black p-6">
+                    <h4 className="text-lg font-semibold text-white">
                       {selectedEngagement.tutorialTitle}
                     </h4>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-gray-400">
                       {selectedEngagement.students.length} étudiant(s) ayant suivi ce tutoriel
                     </p>
 
                     {selectedEngagement.students.length === 0 ? (
-                      <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+                      <div className="mt-6 rounded-xl border border-dashed border-gray-700 bg-gray-900 px-4 py-6 text-center text-sm text-gray-400">
                         Aucun suivi enregistré pour ce tutoriel.
                       </div>
                     ) : (
                       <div className="mt-6 overflow-x-auto">
                         <table className="w-full">
                           <thead>
-                            <tr className="border-b border-slate-200">
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">
+                            <tr className="border-b border-gray-800">
+                              <th className="px-4 py-3 text-left text-sm font-semibold text-white">
                                 ID Étudiant
                               </th>
-                              <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                                 Minutes visionnées
                               </th>
-                              <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                                 Dernière activité
                               </th>
                             </tr>
@@ -594,17 +594,17 @@ export default function AdminPage() {
                               .map((student) => (
                                 <tr
                                   key={student.userId}
-                                  className="border-b border-slate-200 transition hover:bg-slate-50"
+                                  className="border-b border-gray-800 transition hover:bg-gray-900"
                                 >
-                                  <td className="px-4 py-4 text-sm font-mono text-slate-600">
+                                  <td className="px-4 py-4 text-sm font-mono text-gray-300">
                                     {student.userId.substring(0, 12)}...
                                   </td>
                                   <td className="px-4 py-4 text-right">
-                                    <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600">
+                                    <span className="inline-flex items-center rounded-full border border-indigo-900/50 bg-indigo-950 px-3 py-1 text-sm font-semibold text-indigo-400">
                                       {student.totalMinutesWatched} min
                                     </span>
                                   </td>
-                                  <td className="px-4 py-4 text-right text-sm text-slate-600">
+                                  <td className="px-4 py-4 text-right text-sm text-gray-300">
                                     {student.lastUpdated.toLocaleDateString(
                                       "fr-FR",
                                       {
