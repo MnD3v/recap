@@ -45,6 +45,16 @@ type UserQuestion = {
   type?: 'comprehension' | 'incomprehension'; // comprehension = pour les autres, incomprehension = personnelle
 };
 
+type VideoFAQ = {
+  id: string;
+  tutorialId: string;
+  question: string;
+  description: string;
+  videoUrl: string;
+  createdAt: Timestamp;
+  createdBy?: string | null;
+};
+
 const TRACKING_INTERVAL_MS = 60000; // 1 minute
 
 export default function WatchPage() {
@@ -59,6 +69,7 @@ export default function WatchPage() {
   const [videoId, setVideoId] = useState<string | null>(null);
   const [otherTutorials, setOtherTutorials] = useState<Tutorial[]>([]);
   const [userQuestions, setUserQuestions] = useState<UserQuestion[]>([]);
+  const [videoFAQs, setVideoFAQs] = useState<VideoFAQ[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionType, setQuestionType] = useState<'comprehension' | 'incomprehension'>('comprehension');
   const [editingQuestion, setEditingQuestion] = useState<{ id: string; question: string } | null>(null);
@@ -189,6 +200,46 @@ export default function WatchPage() {
 
     return () => unsubscribe();
   }, [user, tutorialId]);
+
+  // Fetch Video FAQs for this tutorial
+  useEffect(() => {
+    if (!tutorialId) return;
+
+    const faqsQuery = query(
+      collection(db, 'videoFAQs'),
+      orderBy('createdAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(
+      faqsQuery,
+      (snapshot) => {
+        const faqs = snapshot.docs
+          .map((doc) => {
+            const data = doc.data();
+            if (data.tutorialId === tutorialId) {
+              return {
+                id: doc.id,
+                tutorialId: data.tutorialId,
+                question: data.question,
+                description: data.description,
+                videoUrl: data.videoUrl,
+                createdBy: data.createdBy,
+                createdAt: data.createdAt,
+              } as VideoFAQ;
+            }
+            return null;
+          })
+          .filter((faq): faq is VideoFAQ => faq !== null);
+
+        setVideoFAQs(faqs);
+      },
+      (error) => {
+        console.error('Erreur lors de la récupération des FAQ vidéo:', error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [tutorialId]);
 
   const handleAddQuestion = async (question: string) => {
     if (!user || !tutorialId) return;
@@ -649,6 +700,71 @@ export default function WatchPage() {
               </div>
             </aside>
           </div>
+
+          {/* Video FAQs Section */}
+          {videoFAQs.length > 0 && (
+            <section className="mt-16 animate-fade-in">
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-white">
+                  💡 Questions fréquentes - Vidéos explicatives
+                </h2>
+                <p className="mt-2 text-sm text-gray-400">
+                  Réponses vidéo aux questions courantes sur ce tutoriel
+                </p>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                {videoFAQs.map((faq, index) => (
+                  <article
+                    key={faq.id}
+                    className="group relative overflow-hidden rounded-3xl border border-red-900/30 bg-black p-6 hover-lift animate-scale-in"
+                    style={{ animationDelay: `${0.1 + index * 0.1}s`, opacity: 0, animationFillMode: 'forwards' }}
+                  >
+                    <div
+                      className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, rgba(239,68,68,0.2), rgba(0,0,0,0), rgba(0,0,0,0))",
+                      }}
+                    />
+                    <div>
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-900/50 bg-red-950/30 px-3 py-1">
+                        <span className="text-xs font-semibold text-red-400">❓ FAQ</span>
+                      </div>
+                      <h3 className="mb-3 text-xl font-semibold text-white">
+                        {faq.question}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-gray-300">
+                        {faq.description}
+                      </p>
+                      <a
+                        href={faq.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-red-400 transition hover:text-red-300"
+                      >
+                        📹 Voir la réponse vidéo
+                        <svg
+                          className="h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 5h10m0 0v10m0-10L5 19"
+                          />
+                        </svg>
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Other Tutorials Section */}
           {otherTutorials.length > 0 && (

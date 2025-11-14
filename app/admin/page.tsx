@@ -46,6 +46,7 @@ const initialForm = {
 };
 
 const initialFAQForm = {
+  tutorialId: "",
   question: "",
   description: "",
   videoUrl: "",
@@ -250,8 +251,8 @@ export default function AdminPage() {
     event.preventDefault();
     setFaqFormError(null);
 
-    if (!faqFormValues.question || !faqFormValues.videoUrl) {
-      setFaqFormError("Merci de renseigner au minimum une question et un lien vidéo.");
+    if (!faqFormValues.tutorialId || !faqFormValues.question || !faqFormValues.videoUrl) {
+      setFaqFormError("Merci de renseigner un tutoriel, une question et un lien vidéo.");
       return;
     }
 
@@ -269,6 +270,7 @@ export default function AdminPage() {
       setFaqStatus("saving");
 
       await addDoc(collection(db, "videoFAQs"), {
+        tutorialId: faqFormValues.tutorialId.trim(),
         question: faqFormValues.question.trim(),
         description: faqFormValues.description.trim(),
         videoUrl: faqFormValues.videoUrl.trim(),
@@ -597,6 +599,33 @@ export default function AdminPage() {
                   </h2>
                   <p className="mt-2 text-sm text-gray-400">
                     Créez des réponses vidéo aux questions fréquentes des étudiants
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-white"
+                    htmlFor="tutorialId"
+                  >
+                    Tutoriel concerné
+                  </label>
+                  <select
+                    id="tutorialId"
+                    name="tutorialId"
+                    required
+                    value={faqFormValues.tutorialId}
+                    onChange={(e) => setFaqFormValues({ ...faqFormValues, tutorialId: e.target.value })}
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700 cursor-pointer"
+                  >
+                    <option value="" className="bg-gray-800">Sélectionnez un tutoriel</option>
+                    {tutorials.map((tutorial) => (
+                      <option key={tutorial.id} value={tutorial.id} className="bg-gray-800">
+                        {tutorial.title}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-400">
+                    La FAQ sera visible sur la page de ce tutoriel
                   </p>
                 </div>
 

@@ -22,15 +22,6 @@ type Tutorial = {
   ownerName?: string | null;
 };
 
-type VideoFAQ = {
-  id: string;
-  question: string;
-  description: string;
-  videoUrl: string;
-  createdAt: Date;
-  createdBy?: string | null;
-};
-
 
 const METRICS = [
   {
@@ -89,7 +80,6 @@ const CTA_STEPS = [
 export default function Home() {
   const { user } = useAuth();
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
-  const [videoFAQs, setVideoFAQs] = useState<VideoFAQ[]>([]);
 
   useEffect(() => {
     const tutorialsQuery = query(
@@ -120,42 +110,6 @@ export default function Home() {
       },
       (error) => {
         console.error("Erreur lors de la récupération des tutoriels", error);
-      },
-    );
-
-    return () => unsubscribe();
-  }, []);
-
-  // Fetch Video FAQs
-  useEffect(() => {
-    const faqsQuery = query(
-      collection(db, "videoFAQs"),
-      orderBy("createdAt", "desc"),
-    );
-
-    const unsubscribe = onSnapshot(
-      faqsQuery,
-      (snapshot) => {
-        const faqs: VideoFAQ[] = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          const timestamp = data.createdAt as Timestamp | undefined;
-
-          return {
-            id: doc.id,
-            question: data.question ?? "",
-            description: data.description ?? "",
-            videoUrl: data.videoUrl ?? "",
-            createdBy: data.createdBy ?? null,
-            createdAt: timestamp?.toDate
-              ? timestamp.toDate()
-              : new Date(data.createdAt ?? Date.now()),
-          };
-        });
-
-        setVideoFAQs(faqs);
-      },
-      (error) => {
-        console.error("Erreur lors de la récupération des FAQ vidéo", error);
       },
     );
 
@@ -306,71 +260,6 @@ export default function Home() {
               </div>
             )}
           </section>
-
-          {/* Video FAQs Section */}
-          {videoFAQs.length > 0 && (
-            <section className="mt-16 animate-fade-in">
-              <div className="mb-8 animate-slide-in-left">
-                <h2 className="text-2xl font-semibold text-white">
-                  💡 FAQ Vidéo
-                </h2>
-                <p className="mt-2 text-sm text-gray-400">
-                  Réponses vidéo aux questions fréquentes des étudiants
-                </p>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                {videoFAQs.map((faq, index) => (
-                  <article
-                    key={faq.id}
-                    className="group relative overflow-hidden rounded-3xl border border-gray-800 bg-black p-6 hover-lift animate-scale-in"
-                    style={{ animationDelay: `${0.1 + index * 0.1}s`, opacity: 0, animationFillMode: 'forwards' }}
-                  >
-                    <div
-                      className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"
-                      style={{
-                        background:
-                          "linear-gradient(to bottom, rgba(239,68,68,0.2), rgba(0,0,0,0), rgba(0,0,0,0))",
-                      }}
-                    />
-                    <div>
-                      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-900/50 bg-red-950/30 px-3 py-1">
-                        <span className="text-xs font-semibold text-red-400">❓ Question</span>
-                      </div>
-                      <h3 className="mb-3 text-xl font-semibold text-white">
-                        {faq.question}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-gray-300">
-                        {faq.description}
-                      </p>
-                      <a
-                        href={faq.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-red-400 transition hover:text-red-300"
-                      >
-                        📹 Voir la réponse vidéo
-                        <svg
-                          className="h-4 w-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M9 5h10m0 0v10m0-10L5 19"
-                          />
-                        </svg>
-                      </a>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
        
       </main>
 
