@@ -45,17 +45,28 @@ const initialForm = {
   videoUrl: "",
 };
 
+const initialFAQForm = {
+  question: "",
+  description: "",
+  videoUrl: "",
+};
+
 export default function AdminPage() {
   const { user } = useAuth();
   const [formValues, setFormValues] = useState(initialForm);
+  const [faqFormValues, setFaqFormValues] = useState(initialFAQForm);
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
   const [engagementData, setEngagementData] = useState<TutorialEngagement[]>([]);
   const [selectedTutorialId, setSelectedTutorialId] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
     "idle",
   );
+  const [faqStatus, setFaqStatus] = useState<"idle" | "saving" | "saved" | "error">(
+    "idle",
+  );
   const [formError, setFormError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"form" | "engagement">("form");
+  const [faqFormError, setFaqFormError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"form" | "engagement" | "faq">("form");
   const [pendingDelete, setPendingDelete] = useState<Tutorial | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -229,6 +240,55 @@ export default function AdminPage() {
     }
   };
 
+  const handleFAQChange =
+    (field: keyof typeof initialFAQForm) =>
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFaqFormValues({ ...faqFormValues, [field]: event.target.value });
+    };
+
+  const handleFAQSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFaqFormError(null);
+
+    if (!faqFormValues.question || !faqFormValues.videoUrl) {
+      setFaqFormError("Merci de renseigner au minimum une question et un lien vidéo.");
+      return;
+    }
+
+    const urlPattern =
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/[^\s]+$/i;
+
+    if (!urlPattern.test(faqFormValues.videoUrl)) {
+      setFaqFormError(
+        "Veuillez saisir un lien YouTube valide (ex: https://youtu.be/...).",
+      );
+      return;
+    }
+
+    try {
+      setFaqStatus("saving");
+
+      await addDoc(collection(db, "videoFAQs"), {
+        question: faqFormValues.question.trim(),
+        description: faqFormValues.description.trim(),
+        videoUrl: faqFormValues.videoUrl.trim(),
+        createdBy: user?.displayName ?? user?.email ?? null,
+        createdAt: Timestamp.now(),
+      });
+
+      setFaqStatus("saved");
+      setFaqFormValues(initialFAQForm);
+      setTimeout(() => setFaqStatus("idle"), 2000);
+    } catch (error) {
+      console.error(error);
+      setFaqStatus("error");
+      setFaqFormError(
+        "Un incident est survenu lors de l'enregistrement. Merci de réessayer.",
+      );
+      setTimeout(() => setFaqStatus("idle"), 1500);
+    }
+  };
+
   return (
     <RequireAuth>
       <div className="min-h-screen bg-black pb-24">
@@ -264,6 +324,16 @@ export default function AdminPage() {
                 }`}
               >
                 Ajouter un contenu
+              </button>
+              <button
+                onClick={() => setActiveTab("faq")}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+                  activeTab === "faq"
+                    ? "bg-white text-black"
+                    : "border border-gray-700 text-white hover:border-gray-600"
+                }`}
+              >
+                📹 Ajouter Vidéo FAQ
               </button>
               <button
                 onClick={() => setActiveTab("engagement")}
@@ -516,6 +586,97 @@ export default function AdminPage() {
               </div>
             </aside>
           </section>
+          )}
+
+          {activeTab === "faq" && (
+            <section className="rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
+              <form onSubmit={handleFAQSubmit} className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-semibold text-white">
+                    📹 Ajouter une Vidéo FAQ
+                  </h2>
+                  <p className="mt-2 text-sm text-gray-400">
+                    Créez des réponses vidéo aux questions fréquentes des étudiants
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-white"
+                    htmlFor="question"
+                  >
+                    Question posée
+                  </label>
+                  <input
+                    id="question"
+                    name="question"
+                    type="text"
+                    required
+                    value={faqFormValues.question}
+                    onChange={handleFAQChange("question")}
+                    placeholder="Ex: Comment utiliser la fonction X ?"
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-white"
+                    htmlFor="faq-description"
+                  >
+                    Description / Contexte
+                  </label>
+                  <textarea
+                    id="faq-description"
+                    name="description"
+                    rows={4}
+                    value={faqFormValues.description}
+                    onChange={handleFAQChange("description")}
+                    placeholder="Contexte de la question, détails supplémentaires..."
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-white"
+                    htmlFor="faq-videoUrl"
+                  >
+                    Lien vidéo YouTube
+                  </label>
+                  <input
+                    id="faq-videoUrl"
+                    name="videoUrl"
+                    type="url"
+                    required
+                    value={faqFormValues.videoUrl}
+                    onChange={handleFAQChange("videoUrl")}
+                    placeholder="https://youtu.be/..."
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                  />
+                  <p className="text-xs text-gray-400">
+                    Collez le lien complet de votre vidéo YouTube
+                  </p>
+                </div>
+
+                {faqFormError && (
+                  <div className="rounded-2xl border border-rose-900 bg-rose-900/30 px-4 py-3 text-sm text-rose-400">
+                    {faqFormError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={faqStatus === "saving"}
+                  className="flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {faqStatus === "saving" && "Enregistrement..."}
+                  {faqStatus === "saved" && "✓ Enregistrée"}
+                  {(faqStatus === "idle" || faqStatus === "error") &&
+                    "Publier la FAQ vidéo"}
+                </button>
+              </form>
+            </section>
           )}
 
           {activeTab === "engagement" && (
