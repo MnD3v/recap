@@ -404,36 +404,30 @@ export default function WatchPage() {
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-2 hover-lift">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                    Votre progression
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold text-white">
-                    {minutesWatched} min
-                  </p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    Temps enregistré toutes les minutes
-                  </p>
-                </div>
+              
 
                 {/* Questions Section */}
                 <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-3">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                        Vos questions
+                      <h2 className='text-xl font-semibold text-white'>Vous avez terminez ? Comportez vous en enseignant.</h2>
+                     <div className=' max-w-2/3'>
+                     <p className="text-sm   text-white">
+                        Posez des questions, des questions qui aideront les autres étudiants à comprendre le contenu.
                       </p>
+                     </div>
                       <p className="mt-1 text-sm text-gray-500">
                         {userQuestions.length}/4 questions minimum
                       </p>
                     </div>
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-smooth hover:bg-indigo-700 hover:scale-105"
-                    >
-                      + Ajouter
-                    </button>
+                   
                   </div>
+                  <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="rounded-full bg-indigo-600 px-4 py-2 my-3 text-xs font-semibold text-white transition-smooth hover:bg-indigo-700 hover:scale-105"
+                    >
+                      + Ajouter une question
+                    </button>
 
                   {userQuestions.length === 0 ? (
                     <p className="text-sm text-gray-500">
@@ -506,7 +500,17 @@ export default function WatchPage() {
                     </div>
                   )}
                 </div>
-            
+                <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-2 hover-lift">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                    Votre progression
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold text-white">
+                    {minutesWatched} min
+                  </p>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Temps enregistré toutes les minutes
+                  </p>
+                </div>
               </div>
             </section>
 
