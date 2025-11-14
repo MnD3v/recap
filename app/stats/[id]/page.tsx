@@ -297,7 +297,7 @@ export default function StatsPage() {
               <p className="text-sm font-semibold uppercase tracking-widest text-gray-400">
                 Temps moyen
               </p>
-              <p className="mt-3 text-3xl font-bold text-indigo-400">{averageMinutes}</p>
+              <p className="mt-3 text-3xl font-bold text-[#ff2600]-400">{averageMinutes}</p>
               <p className="mt-2 text-xs text-gray-400">minutes par étudiant</p>
             </div>
 
@@ -361,7 +361,7 @@ export default function StatsPage() {
 
                       let badgeColor = 'bg-gray-800 text-gray-300';
                       if (percentageOfAverage >= 150) badgeColor = 'bg-emerald-950 text-emerald-400 border border-emerald-900';
-                      else if (percentageOfAverage >= 100) badgeColor = 'bg-indigo-950 text-indigo-400 border border-indigo-900';
+                      else if (percentageOfAverage >= 100) badgeColor = 'bg-[#ff2600]-950 text-[#ff2600]-400 border border-[#ff2600]-900';
                       else if (percentageOfAverage >= 50) badgeColor = 'bg-amber-950 text-amber-400 border border-amber-900';
                       else badgeColor = 'bg-rose-950 text-rose-400 border border-rose-900';
 
@@ -398,7 +398,7 @@ export default function StatsPage() {
                               </div>
                             </td>
                             <td className="px-4 py-4 text-right">
-                              <span className="inline-flex items-center rounded-full border border-indigo-900/50 bg-indigo-950 px-3 py-1 text-sm font-semibold text-indigo-400">
+                              <span className="inline-flex items-center rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-sm font-semibold text-[#ff2600]-400">
                                 {stat.totalMinutesWatched} min
                               </span>
                             </td>
@@ -423,7 +423,7 @@ export default function StatsPage() {
                                   {/* Questions de compréhension */}
                                   {stat.questions!.filter(q => q.type === 'comprehension').length > 0 && (
                                     <div className="rounded-2xl border border-gray-800 bg-black p-4">
-                                      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-400">
+                                      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#ff2600]-400">
                                         📚 Ce que l&apos;étudiant a compris
                                       </p>
                                       <div className="space-y-2">
@@ -434,7 +434,7 @@ export default function StatsPage() {
                                               key={q.id}
                                               className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-3"
                                             >
-                                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff2600]-600 text-xs font-bold text-white">
                                                 {qIndex + 1}
                                               </span>
                                               <div className="flex-1">
@@ -518,7 +518,7 @@ export default function StatsPage() {
                 <p className="text-xs text-gray-300">150%+ du temps moyen (très engagé)</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-indigo-400"></div>
+                <div className="h-3 w-3 rounded-full bg-[#ff2600]-400"></div>
                 <p className="text-xs text-gray-300">100%+ du temps moyen (engagé)</p>
               </div>
               <div className="flex items-center gap-2">
@@ -615,7 +615,7 @@ export default function StatsPage() {
                 <button
                   type="submit"
                   disabled={faqStatus === 'saving'}
-                  className="rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="rounded-full bg-[#ff2600]-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#ff2600]-600/30 transition hover:bg-[#ff2600]-700 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {faqStatus === 'saving' && 'Enregistrement...'}
                   {faqStatus === 'saved' && '✓ Enregistrée'}

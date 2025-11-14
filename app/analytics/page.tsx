@@ -191,7 +191,7 @@ export default function AnalyticsPage() {
               onClick={() => setActiveTab('tutorials')}
               className={`px-4 py-3 text-sm font-semibold transition ${
                 activeTab === 'tutorials'
-                  ? 'border-b-2 border-indigo-600 text-indigo-400'
+                  ? 'border-b-2 border-[#ff2600]-600 text-[#ff2600]-400'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -201,7 +201,7 @@ export default function AnalyticsPage() {
               onClick={() => setActiveTab('students')}
               className={`px-4 py-3 text-sm font-semibold transition ${
                 activeTab === 'students'
-                  ? 'border-b-2 border-indigo-600 text-indigo-400'
+                  ? 'border-b-2 border-[#ff2600]-600 text-[#ff2600]-400'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -256,7 +256,7 @@ export default function AnalyticsPage() {
                           <td className="px-4 py-4 text-right text-sm text-gray-300">
                             {tutorial.totalViewers}
                           </td>
-                          <td className="px-4 py-4 text-right text-sm font-semibold text-indigo-400">
+                          <td className="px-4 py-4 text-right text-sm font-semibold text-[#ff2600]-400">
                             {tutorial.averageWatchTime} min
                           </td>
                           <td className="px-4 py-4 text-right text-sm text-gray-300">
@@ -322,7 +322,7 @@ export default function AnalyticsPage() {
                               <td className="px-4 py-4 text-sm text-white">
                                 {session.tutorialTitle}
                               </td>
-                              <td className="px-4 py-4 text-right text-sm font-semibold text-indigo-400">
+                              <td className="px-4 py-4 text-right text-sm font-semibold text-[#ff2600]-400">
                                 {session.totalMinutesWatched} min
                               </td>
                               <td className="px-4 py-4 text-right">
@@ -353,7 +353,7 @@ export default function AnalyticsPage() {
                                     {/* Questions de compréhension */}
                                     {session.questions!.filter(q => q.type === 'comprehension').length > 0 && (
                                       <div className="rounded-2xl border border-gray-800 bg-black p-4">
-                                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-400">
+                                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#ff2600]-400">
                                           📚 Ce que l&apos;étudiant a compris
                                         </p>
                                         <div className="space-y-2">
@@ -364,7 +364,7 @@ export default function AnalyticsPage() {
                                                 key={q.id}
                                                 className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-3"
                                               >
-                                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff2600]-600 text-xs font-bold text-white">
                                                   {index + 1}
                                                 </span>
                                                 <div className="flex-1">

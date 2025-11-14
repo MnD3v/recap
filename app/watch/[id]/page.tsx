@@ -84,7 +84,7 @@ const linkifyText = (text: string) => {
           href={part}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-indigo-400 underline hover:text-indigo-300 transition"
+          className="text-[#ff2600] underline hover:text-[#ff4433] transition"
         >
           {part}
         </a>
@@ -676,7 +676,7 @@ export default function WatchPage() {
                         setQuestionType('comprehension');
                         setIsModalOpen(true);
                       }}
-                      className="rounded-full bg-indigo-600 px-4 py-2 my-3 text-xs font-semibold text-white transition-smooth hover:bg-indigo-700 hover:scale-105"
+                      className="rounded-full bg-[#ff2600]-600 px-4 py-2 my-3 text-xs font-semibold text-white transition-smooth hover:bg-[#ff2600]-700 hover:scale-105"
                     >
                       + Ajouter une question
                     </button>
@@ -694,7 +694,7 @@ export default function WatchPage() {
                           style={{ animationDelay: `${0.1 + index * 0.05}s`, opacity: 0, animationFillMode: 'forwards' }}
                         >
                           <div className="flex gap-3">
-                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff2600]-600 text-xs font-bold text-white">
                               {index + 1}
                             </span>
                             <p className="flex-1 text-sm text-gray-200">{q.question}</p>
@@ -854,7 +854,7 @@ export default function WatchPage() {
                     >
                       {/* Question Header */}
                       <div className="flex items-start gap-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff2600]-600 text-sm font-bold text-white">
                           {question.userName?.charAt(0) || 'E'}
                         </div>
                         <div className="flex-1">
@@ -902,7 +902,7 @@ export default function WatchPage() {
                           {hasMoreResponses && (
                             <button
                               onClick={() => toggleExpandResponses(question.id)}
-                              className="mt-3 text-xs font-semibold text-indigo-400 transition hover:text-indigo-300"
+                              className="mt-3 text-xs font-semibold text-[#ff2600]-400 transition hover:text-[#ff2600]-300"
                             >
                               {isExpanded ? '▼ Masquer' : `▶ Voir toutes les réponses (${responses.length})`}
                             </button>
@@ -945,7 +945,7 @@ export default function WatchPage() {
                       <div className="mt-4 ml-14 flex items-center gap-3">
                         <button
                           onClick={() => toggleResponseSection(question.id, question.userId)}
-                          className="inline-flex items-center gap-2 rounded-full border border-indigo-900/50 bg-indigo-950 px-4 py-2 text-xs font-semibold text-indigo-400 transition hover:border-indigo-800 hover:bg-indigo-900"
+                          className="inline-flex items-center gap-2 rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-4 py-2 text-xs font-semibold text-[#ff2600]-400 transition hover:border-[#ff2600]-800 hover:bg-[#ff2600]-900"
                         >
                           💬 Répondre
                         </button>
@@ -965,7 +965,7 @@ export default function WatchPage() {
                               onChange={(e) => setResponseText(e.target.value)}
                               placeholder="Écrivez votre réponse..."
                               rows={3}
-                              className="w-full rounded-sm border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-indigo-600"
+                              className="w-full rounded-sm border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-[#ff2600]-600"
                             />
                             <div className="mt-3 flex items-center justify-end gap-3">
                               <button
@@ -980,7 +980,7 @@ export default function WatchPage() {
                               <button
                                 onClick={() => handleSubmitResponse(question.id, question.userId)}
                                 disabled={!responseText.trim()}
-                                className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="rounded-full bg-[#ff2600]-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#ff2600]-700 disabled:cursor-not-allowed disabled:opacity-50"
                               >
                                 Publier la réponse
                               </button>
@@ -1096,7 +1096,7 @@ export default function WatchPage() {
                       {item.videoUrl ? (
                         <a
                           href={`/watch/${item.id}`}
-                          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 transition hover:text-indigo-300"
+                          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#ff2600]-400 transition hover:text-[#ff2600]-300"
                         >
                           Visionner le tutoriel
                           <svg

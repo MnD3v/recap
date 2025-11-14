@@ -63,7 +63,7 @@ export function AddQuestionModal({ isOpen, onClose, onSubmit, editingQuestion }:
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Ex: Quelles sont les étapes clés abordées dans cette section ?"
               rows={4}
-              className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-[#ff2600]-500"
               required
             />
           </div>
@@ -80,7 +80,7 @@ export function AddQuestionModal({ isOpen, onClose, onSubmit, editingQuestion }:
             <button
               type="submit"
               disabled={isSubmitting || !question.trim()}
-              className="flex-1 rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-full bg-[#ff2600]-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#ff2600]-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (editingQuestion ? 'Modification...' : 'Ajout...') : (editingQuestion ? 'Modifier la question' : 'Ajouter la question')}
             </button>

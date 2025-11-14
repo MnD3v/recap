@@ -450,7 +450,7 @@ POINTS_A_AMELIORER: [liste des points à améliorer]`;
                     <div
                       className={`max-w-xs rounded-2xl px-4 py-3 text-sm ${
                         message.role === 'user'
-                          ? 'bg-indigo-600 text-white'
+                          ? 'bg-[#ff2600]-600 text-white'
                           : 'bg-gray-800 text-gray-200'
                       }`}
                     >
@@ -469,7 +469,7 @@ POINTS_A_AMELIORER: [liste des points à améliorer]`;
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder="Votre réponse..."
                     disabled={isSubmitting}
-                    className="flex-1 rounded-full border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white placeholder-gray-500 outline-none transition focus:border-gray-600 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+                    className="flex-1 rounded-full border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white placeholder-gray-500 outline-none transition focus:border-gray-600 focus:ring-1 focus:ring-[#ff2600]-500 disabled:opacity-50"
                   />
                   <button
                     type="submit"

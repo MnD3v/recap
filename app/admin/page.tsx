@@ -511,7 +511,7 @@ export default function AdminPage() {
                             href={tutorial.videoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-full border border-indigo-900/50 bg-indigo-950 px-3 py-1 text-xs font-semibold text-indigo-400 transition hover:border-indigo-800 hover:bg-indigo-900"
+                            className="inline-flex items-center gap-2 rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-xs font-semibold text-[#ff2600]-400 transition hover:border-[#ff2600]-800 hover:bg-[#ff2600]-900"
                           >
                             Ouvrir la vidéo
                             <svg
@@ -687,7 +687,7 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   disabled={faqStatus === "saving"}
-                  className="flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex w-full items-center justify-center rounded-full bg-[#ff2600]-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#ff2600]-600/30 transition hover:bg-[#ff2600]-700 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {faqStatus === "saving" && "Enregistrement..."}
                   {faqStatus === "saved" && "✓ Enregistrée"}
@@ -723,7 +723,7 @@ export default function AdminPage() {
                         onClick={() => setSelectedTutorialId(engagement.tutorialId)}
                         className={`rounded-lg px-4 py-3 text-left text-sm font-medium transition ${
                           selectedTutorialId === engagement.tutorialId
-                            ? "border-2 border-indigo-600 bg-indigo-950 text-indigo-300"
+                            ? "border-2 border-[#ff2600]-600 bg-[#ff2600]-950 text-[#ff2600]-300"
                             : "border border-gray-700 bg-black text-gray-300 hover:border-gray-600"
                         }`}
                       >
@@ -780,7 +780,7 @@ export default function AdminPage() {
                                     {student.userId.substring(0, 12)}...
                                   </td>
                                   <td className="px-4 py-4 text-right">
-                                    <span className="inline-flex items-center rounded-full border border-indigo-900/50 bg-indigo-950 px-3 py-1 text-sm font-semibold text-indigo-400">
+                                    <span className="inline-flex items-center rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-sm font-semibold text-[#ff2600]-400">
                                       {student.totalMinutesWatched} min
                                     </span>
                                   </td>

@@ -202,18 +202,18 @@ export default function NotificationsPage() {
                   className={`group relative overflow-hidden rounded-2xl border p-5 transition-all hover-lift cursor-pointer animate-fade-in ${
                     notification.isRead
                       ? 'border-gray-800 bg-gray-950'
-                      : 'border-indigo-900/50 bg-indigo-950/20'
+                      : 'border-[#ff2600]-900/50 bg-[#ff2600]-950/20'
                   }`}
                   style={{ animationDelay: `${0.05 + index * 0.03}s`, opacity: 0, animationFillMode: 'forwards' }}
                   onClick={() => handleNotificationClick(notification)}
                 >
                   {!notification.isRead && (
-                    <div className="absolute left-0 top-0 h-full w-1 bg-indigo-500"></div>
+                    <div className="absolute left-0 top-0 h-full w-1 bg-[#ff2600]-500"></div>
                   )}
                   
                   <div className="flex items-start gap-4">
                     <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
-                      notification.isRead ? 'bg-gray-800' : 'bg-indigo-600'
+                      notification.isRead ? 'bg-gray-800' : 'bg-[#ff2600]-600'
                     }`}>
                       {notification.type === 'response' && (
                         <svg
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
                         {!notification.isRead && (
                           <>
                             <span>·</span>
-                            <span className="font-semibold text-indigo-400">Nouveau</span>
+                            <span className="font-semibold text-[#ff2600]-400">Nouveau</span>
                           </>
                         )}
                       </div>

@@ -55,7 +55,7 @@ export function SignInContent() {
             </p>
             <Link
               href="/signup"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-indigo-400"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#ff2600]-400"
             >
               S&apos;inscrire
               <svg
@@ -132,7 +132,7 @@ export function SignInContent() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white  transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center rounded-full bg-[#ff2600]-600 px-6 py-3 text-sm font-semibold text-white  transition hover:bg-[#ff2600]-700 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? "Connexion..." : "Se connecter"}
             </button>

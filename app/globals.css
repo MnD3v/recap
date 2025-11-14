@@ -84,7 +84,7 @@ body {
 .loader {
   height: 15px;
   aspect-ratio: 4;
-  --_g: no-repeat radial-gradient(farthest-side, #6366f1 90%, #0000);
+  --_g: no-repeat radial-gradient(farthest-side, #ff2600 90%, #0000);
   background: 
     var(--_g) left, 
     var(--_g) right;
@@ -101,7 +101,7 @@ body {
   margin: auto;
   border-radius: 50%;
   transform-origin: -100% 50%;
-  background: #6366f1;
+  background: #ff2600;
   animation: l49 1s infinite linear;
 }
 

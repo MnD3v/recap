@@ -24,60 +24,6 @@ type Tutorial = {
 };
 
 
-const METRICS = [
-  {
-    label: "Temps moyen de visionnage",
-    value: "87 %",
-    change: "+12 % vs cohorte N-1",
-  },
-  {
-    label: "Taux de complétion",
-    value: "73 %",
-    change: "+18 % avec rappels automatisés",
-  },
-  {
-    label: "Étudiants actifs hebdomadaires",
-    value: "92",
-    change: "Top 10 % des parcours suivis",
-  },
-];
-
-const STUDENT_FOLLOWUP = [
-  {
-    name: "Awa Ndiaye",
-    status: "A visionné 94 %",
-    tag: "Ambassadrice du cas",
-  },
-  {
-    name: "Marc Lemoine",
-    status: "Pause répétée à 02:14",
-    tag: "Programmer un coaching",
-  },
-  {
-    name: "Lina Benali",
-    status: "3 réflexions partagées",
-    tag: "À mettre en avant",
-  },
-];
-
-const CTA_STEPS = [
-  {
-    title: "Connexion à la base de données",
-    description:
-      "Reliez ce tableau de bord à Firestore ou à votre API maison pour créer, publier et versionner vos cours en direct.",
-  },
-  {
-    title: "Rôles & accès avancés",
-    description:
-      "Définissez les droits par équipe pédagogique, appliquez les règles Firebase Auth et sécurisez vos parcours premium.",
-  },
-  {
-    title: "Suivi de cohorte",
-    description:
-      "Assignez chaque tutoriel à une promotion, déclenchez des rappels et comparez les niveaux d'attention d'une semaine à l'autre.",
-  },
-];
-
 export default function Home() {
   const { user } = useAuth();
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
@@ -180,6 +126,51 @@ export default function Home() {
 
         <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 md:px-6 pb-24">
         
+          {/* Hero Section - Landing Page */}
+          <section className="px-6 py-16 md:py-24 animate-fade-in">
+            <div className="mx-auto max-w-4xl text-center">
+              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-slide-in-left">
+                Suivez l&apos;engagement de vos étudiants
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed animate-slide-in-right" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
+                Recap vous permet de mesurer précisément le temps que chaque étudiant consacre à vos tutoriels vidéo, 
+                tout en créant un espace d&apos;entraide où ils peuvent poser des questions et s&apos;entraider.
+              </p>
+              
+              <div className="grid md:grid-cols-2 gap-8 mt-12 text-left">
+                <div className="rounded-3xl border border-gray-700 bg-gradient-to-br from-gray-900 to-black p-8 hover-lift animate-scale-in" style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ff2600]/10">
+                    <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">
+                    Suivi d&apos;engagement précis
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    Mesurez minute par minute le temps de visionnage de chaque étudiant. 
+                    Identifiez ceux qui sont investis et accompagnez ceux qui décrochent.
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border border-gray-700 bg-gradient-to-br from-gray-900 to-black p-8 hover-lift animate-scale-in" style={{ animationDelay: '0.4s', opacity: 0, animationFillMode: 'forwards' }}>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ff2600]/10">
+                    <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">
+                    Entraide communautaire
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    Vos étudiants posent des questions intelligentes et y répondent entre eux. 
+                    Créez une communauté d&apos;apprentissage collaborative et autonome.
+          </p>
+        </div>
+              </div>
+            </div>
+          </section>
+        
           <section
             id="tutorials"
             className="grid gap-8 rounded-[36px] border border-gray-700 bg-black p-4 md:p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)] animate-scale-in"
@@ -221,7 +212,7 @@ export default function Home() {
                       {item.videoUrl ? (
                         <a
                           href={`/watch/${item.id}`}
-                          className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 transition hover:text-indigo-300"
+                          className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#ff2600] transition hover:text-[#ff4433]"
                         >
                           Visionner le tutoriel
                           <svg
@@ -259,7 +250,7 @@ export default function Home() {
               <div className="rounded-3xl border border-dashed border-gray-600 bg-black px-6 py-12 text-center text-sm text-gray-400">
                 Aucune ressource n&apos;est encore publiée. Rendez-vous dans
                 l&apos;espace administration pour ajouter votre premier tutoriel.
-              </div>
+        </div>
             )}
           </section>
        

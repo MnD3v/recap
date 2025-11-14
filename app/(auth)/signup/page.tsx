@@ -72,7 +72,7 @@ const SignUpPage = () => {
             </p>
             <Link
               href="/signin"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-indigo-400"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#ff2600]-400"
             >
               Se connecter
               <svg
@@ -191,7 +191,7 @@ const SignUpPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center rounded-full bg-[#ff2600]-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#ff2600]-600/30 transition hover:bg-[#ff2600]-700 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? "Création en cours..." : "Créer mon compte"}
             </button>
