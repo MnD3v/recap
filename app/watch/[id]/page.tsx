@@ -71,6 +71,29 @@ type VideoFAQ = {
 
 const TRACKING_INTERVAL_MS = 60000; // 1 minute
 
+// Function to detect and linkify URLs in text
+const linkifyText = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-400 underline hover:text-indigo-300 transition"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default function WatchPage() {
   const params = useParams();
   const { user } = useAuth();
@@ -966,7 +989,7 @@ export default function WatchPage() {
                                   })}
                                 </p>
                               </div>
-                              <p className="mt-1 text-sm text-gray-300">{firstResponse.response}</p>
+                              <p className="mt-1 text-sm text-gray-300">{linkifyText(firstResponse.response)}</p>
                             </div>
                           </div>
 
@@ -1004,7 +1027,7 @@ export default function WatchPage() {
                                         })}
                                       </p>
                                     </div>
-                                    <p className="mt-1 text-sm text-gray-300">{response.response}</p>
+                                    <p className="mt-1 text-sm text-gray-300">{linkifyText(response.response)}</p>
                                   </div>
                                 </div>
                               ))}
