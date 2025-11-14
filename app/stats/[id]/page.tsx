@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { RequireAuth } from '@/components/RequireAuth';
 import { useAuth } from '@/components/AuthProvider';
@@ -33,7 +33,7 @@ type UserQuestion = {
 export default function StatsPage() {
   const params = useParams();
   const router = useRouter();
-  useAuth(); // Ensure user is authenticated via RequireAuth
+  const { user } = useAuth(); // Ensure user is authenticated via RequireAuth
   const tutorialId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
@@ -41,6 +41,16 @@ export default function StatsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedStudents, setExpandedStudents] = useState<Set<string>>(new Set());
+  
+  // FAQ Modal states
+  const [isFAQModalOpen, setIsFAQModalOpen] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState<string>('');
+  const [faqFormValues, setFaqFormValues] = useState({
+    description: '',
+    videoUrl: '',
+  });
+  const [faqStatus, setFaqStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [faqError, setFaqError] = useState<string | null>(null);
 
   const toggleStudentExpansion = (userId: string) => {
     setExpandedStudents((prev) => {
@@ -52,6 +62,68 @@ export default function StatsPage() {
       }
       return newSet;
     });
+  };
+
+  const handleOpenFAQModal = (question: string) => {
+    setSelectedQuestion(question);
+    setFaqFormValues({ description: '', videoUrl: '' });
+    setFaqError(null);
+    setFaqStatus('idle');
+    setIsFAQModalOpen(true);
+  };
+
+  const handleCloseFAQModal = () => {
+    setIsFAQModalOpen(false);
+    setSelectedQuestion('');
+    setFaqFormValues({ description: '', videoUrl: '' });
+    setFaqError(null);
+    setFaqStatus('idle');
+  };
+
+  const handleFAQChange = (field: 'description' | 'videoUrl') => (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFaqFormValues({ ...faqFormValues, [field]: event.target.value });
+  };
+
+  const handleFAQSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFaqError(null);
+
+    if (!faqFormValues.videoUrl) {
+      setFaqError('Merci de renseigner un lien vidéo.');
+      return;
+    }
+
+    const urlPattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/[^\s]+$/i;
+
+    if (!urlPattern.test(faqFormValues.videoUrl)) {
+      setFaqError('Veuillez saisir un lien YouTube valide (ex: https://youtu.be/...).');
+      return;
+    }
+
+    try {
+      setFaqStatus('saving');
+
+      await addDoc(collection(db, 'videoFAQs'), {
+        tutorialId: tutorialId,
+        question: selectedQuestion,
+        description: faqFormValues.description.trim(),
+        videoUrl: faqFormValues.videoUrl.trim(),
+        createdBy: user?.displayName ?? user?.email ?? null,
+        createdAt: Timestamp.now(),
+      });
+
+      setFaqStatus('saved');
+      setTimeout(() => {
+        handleCloseFAQModal();
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      setFaqStatus('error');
+      setFaqError('Un incident est survenu lors de l\'enregistrement. Merci de réessayer.');
+      setTimeout(() => setFaqStatus('idle'), 1500);
+    }
   };
 
   useEffect(() => {
@@ -411,6 +483,13 @@ export default function StatsPage() {
                                                   })}
                                                 </p>
                                               </div>
+                                              <button
+                                                onClick={() => handleOpenFAQModal(q.question)}
+                                                className="shrink-0 rounded-lg border border-emerald-900/50 bg-emerald-950 px-3 py-1.5 text-xs font-semibold text-emerald-400 transition hover:border-emerald-800 hover:bg-emerald-900"
+                                                title="Créer une FAQ vidéo"
+                                              >
+                                                📹 Créer FAQ
+                                              </button>
                                             </div>
                                           ))}
                                       </div>
@@ -453,6 +532,99 @@ export default function StatsPage() {
           </div>
         </main>
       </div>
+
+      {/* FAQ Modal */}
+      {isFAQModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-3xl border border-gray-700 bg-gray-900 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-white">
+                📹 Créer une FAQ Vidéo
+              </h2>
+              <p className="mt-2 text-sm text-gray-400">
+                Créez une réponse vidéo pour cette question d&apos;étudiant
+              </p>
+            </div>
+
+            <form onSubmit={handleFAQSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">
+                  Question
+                </label>
+                <div className="rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3">
+                  <p className="text-sm text-white">{selectedQuestion}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-white"
+                  htmlFor="faq-description"
+                >
+                  Description de la réponse
+                </label>
+                <textarea
+                  id="faq-description"
+                  name="description"
+                  rows={4}
+                  value={faqFormValues.description}
+                  onChange={handleFAQChange('description')}
+                  placeholder="Résumé de la réponse, points clés abordés dans la vidéo..."
+                  className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-white"
+                  htmlFor="faq-videoUrl"
+                >
+                  Lien vidéo YouTube
+                </label>
+                <input
+                  id="faq-videoUrl"
+                  name="videoUrl"
+                  type="url"
+                  required
+                  value={faqFormValues.videoUrl}
+                  onChange={handleFAQChange('videoUrl')}
+                  placeholder="https://youtu.be/..."
+                  className="w-full rounded-2xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-700 focus:ring-2 focus:ring-gray-700"
+                />
+                <p className="text-xs text-gray-400">
+                  Collez le lien de votre vidéo de réponse
+                </p>
+              </div>
+
+              {faqError && (
+                <div className="rounded-2xl border border-rose-900 bg-rose-900/30 px-4 py-3 text-sm text-rose-400">
+                  {faqError}
+                </div>
+              )}
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={handleCloseFAQModal}
+                  className="rounded-full border border-gray-700 px-6 py-3 text-sm font-semibold text-white transition hover:border-gray-600 hover:bg-gray-800"
+                  disabled={faqStatus === 'saving'}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={faqStatus === 'saving'}
+                  className="rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {faqStatus === 'saving' && 'Enregistrement...'}
+                  {faqStatus === 'saved' && '✓ Enregistrée'}
+                  {(faqStatus === 'idle' || faqStatus === 'error') && 'Publier la FAQ'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </RequireAuth>
   );
 }

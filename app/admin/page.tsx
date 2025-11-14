@@ -328,16 +328,6 @@ export default function AdminPage() {
                 Ajouter un contenu
               </button>
               <button
-                onClick={() => setActiveTab("faq")}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-                  activeTab === "faq"
-                    ? "bg-white text-black"
-                    : "border border-gray-700 text-white hover:border-gray-600"
-                }`}
-              >
-                📹 Ajouter Vidéo FAQ
-              </button>
-              <button
                 onClick={() => setActiveTab("engagement")}
                 className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
                   activeTab === "engagement"
