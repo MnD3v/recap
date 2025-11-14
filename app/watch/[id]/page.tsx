@@ -100,6 +100,7 @@ export default function WatchPage() {
 
   const playerRef = useRef<HTMLIFrameElement>(null);
   const trackingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const questionsLoadedRef = useRef(false);
 
   // Fetch tutorial data
   useEffect(() => {
@@ -222,11 +223,13 @@ export default function WatchPage() {
 
   // Fetch all public questions (comprehension) from all users for this tutorial
   useEffect(() => {
-    if (!tutorialId) return;
+    // Reset the ref when tutorialId changes
+    questionsLoadedRef.current = false;
+    
+    if (!tutorialId || questionsLoadedRef.current) return;
 
     const fetchAllPublicQuestions = async () => {
       try {
-        setLoadingPublicQuestions(true);
         const usersSnapshot = await getDocs(collection(db, 'users'));
         const allQuestions: UserQuestion[] = [];
 
@@ -260,9 +263,10 @@ export default function WatchPage() {
         // Sort by creation date (newest first)
         allQuestions.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
         setAllPublicQuestions(allQuestions);
+        setLoadingPublicQuestions(false);
+        questionsLoadedRef.current = true;
       } catch (error) {
         console.error('Erreur lors de la récupération des questions publiques:', error);
-      } finally {
         setLoadingPublicQuestions(false);
       }
     };
