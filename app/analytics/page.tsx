@@ -23,6 +23,7 @@ type StudentWatchSession = {
 type UserQuestion = {
   id: string;
   question: string;
+  type: 'comprehension' | 'incomprehension';
   createdAt: Date;
 };
 
@@ -86,6 +87,7 @@ export default function AnalyticsPage() {
             userQuestions[tutorialId].push({
               id: questionDoc.id,
               question: questionData.question,
+              type: questionData.type || 'comprehension',
               createdAt: questionData.createdAt?.toDate?.() || new Date(),
             });
           });
@@ -347,34 +349,76 @@ export default function AnalyticsPage() {
                             {isExpanded && hasQuestions && (
                               <tr key={`${sessionKey}-questions`}>
                                 <td colSpan={4} className="bg-gray-900 px-4 py-4">
-                                  <div className="rounded-2xl border border-gray-800 bg-black p-4">
-                                    <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                      Questions posées par l&apos;étudiant
-                                    </p>
-                                    <div className="space-y-2">
-                                      {session.questions!.map((q, index) => (
-                                        <div
-                                          key={q.id}
-                                          className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-3"
-                                        >
-                                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
-                                            {index + 1}
-                                          </span>
-                                          <div className="flex-1">
-                                            <p className="text-sm text-white">{q.question}</p>
-                                            <p className="mt-1 text-xs text-gray-400">
-                                              {q.createdAt.toLocaleDateString('fr-FR', {
-                                                day: '2-digit',
-                                                month: 'short',
-                                                year: 'numeric',
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                              })}
-                                            </p>
-                                          </div>
+                                  <div className="space-y-4">
+                                    {/* Questions de compréhension */}
+                                    {session.questions!.filter(q => q.type === 'comprehension').length > 0 && (
+                                      <div className="rounded-2xl border border-gray-800 bg-black p-4">
+                                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-400">
+                                          📚 Ce que l&apos;étudiant a compris
+                                        </p>
+                                        <div className="space-y-2">
+                                          {session.questions!
+                                            .filter(q => q.type === 'comprehension')
+                                            .map((q, index) => (
+                                              <div
+                                                key={q.id}
+                                                className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-3"
+                                              >
+                                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                                                  {index + 1}
+                                                </span>
+                                                <div className="flex-1">
+                                                  <p className="text-sm text-white">{q.question}</p>
+                                                  <p className="mt-1 text-xs text-gray-400">
+                                                    {q.createdAt.toLocaleDateString('fr-FR', {
+                                                      day: '2-digit',
+                                                      month: 'short',
+                                                      year: 'numeric',
+                                                      hour: '2-digit',
+                                                      minute: '2-digit',
+                                                    })}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            ))}
                                         </div>
-                                      ))}
-                                    </div>
+                                      </div>
+                                    )}
+
+                                    {/* Questions d'incompréhension */}
+                                    {session.questions!.filter(q => q.type === 'incomprehension').length > 0 && (
+                                      <div className="rounded-2xl border border-red-900/30 bg-black p-4">
+                                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-red-400">
+                                          ❓ Questions d&apos;incompréhension
+                                        </p>
+                                        <div className="space-y-2">
+                                          {session.questions!
+                                            .filter(q => q.type === 'incomprehension')
+                                            .map((q, index) => (
+                                              <div
+                                                key={q.id}
+                                                className="flex gap-3 rounded-xl border border-red-900/50 bg-red-950/30 p-3"
+                                              >
+                                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                                                  {index + 1}
+                                                </span>
+                                                <div className="flex-1">
+                                                  <p className="text-sm text-white">{q.question}</p>
+                                                  <p className="mt-1 text-xs text-gray-400">
+                                                    {q.createdAt.toLocaleDateString('fr-FR', {
+                                                      day: '2-digit',
+                                                      month: 'short',
+                                                      year: 'numeric',
+                                                      hour: '2-digit',
+                                                      minute: '2-digit',
+                                                    })}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            ))}
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 </td>
                               </tr>
