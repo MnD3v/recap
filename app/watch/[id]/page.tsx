@@ -319,7 +319,8 @@ export default function WatchPage() {
     return (
       <RequireAuth>
         <div className="flex min-h-screen items-center justify-center bg-black">
-          <div className="text-center">
+          <div className="text-center animate-fade-in">
+            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-gray-800 border-t-indigo-500"></div>
             <p className="text-lg font-semibold text-white">
               Chargement du tutoriel...
             </p>
@@ -347,8 +348,8 @@ export default function WatchPage() {
   return (
     <RequireAuth>
       <div className="min-h-screen bg-black">
-        <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-          <div>
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 animate-fade-in">
+          <div className="animate-slide-in-left">
             <h1 className="text-2xl font-semibold text-white">
               {tutorial.title}
             </h1>
@@ -362,7 +363,7 @@ export default function WatchPage() {
         <main className="mx-auto w-full max-w-6xl px-2 md:px-6 pb-24">
           <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
             {/* Video Player */}
-            <section className="rounded-3xl border border-gray-800 bg-black p-3 md:p-6 shadow-sm">
+            <section className="rounded-3xl border border-gray-800 bg-black p-3 md:p-6 shadow-sm animate-scale-in">
               <div className="aspect-video rounded-2xl bg-gray-900">
                 {videoId ? (
                   <iframe
@@ -393,7 +394,7 @@ export default function WatchPage() {
 
               {/* Video Info */}
               <div className="mt-8 space-y-4">
-                <div>
+                <div className="animate-fade-in stagger-1">
                   <h2 className="text-2xl font-semibold text-white">
                     {tutorial.title}
                   </h2>
@@ -403,7 +404,7 @@ export default function WatchPage() {
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-gray-800 bg-black p-4">
+                <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-2 hover-lift">
                   <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                     Votre progression
                   </p>
@@ -416,7 +417,7 @@ export default function WatchPage() {
                 </div>
 
                 {/* Questions Section */}
-                <div className="rounded-2xl border border-gray-800 bg-black p-4">
+                <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-3">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
@@ -428,7 +429,7 @@ export default function WatchPage() {
                     </div>
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                      className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition-smooth hover:bg-indigo-700 hover:scale-105"
                     >
                       + Ajouter
                     </button>
@@ -443,7 +444,8 @@ export default function WatchPage() {
                       {userQuestions.map((q, index) => (
                         <div
                           key={q.id}
-                          className="rounded-xl border border-gray-800 bg-gray-900 p-3"
+                          className="rounded-xl border border-gray-800 bg-gray-900 p-3 animate-fade-in hover-lift"
+                          style={{ animationDelay: `${0.1 + index * 0.05}s`, opacity: 0, animationFillMode: 'forwards' }}
                         >
                           <div className="flex gap-3">
                             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
@@ -453,7 +455,7 @@ export default function WatchPage() {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleEditQuestion(q.id, q.question)}
-                                className="rounded-lg border border-gray-700 bg-gray-800 p-1.5 text-gray-300 transition hover:border-gray-600 hover:bg-gray-700 hover:text-white"
+                                className="rounded-lg border border-gray-700 bg-gray-800 p-1.5 text-gray-300 transition-smooth hover:border-gray-600 hover:bg-gray-700 hover:text-white hover:scale-110"
                                 title="Modifier"
                               >
                                 <svg
@@ -472,7 +474,7 @@ export default function WatchPage() {
                               </button>
                               <button
                                 onClick={() => setDeletingQuestion({ id: q.id, question: q.question })}
-                                className="rounded-lg border border-red-900/50 bg-red-950 p-1.5 text-red-400 transition hover:border-red-800 hover:bg-red-900 hover:text-red-300"
+                                className="rounded-lg border border-red-900/50 bg-red-950 p-1.5 text-red-400 transition-smooth hover:border-red-800 hover:bg-red-900 hover:text-red-300 hover:scale-110"
                                 title="Supprimer"
                               >
                                 <svg
@@ -510,7 +512,7 @@ export default function WatchPage() {
 
             {/* Sidebar Info */}
             <aside className="space-y-4">
-              <div className="rounded-2xl border border-gray-800 bg-black p-6 shadow-sm">
+              <div className="rounded-2xl border border-gray-800 bg-black p-6 shadow-sm animate-slide-in-right hover-lift">
                 <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                   À propos
                 </p>
@@ -532,7 +534,7 @@ export default function WatchPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-gray-700 bg-black p-6 shadow-sm">
+              <div className="rounded-2xl border border-gray-700 bg-black p-6 shadow-sm animate-slide-in-right stagger-1 hover-lift">
                 <p className="text-xs font-semibold uppercase tracking-widest text-gray-300">
                   💡 Info
                 </p>
@@ -545,7 +547,7 @@ export default function WatchPage() {
 
           {/* Other Tutorials Section */}
           {otherTutorials.length > 0 && (
-            <section className="mt-16">
+            <section className="mt-16 animate-fade-in">
               <div className="mb-8">
                 <h2 className="text-2xl font-semibold text-white">
                   Autres tutoriels disponibles
@@ -556,10 +558,11 @@ export default function WatchPage() {
               </div>
 
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {otherTutorials.map((item) => (
+                {otherTutorials.map((item, index) => (
                   <article
                     key={item.id}
-                    className="group relative overflow-hidden rounded-3xl border border-gray-800 bg-black p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
+                    className="group relative overflow-hidden rounded-3xl border border-gray-800 bg-black p-6 hover-lift animate-scale-in"
+                    style={{ animationDelay: `${0.1 + index * 0.1}s`, opacity: 0, animationFillMode: 'forwards' }}
                   >
                     <div
                       className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"
