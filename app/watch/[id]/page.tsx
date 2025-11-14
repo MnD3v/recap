@@ -6,6 +6,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   deleteDoc,
   updateDoc,
@@ -13,6 +14,7 @@ import {
   query,
   orderBy,
   onSnapshot,
+  addDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { RequireAuth } from '@/components/RequireAuth';
@@ -43,6 +45,18 @@ type UserQuestion = {
   question: string;
   createdAt: Timestamp;
   type?: 'comprehension' | 'incomprehension'; // comprehension = pour les autres, incomprehension = personnelle
+  userName?: string; // Nom de l'étudiant qui a posé la question
+  userEmail?: string; // Email de l'étudiant
+};
+
+type QuestionResponse = {
+  id: string;
+  questionId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  response: string;
+  createdAt: Timestamp;
 };
 
 type VideoFAQ = {
@@ -69,11 +83,15 @@ export default function WatchPage() {
   const [videoId, setVideoId] = useState<string | null>(null);
   const [otherTutorials, setOtherTutorials] = useState<Tutorial[]>([]);
   const [userQuestions, setUserQuestions] = useState<UserQuestion[]>([]);
+  const [allPublicQuestions, setAllPublicQuestions] = useState<UserQuestion[]>([]);
+  const [questionResponses, setQuestionResponses] = useState<Record<string, QuestionResponse[]>>({});
   const [videoFAQs, setVideoFAQs] = useState<VideoFAQ[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionType, setQuestionType] = useState<'comprehension' | 'incomprehension'>('comprehension');
   const [editingQuestion, setEditingQuestion] = useState<{ id: string; question: string } | null>(null);
   const [deletingQuestion, setDeletingQuestion] = useState<{ id: string; question: string } | null>(null);
+  const [respondingToQuestion, setRespondingToQuestion] = useState<string | null>(null);
+  const [responseText, setResponseText] = useState('');
 
   // Filtrer les questions par type
   const comprehensionQuestions = userQuestions.filter(q => q.type === 'comprehension' || !q.type);
@@ -201,6 +219,58 @@ export default function WatchPage() {
     return () => unsubscribe();
   }, [user, tutorialId]);
 
+  // Fetch all public questions (comprehension) from all users for this tutorial
+  useEffect(() => {
+    if (!tutorialId) return;
+
+    const fetchAllPublicQuestions = async () => {
+      try {
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        const allQuestions: UserQuestion[] = [];
+
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          const questionsSnapshot = await getDocs(
+            collection(db, `users/${userDoc.id}/questions`)
+          );
+
+          questionsSnapshot.docs.forEach((questionDoc) => {
+            const questionData = questionDoc.data();
+            // Only include comprehension questions for this tutorial
+            if (
+              questionData.tutorialId === tutorialId &&
+              (questionData.type === 'comprehension' || !questionData.type)
+            ) {
+              allQuestions.push({
+                id: questionDoc.id,
+                userId: userDoc.id,
+                tutorialId: questionData.tutorialId,
+                question: questionData.question,
+                type: 'comprehension',
+                createdAt: questionData.createdAt,
+                userName: userData.displayName || 'Étudiant',
+                userEmail: userData.email || '',
+              });
+            }
+          });
+        }
+
+        // Sort by creation date (newest first)
+        allQuestions.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+        setAllPublicQuestions(allQuestions);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des questions publiques:', error);
+      }
+    };
+
+    fetchAllPublicQuestions();
+
+    // Refresh every 30 seconds to get new questions
+    const intervalId = setInterval(fetchAllPublicQuestions, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [tutorialId]);
+
   // Fetch Video FAQs for this tutorial
   useEffect(() => {
     if (!tutorialId) return;
@@ -291,6 +361,73 @@ export default function WatchPage() {
     setIsModalOpen(false);
     setEditingQuestion(null);
     setQuestionType('comprehension');
+  };
+
+  const handleSubmitResponse = async (questionId: string, questionUserId: string) => {
+    if (!user || !responseText.trim()) return;
+
+    try {
+      const responseRef = collection(db, `users/${questionUserId}/questions/${questionId}/responses`);
+      await addDoc(responseRef, {
+        questionId,
+        userId: user.uid,
+        userName: user.displayName || 'Étudiant',
+        userEmail: user.email || '',
+        response: responseText.trim(),
+        createdAt: Timestamp.now(),
+      });
+
+      setResponseText('');
+      setRespondingToQuestion(null);
+      
+      // Refresh responses for this question
+      fetchResponsesForQuestion(questionId, questionUserId);
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la réponse:', error);
+    }
+  };
+
+  const fetchResponsesForQuestion = async (questionId: string, questionUserId: string) => {
+    try {
+      const responsesSnapshot = await getDocs(
+        collection(db, `users/${questionUserId}/questions/${questionId}/responses`)
+      );
+
+      const responses: QuestionResponse[] = responsesSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          questionId,
+          userId: data.userId,
+          userName: data.userName,
+          userEmail: data.userEmail,
+          response: data.response,
+          createdAt: data.createdAt,
+        };
+      });
+
+      responses.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
+
+      setQuestionResponses((prev) => ({
+        ...prev,
+        [questionId]: responses,
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des réponses:', error);
+    }
+  };
+
+  const toggleResponseSection = async (questionId: string, questionUserId: string) => {
+    if (respondingToQuestion === questionId) {
+      setRespondingToQuestion(null);
+      setResponseText('');
+    } else {
+      setRespondingToQuestion(questionId);
+      // Fetch responses if not already loaded
+      if (!questionResponses[questionId]) {
+        await fetchResponsesForQuestion(questionId, questionUserId);
+      }
+    }
   };
 
   // Track watch time every minute
@@ -700,6 +837,133 @@ export default function WatchPage() {
               </div>
             </aside>
           </div>
+
+          {/* Community Q&A Section */}
+          {allPublicQuestions.length > 0 && (
+            <section className="mt-16 animate-fade-in">
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-white">
+                  💬 Questions & Réponses de la communauté
+                </h2>
+                <p className="mt-2 text-sm text-gray-400">
+                  {allPublicQuestions.length} question(s) posée(s) par les étudiants · Participez à l&apos;entraide
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                {allPublicQuestions.map((question, index) => {
+                  const responses = questionResponses[question.id] || [];
+                  const isResponding = respondingToQuestion === question.id;
+                  
+                  return (
+                    <article
+                      key={question.id}
+                      className="rounded-3xl border border-gray-800 bg-black p-6 animate-scale-in hover-lift"
+                      style={{ animationDelay: `${0.05 + index * 0.05}s`, opacity: 0, animationFillMode: 'forwards' }}
+                    >
+                      {/* Question Header */}
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">
+                          {question.userName?.charAt(0) || 'E'}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-white">{question.userName}</p>
+                            <span className="text-xs text-gray-500">·</span>
+                            <p className="text-xs text-gray-400">
+                              {question.createdAt.toDate().toLocaleDateString('fr-FR', {
+                                day: '2-digit',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </p>
+                          </div>
+                          <p className="mt-2 text-base text-gray-200">{question.question}</p>
+                          
+                          {/* Action Button */}
+                          <button
+                            onClick={() => toggleResponseSection(question.id, question.userId)}
+                            className="mt-4 inline-flex items-center gap-2 rounded-full border border-indigo-900/50 bg-indigo-950 px-4 py-2 text-xs font-semibold text-indigo-400 transition hover:border-indigo-800 hover:bg-indigo-900"
+                          >
+                            💬 Répondre ({responses.length})
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Responses Section */}
+                      {isResponding && (
+                        <div className="mt-6 space-y-4 border-t border-gray-800 pt-6">
+                          {/* Existing Responses */}
+                          {responses.length > 0 && (
+                            <div className="space-y-3">
+                              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                {responses.length} réponse(s)
+                              </p>
+                              {responses.map((response) => (
+                                <div
+                                  key={response.id}
+                                  className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-4"
+                                >
+                                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-700 text-xs font-bold text-white">
+                                    {response.userName?.charAt(0) || 'U'}
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <p className="text-sm font-semibold text-white">{response.userName}</p>
+                                      <span className="text-xs text-gray-500">·</span>
+                                      <p className="text-xs text-gray-400">
+                                        {response.createdAt.toDate().toLocaleDateString('fr-FR', {
+                                          day: '2-digit',
+                                          month: 'short',
+                                          hour: '2-digit',
+                                          minute: '2-digit',
+                                        })}
+                                      </p>
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-300">{response.response}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Response Form */}
+                          <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
+                            <textarea
+                              value={responseText}
+                              onChange={(e) => setResponseText(e.target.value)}
+                              placeholder="Écrivez votre réponse..."
+                              rows={3}
+                              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-indigo-600"
+                            />
+                            <div className="mt-3 flex items-center justify-end gap-3">
+                              <button
+                                onClick={() => {
+                                  setRespondingToQuestion(null);
+                                  setResponseText('');
+                                }}
+                                className="rounded-full border border-gray-700 px-4 py-2 text-xs font-semibold text-gray-300 transition hover:border-gray-600 hover:bg-gray-800"
+                              >
+                                Annuler
+                              </button>
+                              <button
+                                onClick={() => handleSubmitResponse(question.id, question.userId)}
+                                disabled={!responseText.trim()}
+                                className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                Publier la réponse
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Video FAQs Section */}
           {videoFAQs.length > 0 && (
