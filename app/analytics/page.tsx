@@ -17,6 +17,13 @@ type StudentWatchSession = {
   totalMinutesWatched: number;
   lastUpdated: Date;
   userEmail: string;
+  questions?: UserQuestion[];
+};
+
+type UserQuestion = {
+  id: string;
+  question: string;
+  createdAt: Date;
 };
 
 type TutorialAnalytics = {
@@ -34,6 +41,19 @@ export default function AnalyticsPage() {
   const [tutorialAnalytics, setTutorialAnalytics] = useState<TutorialAnalytics[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'students' | 'tutorials'>('tutorials');
+  const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
+
+  const toggleSessionExpansion = (sessionKey: string) => {
+    setExpandedSessions((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(sessionKey)) {
+        newSet.delete(sessionKey);
+      } else {
+        newSet.add(sessionKey);
+      }
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -50,15 +70,38 @@ export default function AnalyticsPage() {
           const watchSessionsCollection = collection(userDoc.ref, 'watchSessions');
           const snapshot = await getDocs(watchSessionsCollection);
 
+          // Fetch user's questions
+          const questionsCollection = collection(userDoc.ref, 'questions');
+          const questionsSnapshot = await getDocs(questionsCollection);
+          const userQuestions: { [tutorialId: string]: UserQuestion[] } = {};
+
+          questionsSnapshot.docs.forEach((questionDoc) => {
+            const questionData = questionDoc.data();
+            const tutorialId = questionData.tutorialId;
+            
+            if (!userQuestions[tutorialId]) {
+              userQuestions[tutorialId] = [];
+            }
+
+            userQuestions[tutorialId].push({
+              id: questionDoc.id,
+              question: questionData.question,
+              createdAt: questionData.createdAt?.toDate?.() || new Date(),
+            });
+          });
+
           for (const sessionDoc of snapshot.docs) {
             const data = sessionDoc.data();
+            const tutorialId = sessionDoc.id;
+            
             allSessions.push({
               userId: userDoc.id,
-              tutorialId: sessionDoc.id,
+              tutorialId,
               tutorialTitle: data.tutorialTitle || 'Tutoriel sans titre',
               totalMinutesWatched: data.totalMinutesWatched || 0,
               lastUpdated: data.lastUpdated?.toDate?.() || new Date(),
               userEmail: userDoc.id,
+              questions: userQuestions[tutorialId] || [],
             });
           }
         }
@@ -110,8 +153,8 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <RequireAuth>
-        <div className="flex min-h-screen items-center justify-center bg-slate-50">
-          <p className="text-lg font-semibold text-slate-900">
+        <div className="flex min-h-screen items-center justify-center bg-black">
+          <p className="text-lg font-semibold text-white">
             Chargement des analyses...
           </p>
         </div>
@@ -121,19 +164,19 @@ export default function AnalyticsPage() {
 
   return (
     <RequireAuth>
-      <div className="min-h-screen bg-slate-50 pb-24">
+      <div className="min-h-screen bg-black pb-24">
         <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-8">
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900">
+            <h1 className="text-3xl font-semibold text-white">
               Tableau de bord d&apos;engagement
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-gray-400">
               Suivi du temps de visionnage par tutoriel et étudiant
             </p>
           </div>
           <button
             onClick={() => router.push('/admin')}
-            className="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-300"
+            className="rounded-full border border-gray-700 px-5 py-2 text-sm font-semibold text-white transition hover:border-gray-600"
           >
             Administration
           </button>
@@ -141,13 +184,13 @@ export default function AnalyticsPage() {
 
         <main className="mx-auto w-full max-w-6xl px-6">
           {/* Tabs */}
-          <div className="mb-6 flex gap-4 border-b border-slate-200">
+          <div className="mb-6 flex gap-4 border-b border-gray-800">
             <button
               onClick={() => setActiveTab('tutorials')}
               className={`px-4 py-3 text-sm font-semibold transition ${
                 activeTab === 'tutorials'
-                  ? 'border-b-2 border-indigo-600 text-indigo-600'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'border-b-2 border-indigo-600 text-indigo-400'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               Analyseur tutoriels
@@ -156,8 +199,8 @@ export default function AnalyticsPage() {
               onClick={() => setActiveTab('students')}
               className={`px-4 py-3 text-sm font-semibold transition ${
                 activeTab === 'students'
-                  ? 'border-b-2 border-indigo-600 text-indigo-600'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'border-b-2 border-indigo-600 text-indigo-400'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               Suivi étudiants
@@ -166,16 +209,16 @@ export default function AnalyticsPage() {
 
           {/* Tutorials Tab */}
           {activeTab === 'tutorials' && (
-            <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-xl font-semibold text-slate-900">
+            <section className="rounded-3xl border border-gray-800 bg-gray-950 p-8 shadow-sm">
+              <h2 className="text-xl font-semibold text-white">
                 Performance par tutoriel
               </h2>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-gray-400">
                 Vue d&apos;ensemble du temps moyen de visionnage par ressource
               </p>
 
               {tutorialAnalytics.length === 0 ? (
-                <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-12 text-center text-sm text-slate-500">
+                <div className="mt-8 rounded-2xl border border-dashed border-gray-700 bg-gray-900 px-6 py-12 text-center text-sm text-gray-400">
                   Aucune données d&apos;engagement pour le moment. Les tutoriels
                   apparaîtront ici lorsque les étudiants commenceront à les
                   visionner.
@@ -184,17 +227,17 @@ export default function AnalyticsPage() {
                 <div className="mt-6 overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">
+                      <tr className="border-b border-gray-800">
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-white">
                           Tutoriel
                         </th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                           Visualisations
                         </th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                           Temps moyen
                         </th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                           Total minutes
                         </th>
                       </tr>
@@ -203,18 +246,18 @@ export default function AnalyticsPage() {
                       {tutorialAnalytics.map((tutorial) => (
                         <tr
                           key={tutorial.tutorialId}
-                          className="border-b border-slate-200 transition hover:bg-slate-50"
+                          className="border-b border-gray-800 transition hover:bg-gray-900"
                         >
-                          <td className="px-4 py-4 text-sm font-medium text-slate-900">
+                          <td className="px-4 py-4 text-sm font-medium text-white">
                             {tutorial.tutorialTitle}
                           </td>
-                          <td className="px-4 py-4 text-right text-sm text-slate-600">
+                          <td className="px-4 py-4 text-right text-sm text-gray-300">
                             {tutorial.totalViewers}
                           </td>
-                          <td className="px-4 py-4 text-right text-sm font-semibold text-indigo-600">
+                          <td className="px-4 py-4 text-right text-sm font-semibold text-indigo-400">
                             {tutorial.averageWatchTime} min
                           </td>
-                          <td className="px-4 py-4 text-right text-sm text-slate-600">
+                          <td className="px-4 py-4 text-right text-sm text-gray-300">
                             {tutorial.totalViewMinutes} min
                           </td>
                         </tr>
@@ -228,62 +271,117 @@ export default function AnalyticsPage() {
 
           {/* Students Tab */}
           {activeTab === 'students' && (
-            <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-xl font-semibold text-slate-900">
+            <section className="rounded-3xl border border-gray-800 bg-gray-950 p-8 shadow-sm">
+              <h2 className="text-xl font-semibold text-white">
                 Suivi par étudiant
               </h2>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-gray-400">
                 Temps de visionnage enregistré pour chaque tutoriel par étudiant
               </p>
 
               {studentSessions.length === 0 ? (
-                <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-12 text-center text-sm text-slate-500">
+                <div className="mt-8 rounded-2xl border border-dashed border-gray-700 bg-gray-900 px-6 py-12 text-center text-sm text-gray-400">
                   Aucune session de visionnage enregistrée pour le moment.
                 </div>
               ) : (
                 <div className="mt-6 overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">
+                      <tr className="border-b border-gray-800">
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-white">
                           ID Étudiant
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-white">
                           Tutoriel
                         </th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                           Minutes visionnées
                         </th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-white">
                           Dernière mise à jour
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {studentSessions.map((session) => (
-                        <tr
-                          key={`${session.userId}-${session.tutorialId}`}
-                          className="border-b border-slate-200 transition hover:bg-slate-50"
-                        >
-                          <td className="px-4 py-4 text-sm font-mono text-slate-600">
-                            {session.userId.substring(0, 8)}...
-                          </td>
-                          <td className="px-4 py-4 text-sm text-slate-900">
-                            {session.tutorialTitle}
-                          </td>
-                          <td className="px-4 py-4 text-right text-sm font-semibold text-indigo-600">
-                            {session.totalMinutesWatched} min
-                          </td>
-                          <td className="px-4 py-4 text-right text-sm text-slate-600">
-                            {session.lastUpdated.toLocaleDateString('fr-FR', {
-                              day: '2-digit',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </td>
-                        </tr>
-                      ))}
+                      {studentSessions.map((session) => {
+                        const sessionKey = `${session.userId}-${session.tutorialId}`;
+                        const isExpanded = expandedSessions.has(sessionKey);
+                        const hasQuestions = session.questions && session.questions.length > 0;
+
+                        return (
+                          <>
+                            <tr
+                              key={sessionKey}
+                              className="border-b border-gray-800 transition hover:bg-gray-900"
+                            >
+                              <td className="px-4 py-4 text-sm font-mono text-gray-300">
+                                {session.userId.substring(0, 8)}...
+                              </td>
+                              <td className="px-4 py-4 text-sm text-white">
+                                {session.tutorialTitle}
+                              </td>
+                              <td className="px-4 py-4 text-right text-sm font-semibold text-indigo-400">
+                                {session.totalMinutesWatched} min
+                              </td>
+                              <td className="px-4 py-4 text-right">
+                                <div className="flex items-center justify-end gap-3">
+                                  <span className="text-sm text-gray-300">
+                                    {session.lastUpdated.toLocaleDateString('fr-FR', {
+                                      day: '2-digit',
+                                      month: 'short',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                    })}
+                                  </span>
+                                  {hasQuestions && (
+                                    <button
+                                      onClick={() => toggleSessionExpansion(sessionKey)}
+                                      className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-1 text-xs font-semibold text-gray-300 transition hover:border-gray-600 hover:bg-gray-700"
+                                    >
+                                      {isExpanded ? '▼' : '▶'} {session.questions!.length} question(s)
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                            {isExpanded && hasQuestions && (
+                              <tr key={`${sessionKey}-questions`}>
+                                <td colSpan={4} className="bg-gray-900 px-4 py-4">
+                                  <div className="rounded-2xl border border-gray-800 bg-black p-4">
+                                    <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                      Questions posées par l&apos;étudiant
+                                    </p>
+                                    <div className="space-y-2">
+                                      {session.questions!.map((q, index) => (
+                                        <div
+                                          key={q.id}
+                                          className="flex gap-3 rounded-xl border border-gray-800 bg-gray-900 p-3"
+                                        >
+                                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                                            {index + 1}
+                                          </span>
+                                          <div className="flex-1">
+                                            <p className="text-sm text-white">{q.question}</p>
+                                            <p className="mt-1 text-xs text-gray-400">
+                                              {q.createdAt.toLocaleDateString('fr-FR', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                              })}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
