@@ -146,9 +146,9 @@ export default function Home() {
   return (
     <RequireAuth>
       <div className="min-h-screen">
-        <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white">
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-8 animate-fade-in">
+          <div className="flex items-center gap-3 animate-slide-in-left">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white transition-smooth hover:scale-110">
               <span className="text-lg font-semibold text-black">R</span>
             </div>
             <div>
@@ -157,11 +157,11 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <nav className="hidden items-center gap-10 text-sm font-medium text-gray-300 md:flex">
-            <a className="transition hover:text-white" href="#tutorials">
+          <nav className="hidden items-center gap-10 text-sm font-medium text-gray-300 md:flex animate-slide-in-right">
+            <a className="transition-smooth hover:text-white hover:scale-105" href="#tutorials">
               Tutoriels
             </a>
-            <a className="transition hover:text-white" href="#experience">
+            <a className="transition-smooth hover:text-white hover:scale-105" href="#experience">
               Expérience
             </a>
             <span className="rounded-full border border-gray-600 px-4 py-2 text-xs font-semibold text-gray-300">
@@ -169,7 +169,7 @@ export default function Home() {
             </span>
             <button
               onClick={handleSignOut}
-              className="rounded-full bg-white px-5 py-2 text-black font-semibold shadow-lg transition hover:bg-gray-200"
+              className="rounded-full bg-white px-5 py-2 text-black font-semibold shadow-lg transition-smooth hover:bg-gray-200 hover:scale-105"
             >
               Se déconnecter
             </button>
@@ -180,9 +180,9 @@ export default function Home() {
         
           <section
             id="tutorials"
-            className="grid gap-8 rounded-[36px] border border-gray-700 bg-black p-4 md:p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)]"
+            className="grid gap-8 rounded-[36px] border border-gray-700 bg-black p-4 md:p-12 shadow-[0_32px_80px_rgba(0,0,0,0.3)] animate-scale-in"
           >
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between animate-fade-in stagger-1">
               <div>
            
                 <h2 className="text-3xl font-semibold text-white">
@@ -193,10 +193,11 @@ export default function Home() {
             </div>
             {hasTutorials ? (
               <div className="grid gap-6 md:grid-cols-3">
-                {tutorialCards.map((item) => (
+                {tutorialCards.map((item, index) => (
                   <article
                     key={item.id}
-                    className="group relative overflow-hidden rounded-3xl border border-gray-700 bg-black p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
+                    className="group relative overflow-hidden rounded-3xl border border-gray-700 bg-black p-6 hover-lift animate-fade-in"
+                    style={{ animationDelay: `${0.1 + index * 0.1}s`, opacity: 0, animationFillMode: 'forwards' }}
                   >
                     <div
                       className="absolute inset-x-0 top-0 h-32 opacity-0 transition group-hover:opacity-100"
