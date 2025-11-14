@@ -22,6 +22,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { getYouTubeVideoId, getYouTubeEmbedUrl } from '@/lib/youtube';
 import { AddQuestionModal } from '@/components/AddQuestionModal';
 import { DeleteQuestionModal } from '@/components/DeleteQuestionModal';
+import { EducationalLoader } from '@/components/EducationalLoader';
 
 type Tutorial = {
   id: string;
@@ -120,7 +121,6 @@ export default function WatchPage() {
 
   // Filtrer les questions par type
   const comprehensionQuestions = userQuestions.filter(q => q.type === 'comprehension' || !q.type);
-  const incomprehensionQuestions = userQuestions.filter(q => q.type === 'incomprehension');
 
   const playerRef = useRef<HTMLIFrameElement>(null);
   const trackingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -574,14 +574,7 @@ export default function WatchPage() {
   if (loading) {
     return (
       <RequireAuth>
-        <div className="flex min-h-screen items-center justify-center bg-black">
-          <div className="text-center animate-fade-in">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-gray-800 border-t-indigo-500"></div>
-            <p className="text-lg font-semibold text-white">
-              Chargement du tutoriel...
-            </p>
-          </div>
-        </div>
+        <EducationalLoader message="Chargement du tutoriel..." />
       </RequireAuth>
     );
   }
@@ -818,10 +811,45 @@ export default function WatchPage() {
 
               <div className="rounded-3xl border border-gray-800 bg-gray-950 p-12">
                 <div className="flex flex-col items-center justify-center text-center">
-                  <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-gray-800 border-t-indigo-500"></div>
+                  {/* Educational Mini Loader */}
+                  <div className="relative mb-6 h-16 w-16">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="relative h-14 w-12">
+                        <div 
+                          className="absolute left-0 top-0 h-full w-1/2 origin-right rounded-l-lg border-2 border-indigo-500 bg-gradient-to-br from-indigo-950 to-indigo-900"
+                          style={{
+                            animation: 'bookFlip 2s ease-in-out infinite',
+                            transformStyle: 'preserve-3d',
+                          }}
+                        ></div>
+                        <div 
+                          className="absolute right-0 top-0 h-full w-1/2 origin-left rounded-r-lg border-2 border-indigo-500 bg-gradient-to-bl from-indigo-950 to-indigo-900"
+                          style={{
+                            animation: 'bookFlip 2s ease-in-out infinite 1s',
+                            transformStyle: 'preserve-3d',
+                          }}
+                        ></div>
+                        <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-indigo-600"></div>
+                      </div>
+                    </div>
+                  </div>
                   <p className="text-sm text-gray-400">
                     Récupération des questions de la communauté...
                   </p>
+                  <div className="mt-4 flex items-center justify-center gap-2">
+                    <div 
+                      className="h-1.5 w-1.5 rounded-full bg-indigo-500"
+                      style={{ animation: 'dotPulse 1.5s ease-in-out infinite' }}
+                    ></div>
+                    <div 
+                      className="h-1.5 w-1.5 rounded-full bg-indigo-500"
+                      style={{ animation: 'dotPulse 1.5s ease-in-out infinite 0.3s' }}
+                    ></div>
+                    <div 
+                      className="h-1.5 w-1.5 rounded-full bg-indigo-500"
+                      style={{ animation: 'dotPulse 1.5s ease-in-out infinite 0.6s' }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             </section>

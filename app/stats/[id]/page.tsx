@@ -6,6 +6,7 @@ import { addDoc, collection, doc, getDoc, getDocs, Timestamp } from 'firebase/fi
 import { db } from '@/lib/firebase';
 import { RequireAuth } from '@/components/RequireAuth';
 import { useAuth } from '@/components/AuthProvider';
+import { EducationalLoader } from '@/components/EducationalLoader';
 
 type Tutorial = {
   id: string;
@@ -227,11 +228,7 @@ export default function StatsPage() {
   if (loading) {
     return (
       <RequireAuth>
-        <div className="flex min-h-screen items-center justify-center bg-black">
-          <p className="text-lg font-semibold text-white">
-            Chargement des statistiques...
-          </p>
-        </div>
+        <EducationalLoader message="Chargement des statistiques..." />
       </RequireAuth>
     );
   }
