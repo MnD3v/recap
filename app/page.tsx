@@ -12,6 +12,7 @@ import { signOut } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
+import { NotificationBell } from "@/components/NotificationBell";
 
 type Tutorial = {
   id: string;
@@ -157,13 +158,14 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <nav className="hidden items-center gap-10 text-sm font-medium text-gray-300 md:flex animate-slide-in-right">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-gray-300 md:flex animate-slide-in-right">
             <a className="transition-smooth hover:text-white hover:scale-105" href="#tutorials">
               Tutoriels
             </a>
             <a className="transition-smooth hover:text-white hover:scale-105" href="#experience">
               Expérience
             </a>
+            <NotificationBell />
             <span className="rounded-full border border-gray-600 px-4 py-2 text-xs font-semibold text-gray-300">
               {user?.displayName ?? user?.email}
             </span>

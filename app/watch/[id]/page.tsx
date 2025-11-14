@@ -367,6 +367,7 @@ export default function WatchPage() {
     if (!user || !responseText.trim()) return;
 
     try {
+      // Add the response
       const responseRef = collection(db, `users/${questionUserId}/questions/${questionId}/responses`);
       await addDoc(responseRef, {
         questionId,
@@ -376,6 +377,24 @@ export default function WatchPage() {
         response: responseText.trim(),
         createdAt: Timestamp.now(),
       });
+
+      // Create notification for the question owner (only if not responding to own question)
+      if (questionUserId !== user.uid) {
+        const notificationRef = collection(db, `users/${questionUserId}/notifications`);
+        await addDoc(notificationRef, {
+          userId: questionUserId,
+          type: 'response',
+          title: 'Nouvelle réponse à votre question',
+          message: `${user.displayName || 'Un étudiant'} a répondu à votre question sur "${tutorial?.title || 'ce tutoriel'}"`,
+          questionId,
+          tutorialId,
+          tutorialTitle: tutorial?.title || 'Tutoriel',
+          responderId: user.uid,
+          responderName: user.displayName || 'Étudiant',
+          isRead: false,
+          createdAt: Timestamp.now(),
+        });
+      }
 
       setResponseText('');
       setRespondingToQuestion(null);
@@ -935,7 +954,7 @@ export default function WatchPage() {
                               onChange={(e) => setResponseText(e.target.value)}
                               placeholder="Écrivez votre réponse..."
                               rows={3}
-                              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-indigo-600"
+                              className="w-full rounded-sm border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-gray-600 focus:ring-2 focus:ring-indigo-600"
                             />
                             <div className="mt-3 flex items-center justify-end gap-3">
                               <button
