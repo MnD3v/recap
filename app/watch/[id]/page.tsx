@@ -42,6 +42,7 @@ type UserQuestion = {
   tutorialId: string;
   question: string;
   createdAt: Timestamp;
+  type?: 'comprehension' | 'incomprehension'; // comprehension = pour les autres, incomprehension = personnelle
 };
 
 const TRACKING_INTERVAL_MS = 60000; // 1 minute
@@ -59,8 +60,13 @@ export default function WatchPage() {
   const [otherTutorials, setOtherTutorials] = useState<Tutorial[]>([]);
   const [userQuestions, setUserQuestions] = useState<UserQuestion[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [questionType, setQuestionType] = useState<'comprehension' | 'incomprehension'>('comprehension');
   const [editingQuestion, setEditingQuestion] = useState<{ id: string; question: string } | null>(null);
   const [deletingQuestion, setDeletingQuestion] = useState<{ id: string; question: string } | null>(null);
+
+  // Filtrer les questions par type
+  const comprehensionQuestions = userQuestions.filter(q => q.type === 'comprehension' || !q.type);
+  const incomprehensionQuestions = userQuestions.filter(q => q.type === 'incomprehension');
 
   const playerRef = useRef<HTMLIFrameElement>(null);
   const trackingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -157,7 +163,7 @@ export default function WatchPage() {
     const unsubscribe = onSnapshot(
       questionsQuery,
       (snapshot) => {
-        const questions: UserQuestion[] = snapshot.docs
+        const questions = snapshot.docs
           .map((doc) => {
             const data = doc.data();
             if (data.tutorialId === tutorialId) {
@@ -166,8 +172,9 @@ export default function WatchPage() {
                 userId: data.userId,
                 tutorialId: data.tutorialId,
                 question: data.question,
+                type: (data.type || 'comprehension') as 'comprehension' | 'incomprehension', // Par défaut, les anciennes questions sont de type comprehension
                 createdAt: data.createdAt,
-              };
+              } as UserQuestion;
             }
             return null;
           })
@@ -201,6 +208,7 @@ export default function WatchPage() {
           userId: user.uid,
           tutorialId,
           question,
+          type: questionType,
           createdAt: Timestamp.now(),
         });
       }
@@ -210,8 +218,9 @@ export default function WatchPage() {
     }
   };
 
-  const handleEditQuestion = (questionId: string, questionText: string) => {
+  const handleEditQuestion = (questionId: string, questionText: string, type: 'comprehension' | 'incomprehension') => {
     setEditingQuestion({ id: questionId, question: questionText });
+    setQuestionType(type);
     setIsModalOpen(true);
   };
 
@@ -230,6 +239,7 @@ export default function WatchPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingQuestion(null);
+    setQuestionType('comprehension');
   };
 
   // Track watch time every minute
@@ -406,36 +416,35 @@ export default function WatchPage() {
 
               
 
-                {/* Questions Section */}
-                <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-3">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div>
-                      <h2 className='text-xl font-semibold text-white'>Vous avez terminez ? Comportez vous en enseignant.</h2>
-                     <div className=' max-w-2/3'>
-                     <p className="text-sm   text-white">
-                        Posez des questions, des questions qui aideront les autres étudiants à comprendre le contenu.
+                  {/* Questions Section - Compréhension */}
+                  <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-3">
+                    <div className="mb-4">
+                      <h2 className='text-xl font-semibold text-white'>Ce que vous avez compris</h2>
+                      <p className="mt-2 text-sm text-white">
+                        Formulez des questions pour les autres étudiants.
                       </p>
-                     </div>
                       <p className="mt-1 text-sm text-gray-500">
-                        {userQuestions.length}/4 questions minimum
+                        {comprehensionQuestions.length}/4 questions minimum
                       </p>
                     </div>
                    
-                  </div>
                   <button
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => {
+                        setQuestionType('comprehension');
+                        setIsModalOpen(true);
+                      }}
                       className="rounded-full bg-indigo-600 px-4 py-2 my-3 text-xs font-semibold text-white transition-smooth hover:bg-indigo-700 hover:scale-105"
                     >
                       + Ajouter une question
                     </button>
 
-                  {userQuestions.length === 0 ? (
+                  {comprehensionQuestions.length === 0 ? (
                     <p className="text-sm text-gray-500">
                       Aucune question ajoutée pour le moment
                     </p>
                   ) : (
                     <div className="space-y-2">
-                      {userQuestions.map((q, index) => (
+                      {comprehensionQuestions.map((q, index) => (
                         <div
                           key={q.id}
                           className="rounded-xl border border-gray-800 bg-gray-900 p-3 animate-fade-in hover-lift"
@@ -448,7 +457,7 @@ export default function WatchPage() {
                             <p className="flex-1 text-sm text-gray-200">{q.question}</p>
                             <div className="flex gap-2">
                               <button
-                                onClick={() => handleEditQuestion(q.id, q.question)}
+                                onClick={() => handleEditQuestion(q.id, q.question, 'comprehension')}
                                 className="rounded-lg border border-gray-700 bg-gray-800 p-1.5 text-gray-300 transition-smooth hover:border-gray-600 hover:bg-gray-700 hover:text-white hover:scale-110"
                                 title="Modifier"
                               >
@@ -492,14 +501,106 @@ export default function WatchPage() {
                     </div>
                   )}
 
-                  {userQuestions.length < 4 && (
+                  {comprehensionQuestions.length < 4 && (
                     <div className="mt-4 rounded-xl border border-yellow-900/30 bg-yellow-900/10 p-3">
                       <p className="text-xs text-yellow-400">
-                        💡 Ajoutez au moins {4 - userQuestions.length} question(s) supplémentaire(s) pour valider votre apprentissage
+                        💡 Ajoutez au moins {4 - comprehensionQuestions.length} question(s) supplémentaire(s) pour valider votre apprentissage
                       </p>
                     </div>
                   )}
                 </div>
+
+                {/* Questions Section - Incompréhension */}
+                <div className="rounded-2xl border border-red-900/30 bg-black p-4 animate-fade-in stagger-4">
+                  <div className="mb-4">
+                    <h2 className='text-xl font-semibold text-red-400'>Questions d&apos;incompréhension</h2>
+                    <p className="mt-2 text-sm text-white">
+                      Notez ce qui reste flou pour vous, vos interrogations personnelles.
+                    </p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {incomprehensionQuestions.length} question(s)
+                    </p>
+                  </div>
+                 
+                <button
+                    onClick={() => {
+                      setQuestionType('incomprehension');
+                      setIsModalOpen(true);
+                    }}
+                    className="rounded-full bg-red-600 px-4 py-2 my-3 text-xs font-semibold text-white transition-smooth hover:bg-red-700 hover:scale-105"
+                  >
+                    + Ajouter une question
+                  </button>
+
+                {incomprehensionQuestions.length === 0 ? (
+                  <p className="text-sm text-gray-500">
+                    Aucune question d&apos;incompréhension pour le moment
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {incomprehensionQuestions.map((q, index) => (
+                      <div
+                        key={q.id}
+                        className="rounded-xl border border-red-900/50 bg-red-950/30 p-3 animate-fade-in hover-lift"
+                        style={{ animationDelay: `${0.1 + index * 0.05}s`, opacity: 0, animationFillMode: 'forwards' }}
+                      >
+                        <div className="flex gap-3">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                            {index + 1}
+                          </span>
+                          <p className="flex-1 text-sm text-gray-200">{q.question}</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditQuestion(q.id, q.question, 'incomprehension')}
+                              className="rounded-lg border border-gray-700 bg-gray-800 p-1.5 text-gray-300 transition-smooth hover:border-gray-600 hover:bg-gray-700 hover:text-white hover:scale-110"
+                              title="Modifier"
+                            >
+                              <svg
+                                className="h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => setDeletingQuestion({ id: q.id, question: q.question })}
+                              className="rounded-lg border border-red-900/50 bg-red-950 p-1.5 text-red-400 transition-smooth hover:border-red-800 hover:bg-red-900 hover:text-red-300 hover:scale-110"
+                              title="Supprimer"
+                            >
+                              <svg
+                                className="h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-4 rounded-xl border border-blue-900/30 bg-blue-900/10 p-3">
+                  <p className="text-xs text-blue-400">
+                    💬 Ces questions sont personnelles et vous aideront à identifier vos points d&apos;amélioration
+                  </p>
+                </div>
+              </div>
                 <div className="rounded-2xl border border-gray-800 bg-black p-4 animate-fade-in stagger-2 hover-lift">
                   <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                     Votre progression
