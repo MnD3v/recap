@@ -1022,6 +1022,496 @@ p &#123;
                 </div>
               </div>
             </div>
+
+            {/* Other CSS Properties */}
+            <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <h3 className="mb-6 text-2xl font-bold">🔧 Autres propriétés CSS importantes</h3>
+              <p className="mb-8 text-gray-400">
+                Ces propriétés complètent votre boîte à outils CSS. Cliquez sur une propriété pour accéder à sa documentation complète sur MDN.
+              </p>
+              
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {/* Text-align */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/text-align"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">text-align</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Alignement horizontal du texte</p>
+                </a>
+
+                {/* Font-weight */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/font-weight"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">font-weight</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Épaisseur de la police</p>
+                </a>
+
+                {/* Font-family */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/font-family"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">font-family</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Type de police de caractères</p>
+                </a>
+
+                {/* Line-height */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/line-height"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">line-height</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Hauteur de ligne</p>
+                </a>
+
+                {/* Text-decoration */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/text-decoration"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">text-decoration</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Décoration du texte (soulignement, etc.)</p>
+                </a>
+
+                {/* Text-transform */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/text-transform"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">text-transform</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Transformation du texte (majuscules, etc.)</p>
+                </a>
+
+                {/* Opacity */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/opacity"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">opacity</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Transparence d'un élément</p>
+                </a>
+
+                {/* Box-shadow */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/box-shadow"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">box-shadow</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Ombre portée</p>
+                </a>
+
+                {/* Border-radius */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/border-radius"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">border-radius</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Coins arrondis</p>
+                </a>
+
+                {/* Cursor */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/cursor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">cursor</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Type de curseur au survol</p>
+                </a>
+
+                {/* Overflow */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/overflow"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">overflow</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Gestion du débordement de contenu</p>
+                </a>
+
+                {/* Z-index */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/z-index"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">z-index</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Ordre d'empilement des éléments</p>
+                </a>
+
+                {/* Transition */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/transition"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">transition</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Animation de transition</p>
+                </a>
+
+                {/* Transform */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/transform"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">transform</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Transformation 2D/3D</p>
+                </a>
+
+                {/* Animation */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/animation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">animation</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Animations CSS</p>
+                </a>
+
+                {/* Max-width */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/max-width"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">max-width</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Largeur maximale</p>
+                </a>
+
+                {/* Min-width */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/min-width"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">min-width</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Largeur minimale</p>
+                </a>
+
+                {/* Max-height */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/max-height"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">max-height</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Hauteur maximale</p>
+                </a>
+
+                {/* Min-height */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/min-height"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">min-height</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Hauteur minimale</p>
+                </a>
+
+                {/* Align-items */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/align-items"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">align-items</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Alignement vertical (flexbox)</p>
+                </a>
+
+                {/* Justify-content */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/justify-content"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">justify-content</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Alignement horizontal (flexbox)</p>
+                </a>
+
+                {/* Flex-direction */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/flex-direction"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">flex-direction</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Direction des éléments flex</p>
+                </a>
+
+                {/* Flex-wrap */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/flex-wrap"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">flex-wrap</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Retour à la ligne des éléments flex</p>
+                </a>
+
+                {/* Gap */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/gap"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">gap</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Espacement entre éléments (flex/grid)</p>
+                </a>
+
+                {/* Object-fit */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/object-fit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">object-fit</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Ajustement d'image/vidéo</p>
+                </a>
+
+                {/* Visibility */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/visibility"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">visibility</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Visibilité d'un élément</p>
+                </a>
+
+                {/* Vertical-align */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/vertical-align"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">vertical-align</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Alignement vertical (inline)</p>
+                </a>
+
+                {/* White-space */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/white-space"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">white-space</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Gestion des espaces blancs</p>
+                </a>
+
+                {/* Letter-spacing */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/letter-spacing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">letter-spacing</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Espacement entre les lettres</p>
+                </a>
+
+                {/* Word-spacing */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/word-spacing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-4 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <code className="font-mono text-sm font-bold text-[#ff2600]">word-spacing</code>
+                    <svg className="h-4 w-4 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">Espacement entre les mots</p>
+                </a>
+              </div>
+            </div>
           </div>
         )}
       </div>
