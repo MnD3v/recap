@@ -27,6 +27,7 @@ type Tutorial = {
 export default function Home() {
   const { user } = useAuth();
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const tutorialsQuery = query(
@@ -104,6 +105,7 @@ export default function Home() {
               </p>
             </div>
           </div>
+          {/* Desktop Navigation */}
           <nav className="hidden items-center gap-6 text-sm font-medium text-gray-300 md:flex animate-slide-in-right">
             <a className="transition-smooth hover:text-white hover:scale-105" href="#tutorials">
               Tutoriels
@@ -129,7 +131,117 @@ export default function Home() {
               Se déconnecter
             </button>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex items-center justify-center rounded-lg p-2 text-gray-300 transition hover:bg-gray-800 md:hidden"
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? (
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </header>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm md:hidden animate-fade-in">
+            <div className="flex h-full flex-col">
+              {/* Mobile Menu Header */}
+              <div className="flex items-center justify-between border-b border-gray-800 px-6 py-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white">
+                    <span className="text-lg font-semibold text-black">R</span>
+                  </div>
+                  <p className="text-xl font-semibold text-white">Recap</p>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-lg p-2 text-gray-300 transition hover:bg-gray-800"
+                  aria-label="Fermer le menu"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Mobile Menu Content */}
+              <nav className="flex flex-1 flex-col gap-2 overflow-y-auto p-6">
+                <a
+                  href="#tutorials"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-4 py-4 text-base font-medium text-gray-300 transition hover:bg-gray-800 hover:text-white"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Tutoriels
+                </a>
+
+                <a
+                  href="#experience"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-4 py-4 text-base font-medium text-gray-300 transition hover:bg-gray-800 hover:text-white"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Expérience
+                </a>
+
+                <a
+                  href="/resources"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-4 py-4 text-base font-medium text-gray-300 transition hover:bg-gray-800 hover:text-white"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Ressources
+                </a>
+
+                <div className="my-4 border-t border-gray-800"></div>
+
+                {/* User Info */}
+                <div className="rounded-xl border border-gray-800 bg-gray-900 px-4 py-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff2600] text-sm font-bold text-white">
+                      {user?.displayName?.charAt(0) ?? user?.email?.charAt(0) ?? 'U'}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-white">
+                        {user?.displayName ?? 'Utilisateur'}
+                      </p>
+                      <p className="text-xs text-gray-400">{user?.email}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    handleSignOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-4 text-base font-semibold text-black transition hover:bg-gray-200"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Se déconnecter
+                </button>
+              </nav>
+            </div>
+          </div>
+        )}
 
         <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 md:px-6 pb-24">
         
