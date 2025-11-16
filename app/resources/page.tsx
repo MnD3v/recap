@@ -16,8 +16,8 @@ const htmlTags: HTMLTag[] = [
   {
     name: '<div>',
     description: 'Conteneur de division',
-    usage: 'Utilisé pour regrouper et structurer des éléments. C\'est un conteneur bloc générique.',
-    example: '<div class="container">\n  <p>Contenu ici</p>\n</div>',
+    usage: 'La balise <div> est un conteneur bloc générique qui sert à regrouper et structurer d\'autres éléments HTML. Elle n\'a pas de signification sémantique particulière, mais elle est essentielle pour organiser votre page. Vous pouvez lui ajouter des attributs comme "class" (pour appliquer des styles CSS) ou "id" (pour identifier un élément unique). C\'est l\'une des balises les plus utilisées en HTML.',
+    example: '<div class="container">\n  <p>Contenu ici</p>\n</div>\n\n<!-- class="container" est un attribut -->\n<!-- qui permet de cibler cet élément en CSS -->',
     svg: (
       <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -29,8 +29,8 @@ const htmlTags: HTMLTag[] = [
   {
     name: '<p>',
     description: 'Paragraphe',
-    usage: 'Définit un paragraphe de texte. Crée automatiquement des marges avant et après.',
-    example: '<p>Ceci est un paragraphe de texte.</p>',
+    usage: 'La balise <p> définit un paragraphe de texte. Elle crée automatiquement des espaces (marges) avant et après le texte pour le séparer des autres éléments. C\'est la balise standard pour tout contenu textuel. Les navigateurs appliquent par défaut un espacement vertical entre les paragraphes pour améliorer la lisibilité.',
+    example: '<p>Ceci est un paragraphe de texte.</p>\n<p>Voici un second paragraphe.</p>\n\n<!-- Chaque <p> crée un bloc de texte -->\n<!-- avec des marges automatiques -->',
     svg: (
       <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M14 4.5V20M14 4.5C14 3.12 12.88 2 11.5 2H6.5C5.12 2 4 3.12 4 4.5C4 5.88 5.12 7 6.5 7H14M14 4.5C14 5.88 15.12 7 16.5 7C17.88 7 19 5.88 19 4.5C19 3.12 17.88 2 16.5 2H14" />
@@ -42,8 +42,8 @@ const htmlTags: HTMLTag[] = [
   {
     name: '<span>',
     description: 'Conteneur en ligne',
-    usage: 'Conteneur inline pour styliser une partie de texte sans créer de nouvelle ligne.',
-    example: '<p>Texte avec <span class="highlight">mise en évidence</span></p>',
+    usage: 'La balise <span> est un conteneur en ligne (inline) qui permet de styliser une portion de texte sans créer de nouvelle ligne ou de bloc. Contrairement à <div>, elle ne provoque pas de retour à la ligne. Elle est idéale pour appliquer des styles CSS à une partie spécifique d\'un texte, comme changer la couleur d\'un mot ou mettre en évidence une expression.',
+    example: '<p>Texte avec <span class="highlight">mise en évidence</span></p>\n\n<!-- L\'attribut class="highlight" permet -->\n<!-- d\'appliquer un style CSS spécifique -->\n<!-- uniquement à ce mot -->',
     svg: (
       <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />
@@ -81,8 +81,8 @@ const htmlTags: HTMLTag[] = [
   {
     name: '<a>',
     description: 'Lien hypertexte',
-    usage: 'Crée un lien cliquable vers une autre page ou ressource.',
-    example: '<a href="https://example.com">Cliquez ici</a>',
+    usage: 'La balise <a> (anchor = ancre) crée un lien hypertexte cliquable. L\'attribut "href" (hypertext reference) est obligatoire et contient l\'URL de destination. Vous pouvez créer des liens vers d\'autres pages web, des fichiers, des emails (mailto:), ou même des sections de la même page (#section). L\'attribut "target" permet de contrôler où s\'ouvre le lien (par exemple target="_blank" pour un nouvel onglet).',
+    example: '<a href="https://example.com">Cliquez ici</a>\n<a href="mailto:contact@site.com">Nous contacter</a>\n<a href="#section1">Aller à la section 1</a>\n\n<!-- href est l\'attribut qui définit -->\n<!-- la destination du lien -->',
     svg: (
       <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" strokeLinecap="round" strokeLinejoin="round" />
@@ -94,8 +94,8 @@ const htmlTags: HTMLTag[] = [
   {
     name: '<img>',
     description: 'Image',
-    usage: 'Insère une image. Nécessite l\'attribut src. Balise auto-fermante.',
-    example: '<img src="photo.jpg" alt="Description">',
+    usage: 'La balise <img> insère une image dans votre page. C\'est une balise auto-fermante (pas besoin de </img>). L\'attribut "src" (source) est obligatoire et contient le chemin vers l\'image. L\'attribut "alt" (texte alternatif) est fortement recommandé : il décrit l\'image pour l\'accessibilité et s\'affiche si l\'image ne charge pas. Vous pouvez aussi utiliser "width" et "height" pour définir les dimensions.',
+    example: '<img src="photo.jpg" alt="Description de l\'image">\n<img src="logo.png" alt="Logo" width="200">\n\n<!-- src = chemin de l\'image -->\n<!-- alt = description pour accessibilité -->',
     svg: (
       <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -125,8 +125,8 @@ const htmlTags: HTMLTag[] = [
   {
     name: '<input>',
     description: 'Champ de saisie',
-    usage: 'Permet à l\'utilisateur de saisir des données. Peut avoir différents types (text, email, password, etc.).',
-    example: '<input type="text" placeholder="Votre nom">\n<input type="email" placeholder="Email">',
+    usage: 'La balise <input> crée un champ de saisie interactif. C\'est une balise auto-fermante. L\'attribut "type" définit le type de données (text, email, password, number, date, etc.). L\'attribut "placeholder" affiche un texte d\'aide qui disparaît lors de la saisie. L\'attribut "name" identifie le champ lors de l\'envoi du formulaire. Vous pouvez aussi utiliser "required" pour rendre le champ obligatoire.',
+    example: '<input type="text" name="nom" placeholder="Votre nom">\n<input type="email" name="email" required>\n<input type="password" name="mdp">\n\n<!-- type définit le type de saisie -->\n<!-- name identifie le champ -->',
     svg: (
       <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="11" width="18" height="2" rx="1" />
@@ -148,6 +148,19 @@ const htmlTags: HTMLTag[] = [
       </svg>
     ),
     color: 'from-indigo-500 to-indigo-600'
+  },
+  {
+    name: '<form>',
+    description: 'Formulaire',
+    usage: 'La balise <form> est un conteneur qui regroupe des champs de saisie pour collecter des données utilisateur. L\'attribut "action" définit l\'URL où envoyer les données. L\'attribut "method" spécifie comment envoyer les données (GET ou POST). Tous les éléments <input>, <textarea>, <select> à l\'intérieur du formulaire seront envoyés ensemble lors de la soumission. C\'est essentiel pour créer des formulaires de contact, d\'inscription, de connexion, etc.',
+    example: '<form action="/submit" method="POST">\n  <input type="text" name="nom">\n  <input type="email" name="email">\n  <button type="submit">Envoyer</button>\n</form>\n\n<!-- action = URL de destination -->\n<!-- method = GET ou POST -->',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="4" y="4" width="16" height="16" rx="2" />
+        <path d="M8 10h8M8 14h5" strokeLinecap="round" />
+      </svg>
+    ),
+    color: 'from-purple-500 to-purple-600'
   }
 ];
 
@@ -385,7 +398,7 @@ export default function ResourcesPage() {
                           <code className="font-mono text-[#ff2600]">{tag.name}</code>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-400">
-                          {tag.name.includes('div') || tag.name.includes('p') || tag.name.includes('h') || tag.name.includes('ul') || tag.name.includes('section') ? 'Block' : 'Inline'}
+                          {tag.name.includes('div') || tag.name.includes('p') || tag.name.includes('h') || tag.name.includes('ul') || tag.name.includes('section') || tag.name.includes('form') ? 'Block' : 'Inline'}
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-300">{tag.description}</td>
                         <td className="px-4 py-4 text-sm">
@@ -790,6 +803,43 @@ function renderTagDemo(tagName: string) {
             <h3 className="mb-2 text-lg font-bold text-white">Nos services</h3>
             <p className="text-sm text-gray-300">Contenu de la deuxième section thématique...</p>
           </div>
+        </div>
+      );
+    case '<form>':
+      return (
+        <div className="rounded-lg border-2 border-purple-500 bg-purple-500/10 p-6">
+          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-white">Nom complet</label>
+              <input
+                type="text"
+                placeholder="Jean Dupont"
+                className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-2 text-white placeholder-gray-500 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-white">Email</label>
+              <input
+                type="email"
+                placeholder="jean@example.com"
+                className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-2 text-white placeholder-gray-500 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-white">Message</label>
+              <textarea
+                placeholder="Votre message..."
+                rows={3}
+                className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-2 text-white placeholder-gray-500 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-[#ff2600] px-6 py-3 font-semibold text-white transition hover:bg-[#ff4433]"
+            >
+              Envoyer le formulaire
+            </button>
+          </form>
         </div>
       );
     default:
