@@ -111,6 +111,9 @@ export default function Home() {
             <a className="transition-smooth hover:text-white hover:scale-105" href="#experience">
               Expérience
             </a>
+            <a className="transition-smooth hover:text-white hover:scale-105" href="/resources">
+              📚 Ressources
+            </a>
             <NotificationBell />
             <span className="rounded-full border border-gray-600 px-4 py-2 text-xs font-semibold text-gray-300">
               {user?.displayName ?? user?.email}
