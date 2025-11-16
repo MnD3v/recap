@@ -306,28 +306,35 @@ export default function ResourcesPage() {
               </div>
               <p className="text-gray-400">
                 HTML (HyperText Markup Language) est le langage de balisage standard pour créer des pages web.
-                Voici les balises fondamentales que tout développeur doit connaître.
+                Cliquez sur une balise pour accéder à sa documentation complète sur MDN.
               </p>
             </div>
 
             {/* Tags Grid */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {htmlTags.map((tag, index) => (
-                <Link
+                <a
                   key={tag.name}
-                  href={`/resources/${tag.name.replace(/[<>]/g, '')}`}
-                  className="group relative overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 p-6 text-left transition hover:border-gray-600 hover:scale-105"
+                  href={tag.mdnLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 p-6 text-left transition hover:border-[#ff2600] hover:scale-105"
                   style={{
                     animation: `scale-in 0.3s ease-out ${index * 0.05}s both`
                   }}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${tag.color} opacity-0 transition group-hover:opacity-10`}></div>
                   <div className="relative">
-                    <div className="mb-3 text-gray-400 group-hover:text-white transition">{tag.svg}</div>
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="text-gray-400 group-hover:text-white transition">{tag.svg}</div>
+                      <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
                     <h3 className="mb-2 font-mono text-lg font-bold text-[#ff2600]">{tag.name}</h3>
                     <p className="text-sm text-gray-400">{tag.description}</p>
                   </div>
-                </Link>
+                </a>
               ))}
             </div>
 
