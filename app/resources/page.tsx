@@ -212,8 +212,7 @@ const resources = [
         <path d="M12 22V13.5M12 13.5L3 6.5M12 13.5l9-7" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    category: 'CSS',
-    comingSoon: true
+    category: 'CSS'
   },
   {
     id: 'javascript-intro',
@@ -622,6 +621,405 @@ export default function ResourcesPage() {
                   <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
 &lt;main&gt;&lt;article&gt;...&lt;/article&gt;&lt;/main&gt;</pre>
                 </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* CSS Fundamentals Content */}
+        {selectedResource === 'css-fundamentals' && (
+          <div className="animate-fade-in">
+            <div className="mb-8 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <div className="mb-4 flex items-center gap-4">
+                <div className="text-[#ff2600]">
+                  <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2l9 4.5v7L12 22l-9-8.5v-7L12 2z" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 22V13.5M12 13.5L3 6.5M12 13.5l9-7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-bold">Les fondamentaux CSS</h2>
+              </div>
+              <p className="text-gray-400">
+                CSS (Cascading Style Sheets) permet de styliser vos pages HTML. Découvrez les propriétés essentielles pour créer des designs modernes et responsives.
+              </p>
+            </div>
+
+            {/* CSS Properties Grid */}
+            <div className="mb-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <h3 className="mb-6 text-2xl font-bold">🎨 Propriétés CSS essentielles</h3>
+              <p className="mb-8 text-gray-400">
+                Cliquez sur une propriété pour accéder à sa documentation complète sur MDN.
+              </p>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                {/* Color */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/color"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-red-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">color</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit la couleur du texte.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+color: #ff2600;
+color: rgb(255, 38, 0);</pre>
+                </a>
+
+                {/* Background-color */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/background-color"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-blue-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                          <rect x="4" y="4" width="16" height="16" rx="2" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">background-color</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit la couleur de fond d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+background-color: #000;
+background-color: transparent;</pre>
+                </a>
+
+                {/* Font-size */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/font-size"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-green-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M4 7V4h16v3M9 20h6M12 4v16" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">font-size</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit la taille de la police.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+font-size: 16px;
+font-size: 1.5rem;</pre>
+                </a>
+
+                {/* Margin */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/margin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-yellow-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="8" y="8" width="8" height="8" />
+                          <path d="M4 4h16v16H4z" strokeDasharray="2 2" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">margin</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit l'espace extérieur autour d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+margin: 20px;
+margin: 10px 20px;</pre>
+                </a>
+
+                {/* Padding */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/padding"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-purple-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="6" y="6" width="12" height="12" />
+                          <rect x="9" y="9" width="6" height="6" fill="currentColor" opacity="0.3" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">padding</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit l'espace intérieur d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+padding: 15px;
+padding: 10px 20px;</pre>
+                </a>
+
+                {/* Display */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/display"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-orange-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="7" height="7" />
+                          <rect x="14" y="3" width="7" height="7" />
+                          <rect x="3" y="14" width="7" height="7" />
+                          <rect x="14" y="14" width="7" height="7" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">display</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit le type d'affichage d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+display: block;
+display: flex;</pre>
+                </a>
+
+                {/* Width */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/width"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-pink-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="6" y="8" width="12" height="8" />
+                          <path d="M3 12h3M18 12h3" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">width</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit la largeur d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+width: 300px;
+width: 100%;</pre>
+                </a>
+
+                {/* Height */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/height"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-cyan-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="8" y="6" width="8" height="12" />
+                          <path d="M12 3v3M12 18v3" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">height</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit la hauteur d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+height: 200px;
+height: auto;</pre>
+                </a>
+
+                {/* Border */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/border"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-teal-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <rect x="6" y="6" width="12" height="12" rx="1" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">border</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Définit la bordure d'un élément.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+border: 1px solid #000;
+border-radius: 8px;</pre>
+                </a>
+
+                {/* Flexbox */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/CSS_Flexible_Box_Layout"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-indigo-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="6" width="4" height="12" />
+                          <rect x="10" y="6" width="4" height="12" />
+                          <rect x="17" y="6" width="4" height="12" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">flexbox</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Système de mise en page flexible et puissant.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+display: flex;
+justify-content: center;</pre>
+                </a>
+
+                {/* Grid */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/CSS_Grid_Layout"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-lime-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="7" height="7" />
+                          <rect x="14" y="3" width="7" height="7" />
+                          <rect x="3" y="14" width="7" height="7" />
+                          <rect x="14" y="14" width="7" height="7" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">grid</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Système de grille bidimensionnelle.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+display: grid;
+grid-template-columns: 1fr 1fr;</pre>
+                </a>
+
+                {/* Position */}
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/CSS/position"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-amber-400">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="8" y="8" width="8" height="8" />
+                          <path d="M4 4l4 4M20 4l-4 4M4 20l4-4M20 20l-4-4" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                      <code className="font-mono text-lg font-bold text-[#ff2600]">position</code>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Contrôle le positionnement des éléments.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+position: relative;
+position: absolute;</pre>
+                </a>
+              </div>
+            </div>
+
+            {/* CSS Selectors */}
+            <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <h3 className="mb-6 text-2xl font-bold">🎯 Sélecteurs CSS</h3>
+              <p className="mb-8 text-gray-400">
+                Les sélecteurs permettent de cibler les éléments HTML à styliser.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <div className="mb-3 flex items-center gap-3">
+                    <code className="font-mono text-lg font-bold text-[#ff2600]">Sélecteur d'élément</code>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Cible tous les éléments d'un type donné.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+p &#123;
+  color: blue;
+&#125;</pre>
+                </div>
+
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <div className="mb-3 flex items-center gap-3">
+                    <code className="font-mono text-lg font-bold text-[#ff2600]">Sélecteur de classe (.)</code>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Cible les éléments avec une classe spécifique.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+.ma-classe &#123;
+  font-size: 18px;
+&#125;</pre>
+                </div>
+
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <div className="mb-3 flex items-center gap-3">
+                    <code className="font-mono text-lg font-bold text-[#ff2600]">Sélecteur d'ID (#)</code>
+                  </div>
+                  <p className="mb-2 text-sm text-gray-300">Cible un élément avec un ID unique.</p>
+                  <pre className="mt-3 overflow-x-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+#mon-id &#123;
+  background: red;
+&#125;</pre>
+                </div>
               </div>
             </div>
           </div>
