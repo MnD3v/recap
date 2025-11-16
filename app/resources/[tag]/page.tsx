@@ -10,6 +10,8 @@ interface HTMLTag {
   example: string;
   svg: React.ReactNode;
   color: string;
+  mdnLink: string;
+  w3schoolsLink?: string;
 }
 
 const htmlTags: HTMLTag[] = [
@@ -348,6 +350,72 @@ export default function TagDetailPage() {
             </h2>
             <div className="rounded-xl border border-dashed border-gray-700 bg-gray-950/50 p-8">
               {renderTagDemo(tag.name)}
+            </div>
+          </div>
+
+          {/* External Resources */}
+          <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+            <h2 className="mb-6 flex items-center gap-3 text-2xl font-semibold text-white">
+              <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              Ressources externes
+            </h2>
+            <p className="mb-6 text-gray-400">
+              Pour approfondir vos connaissances sur cette balise, consultez ces ressources officielles :
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              {/* MDN Link */}
+              <a
+                href={tag.mdnLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-4 rounded-xl border border-gray-700 bg-gray-900/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+              >
+                <div className="flex-shrink-0">
+                  <svg className="h-12 w-12 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/>
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="mb-1 font-semibold text-white group-hover:text-[#ff2600] transition">
+                    MDN Web Docs
+                  </h3>
+                  <p className="text-sm text-gray-400">
+                    Documentation officielle de Mozilla
+                  </p>
+                </div>
+                <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+
+              {/* W3Schools Link */}
+              {tag.w3schoolsLink && (
+                <a
+                  href={tag.w3schoolsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 rounded-xl border border-gray-700 bg-gray-900/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <div className="flex-shrink-0">
+                    <svg className="h-12 w-12 text-green-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M0 0h24v24H0V0zm6.168 20.172a6.77 6.77 0 002.518.476c1.694 0 2.864-.675 3.601-1.938.737-1.263 1.105-3.032 1.105-5.307 0-2.274-.368-4.044-1.105-5.306-.737-1.263-1.907-1.895-3.601-1.895a6.77 6.77 0 00-2.518.476V20.172zM7.5 9.5c.414 0 .75.336.75.75v7.5c0 .414-.336.75-.75.75s-.75-.336-.75-.75v-7.5c0-.414.336-.75.75-.75zm9 0c.414 0 .75.336.75.75v7.5c0 .414-.336.75-.75.75s-.75-.336-.75-.75v-7.5c0-.414.336-.75.75-.75z"/>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="mb-1 font-semibold text-white group-hover:text-[#ff2600] transition">
+                      W3Schools
+                    </h3>
+                    <p className="text-sm text-gray-400">
+                      Tutoriels et exemples interactifs
+                    </p>
+                  </div>
+                  <svg className="h-5 w-5 text-gray-400 group-hover:text-[#ff2600] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
         </div>

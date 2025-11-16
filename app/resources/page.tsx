@@ -10,6 +10,8 @@ interface HTMLTag {
   example: string;
   svg: React.ReactNode;
   color: string;
+  mdnLink: string;
+  w3schoolsLink?: string;
 }
 
 const htmlTags: HTMLTag[] = [
@@ -24,7 +26,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M3 9h18M9 3v18" />
       </svg>
     ),
-    color: 'from-[#ff2600] to-[#ff4433]'
+    color: 'from-[#ff2600] to-[#ff4433]',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/div',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_div.asp'
   },
   {
     name: '<p>',
@@ -37,7 +41,9 @@ const htmlTags: HTMLTag[] = [
         <line x1="10" y1="20" x2="18" y2="20" strokeLinecap="round" />
       </svg>
     ),
-    color: 'from-blue-500 to-blue-600'
+    color: 'from-blue-500 to-blue-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/p',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_p.asp'
   },
   {
     name: '<span>',
@@ -50,7 +56,9 @@ const htmlTags: HTMLTag[] = [
         <rect x="15" y="14" width="6" height="6" rx="1" fill="currentColor" opacity="0.3" />
       </svg>
     ),
-    color: 'from-purple-500 to-purple-600'
+    color: 'from-purple-500 to-purple-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/span',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_span.asp'
   },
   {
     name: '<h1> à <h6>',
@@ -63,7 +71,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M17 9v10M20 12v7" strokeLinecap="round" opacity="0.5" />
       </svg>
     ),
-    color: 'from-green-500 to-green-600'
+    color: 'from-green-500 to-green-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/Heading_Elements',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_hn.asp'
   },
   {
     name: '<br>',
@@ -76,7 +86,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M15 15l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    color: 'from-yellow-500 to-yellow-600'
+    color: 'from-yellow-500 to-yellow-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/br',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_br.asp'
   },
   {
     name: '<a>',
@@ -89,7 +101,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    color: 'from-cyan-500 to-cyan-600'
+    color: 'from-cyan-500 to-cyan-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/a',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_a.asp'
   },
   {
     name: '<img>',
@@ -103,7 +117,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    color: 'from-pink-500 to-pink-600'
+    color: 'from-pink-500 to-pink-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/Img',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_img.asp'
   },
   {
     name: '<ul> <li>',
@@ -120,7 +136,9 @@ const htmlTags: HTMLTag[] = [
         <circle cx="4" cy="18" r="1" fill="currentColor" />
       </svg>
     ),
-    color: 'from-orange-500 to-orange-600'
+    color: 'from-orange-500 to-orange-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/ul',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_ul.asp'
   },
   {
     name: '<input>',
@@ -133,7 +151,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M7 11V9a2 2 0 012-2h6a2 2 0 012 2v2" strokeLinecap="round" />
       </svg>
     ),
-    color: 'from-green-500 to-emerald-600'
+    color: 'from-green-500 to-emerald-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/Input',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_input.asp'
   },
   {
     name: '<section>',
@@ -147,7 +167,9 @@ const htmlTags: HTMLTag[] = [
         <rect x="14" y="3" width="7" height="18" rx="1" />
       </svg>
     ),
-    color: 'from-indigo-500 to-indigo-600'
+    color: 'from-indigo-500 to-indigo-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/section',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_section.asp'
   },
   {
     name: '<form>',
@@ -160,7 +182,9 @@ const htmlTags: HTMLTag[] = [
         <path d="M8 10h8M8 14h5" strokeLinecap="round" />
       </svg>
     ),
-    color: 'from-purple-500 to-purple-600'
+    color: 'from-purple-500 to-purple-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/HTML/Element/form',
+    w3schoolsLink: 'https://www.w3schools.com/tags/tag_form.asp'
   }
 ];
 
