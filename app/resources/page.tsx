@@ -206,7 +206,6 @@ const resources = [
 ];
 
 export default function ResourcesPage() {
-  const [selectedTag, setSelectedTag] = useState<HTMLTag | null>(null);
   const [selectedResource, setSelectedResource] = useState<string>('html-basics');
 
   return (
@@ -290,9 +289,9 @@ export default function ResourcesPage() {
             {/* Tags Grid */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {htmlTags.map((tag, index) => (
-                <button
+                <Link
                   key={tag.name}
-                  onClick={() => setSelectedTag(tag)}
+                  href={`/resources/${tag.name.replace(/[<>]/g, '')}`}
                   className="group relative overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 p-6 text-left transition hover:border-gray-600 hover:scale-105"
                   style={{
                     animation: `scale-in 0.3s ease-out ${index * 0.05}s both`
@@ -304,76 +303,9 @@ export default function ResourcesPage() {
                     <h3 className="mb-2 font-mono text-lg font-bold text-[#ff2600]">{tag.name}</h3>
                     <p className="text-sm text-gray-400">{tag.description}</p>
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
-
-            {/* Selected Tag Detail */}
-            {selectedTag && (
-              <div className="mt-8 animate-fade-in rounded-2xl border border-[#ff2600] bg-gradient-to-br from-[#ff2600]/10 to-transparent p-8">
-                <div className="mb-6 flex items-start justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="text-[#ff2600] [&>svg]:h-16 [&>svg]:w-16">
-                      {selectedTag.svg}
-                    </div>
-                    <div>
-                      <h3 className="mb-1 font-mono text-3xl font-bold text-[#ff2600]">
-                        {selectedTag.name}
-                      </h3>
-                      <p className="text-xl text-gray-300">{selectedTag.description}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setSelectedTag(null)}
-                    className="rounded-full p-2 transition hover:bg-gray-800"
-                  >
-                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  {/* Usage */}
-                  <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
-                    <h4 className="mb-3 flex items-center gap-2 text-lg font-semibold text-white">
-                      <svg className="h-5 w-5 text-[#ff2600]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Utilisation
-                    </h4>
-                    <p className="text-gray-300">{selectedTag.usage}</p>
-                  </div>
-
-                  {/* Example */}
-                  <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
-                    <h4 className="mb-3 flex items-center gap-2 text-lg font-semibold text-white">
-                      <svg className="h-5 w-5 text-[#ff2600]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                      </svg>
-                      Exemple de code
-                    </h4>
-                    <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4">
-                      <code className="text-sm text-green-400">{selectedTag.example}</code>
-                    </pre>
-                  </div>
-                </div>
-
-                {/* Visual Demo */}
-                <div className="mt-6 rounded-xl border border-gray-700 bg-black/50 p-6">
-                  <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold text-white">
-                    <svg className="h-5 w-5 text-[#ff2600]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    Aperçu visuel
-                  </h4>
-                  <div className="rounded-lg border border-dashed border-gray-600 bg-gray-900/50 p-6">
-                    {renderTagDemo(selectedTag.name)}
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Quick Reference */}
             <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
