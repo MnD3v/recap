@@ -111,8 +111,12 @@ export default function Home() {
             <a className="transition-smooth hover:text-white hover:scale-105" href="#experience">
               Expérience
             </a>
-            <a className="transition-smooth hover:text-white hover:scale-105" href="/resources">
-              📚 Ressources
+            <a className="flex items-center gap-2 transition-smooth hover:text-white hover:scale-105" href="/resources">
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Ressources
             </a>
             <NotificationBell />
             <span className="rounded-full border border-gray-600 px-4 py-2 text-xs font-semibold text-gray-300">

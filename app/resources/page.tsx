@@ -8,7 +8,7 @@ interface HTMLTag {
   description: string;
   usage: string;
   example: string;
-  icon: string;
+  svg: React.ReactNode;
   color: string;
 }
 
@@ -18,7 +18,12 @@ const htmlTags: HTMLTag[] = [
     description: 'Conteneur de division',
     usage: 'Utilisé pour regrouper et structurer des éléments. C\'est un conteneur bloc générique.',
     example: '<div class="container">\n  <p>Contenu ici</p>\n</div>',
-    icon: '📦',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="M3 9h18M9 3v18" />
+      </svg>
+    ),
     color: 'from-[#ff2600] to-[#ff4433]'
   },
   {
@@ -26,7 +31,12 @@ const htmlTags: HTMLTag[] = [
     description: 'Paragraphe',
     usage: 'Définit un paragraphe de texte. Crée automatiquement des marges avant et après.',
     example: '<p>Ceci est un paragraphe de texte.</p>',
-    icon: '📝',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M14 4.5V20M14 4.5C14 3.12 12.88 2 11.5 2H6.5C5.12 2 4 3.12 4 4.5C4 5.88 5.12 7 6.5 7H14M14 4.5C14 5.88 15.12 7 16.5 7C17.88 7 19 5.88 19 4.5C19 3.12 17.88 2 16.5 2H14" />
+        <line x1="10" y1="20" x2="18" y2="20" strokeLinecap="round" />
+      </svg>
+    ),
     color: 'from-blue-500 to-blue-600'
   },
   {
@@ -34,7 +44,12 @@ const htmlTags: HTMLTag[] = [
     description: 'Conteneur en ligne',
     usage: 'Conteneur inline pour styliser une partie de texte sans créer de nouvelle ligne.',
     example: '<p>Texte avec <span class="highlight">mise en évidence</span></p>',
-    icon: '✨',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />
+        <rect x="15" y="14" width="6" height="6" rx="1" fill="currentColor" opacity="0.3" />
+      </svg>
+    ),
     color: 'from-purple-500 to-purple-600'
   },
   {
@@ -42,7 +57,12 @@ const htmlTags: HTMLTag[] = [
     description: 'Titres hiérarchiques',
     usage: 'Définit les titres de niveau 1 à 6. h1 est le plus important, h6 le moins.',
     example: '<h1>Titre principal</h1>\n<h2>Sous-titre</h2>\n<h3>Section</h3>',
-    icon: '📌',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 6v12M4 12h8M12 6v12" strokeLinecap="round" />
+        <path d="M17 9v10M20 12v7" strokeLinecap="round" opacity="0.5" />
+      </svg>
+    ),
     color: 'from-green-500 to-green-600'
   },
   {
@@ -50,7 +70,12 @@ const htmlTags: HTMLTag[] = [
     description: 'Saut de ligne',
     usage: 'Insère un saut de ligne simple. Balise auto-fermante.',
     example: 'Première ligne<br>\nDeuxième ligne',
-    icon: '↵',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 6h18M3 12h12M3 18h18" strokeLinecap="round" />
+        <path d="M15 15l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
     color: 'from-yellow-500 to-yellow-600'
   },
   {
@@ -58,7 +83,12 @@ const htmlTags: HTMLTag[] = [
     description: 'Lien hypertexte',
     usage: 'Crée un lien cliquable vers une autre page ou ressource.',
     example: '<a href="https://example.com">Cliquez ici</a>',
-    icon: '🔗',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
     color: 'from-cyan-500 to-cyan-600'
   },
   {
@@ -66,7 +96,13 @@ const htmlTags: HTMLTag[] = [
     description: 'Image',
     usage: 'Insère une image. Nécessite l\'attribut src. Balise auto-fermante.',
     example: '<img src="photo.jpg" alt="Description">',
-    icon: '🖼️',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+        <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
     color: 'from-pink-500 to-pink-600'
   },
   {
@@ -74,7 +110,16 @@ const htmlTags: HTMLTag[] = [
     description: 'Liste non ordonnée',
     usage: 'Crée une liste à puces. ul est le conteneur, li représente chaque élément.',
     example: '<ul>\n  <li>Premier élément</li>\n  <li>Deuxième élément</li>\n</ul>',
-    icon: '📋',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="8" y1="6" x2="21" y2="6" strokeLinecap="round" />
+        <line x1="8" y1="12" x2="21" y2="12" strokeLinecap="round" />
+        <line x1="8" y1="18" x2="21" y2="18" strokeLinecap="round" />
+        <circle cx="4" cy="6" r="1" fill="currentColor" />
+        <circle cx="4" cy="12" r="1" fill="currentColor" />
+        <circle cx="4" cy="18" r="1" fill="currentColor" />
+      </svg>
+    ),
     color: 'from-orange-500 to-orange-600'
   }
 ];
@@ -84,14 +129,25 @@ const resources = [
     id: 'html-basics',
     title: 'Les balises essentielles en HTML',
     description: 'Découvrez les balises HTML fondamentales avec des exemples pratiques',
-    icon: '🏷️',
+    icon: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 7l4-4 4 4M8 3v11" strokeLinecap="round" strokeLinejoin="round" />
+        <rect x="3" y="14" width="18" height="7" rx="1" />
+        <path d="M7 17h.01M12 17h.01M17 17h.01" strokeLinecap="round" />
+      </svg>
+    ),
     category: 'HTML'
   },
   {
     id: 'css-fundamentals',
     title: 'Les fondamentaux CSS',
     description: 'Maîtrisez les bases du CSS pour styliser vos pages web',
-    icon: '🎨',
+    icon: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2l9 4.5v7L12 22l-9-8.5v-7L12 2z" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 22V13.5M12 13.5L3 6.5M12 13.5l9-7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
     category: 'CSS',
     comingSoon: true
   },
@@ -99,7 +155,11 @@ const resources = [
     id: 'javascript-intro',
     title: 'Introduction à JavaScript',
     description: 'Apprenez les concepts de base de la programmation JavaScript',
-    icon: '⚡',
+    icon: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
     category: 'JavaScript',
     comingSoon: true
   }
@@ -123,7 +183,15 @@ export default function ResourcesPage() {
             </svg>
             Retour à l'accueil
           </Link>
-          <h1 className="text-4xl font-bold">📚 Ressources d'apprentissage</h1>
+          <div className="flex items-center gap-4">
+            <div className="text-[#ff2600]">
+              <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold">Ressources d'apprentissage</h1>
+          </div>
           <p className="mt-3 text-lg text-gray-400">
             Des guides et tutoriels pour maîtriser le développement web
           </p>
@@ -149,7 +217,7 @@ export default function ResourcesPage() {
                   Bientôt
                 </span>
               )}
-              <div className="mb-4 text-4xl">{resource.icon}</div>
+              <div className="mb-4 text-gray-400">{resource.icon}</div>
               <h3 className="mb-2 text-xl font-bold">{resource.title}</h3>
               <p className="text-sm text-gray-400">{resource.description}</p>
               <span className="mt-4 inline-block rounded-full bg-gray-800 px-3 py-1 text-xs font-semibold text-gray-300">
@@ -163,7 +231,16 @@ export default function ResourcesPage() {
         {selectedResource === 'html-basics' && (
           <div className="animate-fade-in">
             <div className="mb-8 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-              <h2 className="mb-4 text-3xl font-bold">🏷️ Les balises essentielles en HTML</h2>
+              <div className="mb-4 flex items-center gap-4">
+                <div className="text-[#ff2600]">
+                  <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 7l4-4 4 4M8 3v11" strokeLinecap="round" strokeLinejoin="round" />
+                    <rect x="3" y="14" width="18" height="7" rx="1" />
+                    <path d="M7 17h.01M12 17h.01M17 17h.01" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-bold">Les balises essentielles en HTML</h2>
+              </div>
               <p className="text-gray-400">
                 HTML (HyperText Markup Language) est le langage de balisage standard pour créer des pages web.
                 Voici les balises fondamentales que tout développeur doit connaître.
@@ -183,7 +260,7 @@ export default function ResourcesPage() {
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${tag.color} opacity-0 transition group-hover:opacity-10`}></div>
                   <div className="relative">
-                    <div className="mb-3 text-4xl">{tag.icon}</div>
+                    <div className="mb-3 text-gray-400 group-hover:text-white transition">{tag.svg}</div>
                     <h3 className="mb-2 font-mono text-lg font-bold text-[#ff2600]">{tag.name}</h3>
                     <p className="text-sm text-gray-400">{tag.description}</p>
                   </div>
@@ -196,7 +273,9 @@ export default function ResourcesPage() {
               <div className="mt-8 animate-fade-in rounded-2xl border border-[#ff2600] bg-gradient-to-br from-[#ff2600]/10 to-transparent p-8">
                 <div className="mb-6 flex items-start justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="text-5xl">{selectedTag.icon}</div>
+                    <div className="text-[#ff2600] [&>svg]:h-16 [&>svg]:w-16">
+                      {selectedTag.svg}
+                    </div>
                     <div>
                       <h3 className="mb-1 font-mono text-3xl font-bold text-[#ff2600]">
                         {selectedTag.name}
