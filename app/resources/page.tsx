@@ -121,6 +121,33 @@ const htmlTags: HTMLTag[] = [
       </svg>
     ),
     color: 'from-orange-500 to-orange-600'
+  },
+  {
+    name: '<input>',
+    description: 'Champ de saisie',
+    usage: 'Permet à l\'utilisateur de saisir des données. Peut avoir différents types (text, email, password, etc.).',
+    example: '<input type="text" placeholder="Votre nom">\n<input type="email" placeholder="Email">',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="11" width="18" height="2" rx="1" />
+        <path d="M7 11V9a2 2 0 012-2h6a2 2 0 012 2v2" strokeLinecap="round" />
+      </svg>
+    ),
+    color: 'from-green-500 to-emerald-600'
+  },
+  {
+    name: '<section>',
+    description: 'Section thématique',
+    usage: 'Définit une section thématique dans un document. Utilisé pour structurer le contenu de manière sémantique.',
+    example: '<section>\n  <h2>Titre de section</h2>\n  <p>Contenu...</p>\n</section>',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="18" rx="1" />
+      </svg>
+    ),
+    color: 'from-indigo-500 to-indigo-600'
   }
 ];
 
@@ -358,11 +385,11 @@ export default function ResourcesPage() {
                           <code className="font-mono text-[#ff2600]">{tag.name}</code>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-400">
-                          {tag.name.includes('div') || tag.name.includes('p') || tag.name.includes('h') || tag.name.includes('ul') ? 'Block' : 'Inline'}
+                          {tag.name.includes('div') || tag.name.includes('p') || tag.name.includes('h') || tag.name.includes('ul') || tag.name.includes('section') ? 'Block' : 'Inline'}
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-300">{tag.description}</td>
                         <td className="px-4 py-4 text-sm">
-                          {tag.name.includes('br') || tag.name.includes('img') ? (
+                          {tag.name.includes('br') || tag.name.includes('img') || tag.name.includes('input') ? (
                             <span className="inline-flex items-center gap-1 text-green-400">
                               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -713,6 +740,56 @@ function renderTagDemo(tagName: string) {
               Troisième élément de la liste
             </li>
           </ul>
+        </div>
+      );
+    case '<input>':
+      return (
+        <div className="space-y-4 rounded-lg bg-green-500/10 p-6">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-300">Champ texte</label>
+            <input
+              type="text"
+              placeholder="Entrez votre nom"
+              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-white placeholder-gray-500 outline-none transition focus:border-[#ff2600] focus:ring-2 focus:ring-[#ff2600]/50"
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-300">Champ email</label>
+            <input
+              type="email"
+              placeholder="votre@email.com"
+              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-white placeholder-gray-500 outline-none transition focus:border-[#ff2600] focus:ring-2 focus:ring-[#ff2600]/50"
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-300">Champ mot de passe</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-white placeholder-gray-500 outline-none transition focus:border-[#ff2600] focus:ring-2 focus:ring-[#ff2600]/50"
+            />
+          </div>
+        </div>
+      );
+    case '<section>':
+      return (
+        <div className="space-y-4">
+          <div className="rounded-lg border-2 border-indigo-500 bg-indigo-500/10 p-6">
+            <div className="mb-3 flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">Section 1</p>
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-white">À propos de nous</h3>
+            <p className="text-sm text-gray-300">Contenu de la première section thématique...</p>
+          </div>
+          <div className="rounded-lg border-2 border-purple-500 bg-purple-500/10 p-6">
+            <div className="mb-3 flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-purple-500"></div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-purple-400">Section 2</p>
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-white">Nos services</h3>
+            <p className="text-sm text-gray-300">Contenu de la deuxième section thématique...</p>
+          </div>
         </div>
       );
     default:
