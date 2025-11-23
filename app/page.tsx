@@ -199,7 +199,6 @@ export default function Home() {
                   </svg>
                   Expérience
                 </a>
-
                 <a
                   href="/resources"
                   onClick={() => setMobileMenuOpen(false)}
