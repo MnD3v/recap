@@ -188,6 +188,150 @@ const htmlTags: HTMLTag[] = [
   }
 ];
 
+interface JSConcept {
+  name: string;
+  description: string;
+  usage: string;
+  example: string;
+  svg: React.ReactNode;
+  color: string;
+  mdnLink: string;
+}
+
+const jsConcepts: JSConcept[] = [
+  {
+    name: 'Variables (let, const)',
+    description: 'Déclarer des variables',
+    usage: 'Les variables permettent de stocker des données en mémoire. "let" déclare une variable modifiable, "const" déclare une constante (non modifiable). Évitez d\'utiliser "var" qui est obsolète. Utilisez "const" par défaut, et "let" uniquement si vous devez modifier la valeur. Les noms de variables doivent être explicites et utiliser la camelCase (première lettre minuscule, puis majuscules pour chaque nouveau mot).',
+    example: 'let age = 25;\nage = 26; // OK avec let\n\nconst nom = "Marie";\n// nom = "Julie"; // ERREUR avec const\n\nconst PI = 3.14159; // Constantes en MAJUSCULES',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />
+        <rect x="15" y="14" width="6" height="6" rx="1" />
+      </svg>
+    ),
+    color: 'from-yellow-500 to-yellow-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/let'
+  },
+  {
+    name: 'Fonctions',
+    description: 'Créer des fonctions réutilisables',
+    usage: 'Les fonctions sont des blocs de code réutilisables qui effectuent une tâche spécifique. Elles peuvent prendre des paramètres en entrée et retourner une valeur avec "return". Il existe plusieurs syntaxes : fonction classique, fonction fléchée (arrow function) qui est plus moderne. Les fonctions permettent d\'organiser votre code et d\'éviter les répétitions.',
+    example: '// Fonction classique\nfunction saluer(nom) {\n  return `Bonjour ${nom}!`;\n}\n\n// Fonction fléchée (moderne)\nconst additionner = (a, b) => {\n  return a + b;\n};\n\n// Utilisation\nconst resultat = additionner(5, 3); // 8',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-blue-500 to-blue-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Functions'
+  },
+  {
+    name: 'Événements (addEventListener)',
+    description: 'Réagir aux actions utilisateur',
+    usage: 'Les événements permettent de rendre votre site interactif en réagissant aux actions de l\'utilisateur. "addEventListener" attache un écouteur d\'événement à un élément HTML. Les événements courants incluent "click" (clic), "submit" (soumission de formulaire), "keydown" (touche pressée), "mouseover" (survol). La fonction callback reçoit un objet "event" avec des informations sur l\'événement.',
+    example: 'const bouton = document.querySelector("#monBouton");\n\nbouton.addEventListener("click", (event) => {\n  console.log("Bouton cliqué!");\n  alert("Vous avez cliqué!");\n});\n\n// Événement de soumission de formulaire\nconst formulaire = document.querySelector("form");\nformulaire.addEventListener("submit", (e) => {\n  e.preventDefault(); // Empêche le rechargement\n  console.log("Formulaire soumis");\n});',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-purple-500 to-purple-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/API/EventTarget/addEventListener'
+  },
+  {
+    name: 'DOM (querySelector)',
+    description: 'Manipuler les éléments HTML',
+    usage: 'Le DOM (Document Object Model) représente la structure HTML de votre page. "querySelector" permet de sélectionner un élément HTML pour le manipuler en JavaScript. Vous pouvez ensuite modifier son contenu (textContent, innerHTML), ses attributs, ses styles CSS, ou même créer/supprimer des éléments. C\'est la base de l\'interactivité web.',
+    example: '// Sélectionner un élément\nconst titre = document.querySelector("h1");\nconst bouton = document.querySelector("#monId");\nconst premier = document.querySelector(".maClasse");\n\n// Modifier le contenu\ntitre.textContent = "Nouveau titre";\n\n// Modifier le style\nbouton.style.backgroundColor = "blue";\nbouton.style.color = "white";\n\n// Ajouter/retirer une classe CSS\nbouton.classList.add("actif");\nbouton.classList.remove("desactive");',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 3h18v18H3V3zm0 0l18 18M21 3l-18 18" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-green-500 to-green-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/API/Document/querySelector'
+  },
+  {
+    name: 'Conditions (if/else)',
+    description: 'Exécuter du code conditionnellement',
+    usage: 'Les conditions permettent d\'exécuter différents blocs de code selon certaines conditions. "if" vérifie une condition, "else if" vérifie une condition alternative, "else" s\'exécute si aucune condition n\'est vraie. Les opérateurs de comparaison incluent === (égal), !== (différent), >, <, >=, <=. Utilisez toujours === (égalité stricte) plutôt que == pour éviter les comportements imprévus.',
+    example: 'const age = 18;\n\nif (age >= 18) {\n  console.log("Majeur");\n} else {\n  console.log("Mineur");\n}\n\n// Conditions multiples\nconst note = 15;\n\nif (note >= 16) {\n  console.log("Très bien");\n} else if (note >= 12) {\n  console.log("Bien");\n} else {\n  console.log("Passable");\n}',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-orange-500 to-orange-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/if...else'
+  },
+  {
+    name: 'Boucles (for, forEach)',
+    description: 'Répéter des actions',
+    usage: 'Les boucles permettent de répéter du code plusieurs fois. "for" est la boucle classique avec un compteur. "forEach" est une méthode moderne pour parcourir un tableau. "while" répète tant qu\'une condition est vraie. Les boucles sont essentielles pour traiter des listes de données, créer des éléments répétitifs, ou effectuer des calculs multiples.',
+    example: '// Boucle for classique\nfor (let i = 0; i < 5; i++) {\n  console.log(`Itération ${i}`);\n}\n\n// forEach pour les tableaux (moderne)\nconst fruits = ["pomme", "banane", "orange"];\n\nfruits.forEach((fruit, index) => {\n  console.log(`${index}: ${fruit}`);\n});\n\n// Boucle while\nlet compteur = 0;\nwhile (compteur < 3) {\n  console.log(compteur);\n  compteur++;\n}',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-cyan-500 to-cyan-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Loops_and_iteration'
+  },
+  {
+    name: 'Tableaux (Array)',
+    description: 'Stocker des listes de données',
+    usage: 'Les tableaux (arrays) permettent de stocker plusieurs valeurs dans une seule variable. Ils sont indexés à partir de 0. Vous pouvez ajouter des éléments avec push(), les retirer avec pop(), filtrer avec filter(), transformer avec map(), et bien plus. Les méthodes modernes comme map(), filter(), find() sont préférables aux boucles for traditionnelles car elles sont plus lisibles.',
+    example: '// Créer un tableau\nconst nombres = [1, 2, 3, 4, 5];\nconst noms = ["Alice", "Bob", "Charlie"];\n\n// Accéder aux éléments\nconsole.log(nombres[0]); // 1\nconsole.log(noms[2]); // "Charlie"\n\n// Méthodes utiles\nnombres.push(6); // Ajouter à la fin\nconst double = nombres.map(n => n * 2); // [2,4,6,8,10,12]\nconst pairs = nombres.filter(n => n % 2 === 0); // [2,4,6]\nconsole.log(nombres.length); // Taille du tableau',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-pink-500 to-pink-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array'
+  },
+  {
+    name: 'Objets',
+    description: 'Structurer des données complexes',
+    usage: 'Les objets permettent de regrouper des données liées sous forme de paires clé-valeur. C\'est la structure de données fondamentale en JavaScript. Vous pouvez accéder aux propriétés avec la notation point (obj.nom) ou crochets (obj["nom"]). Les objets peuvent contenir des fonctions (appelées méthodes). C\'est idéal pour représenter des entités comme un utilisateur, un produit, une configuration.',
+    example: '// Créer un objet\nconst personne = {\n  nom: "Dupont",\n  prenom: "Marie",\n  age: 28,\n  email: "marie@example.com",\n  // Méthode\n  sePresenter() {\n    return `Je suis ${this.prenom} ${this.nom}`;\n  }\n};\n\n// Accéder aux propriétés\nconsole.log(personne.nom); // "Dupont"\nconsole.log(personne["age"]); // 28\nconsole.log(personne.sePresenter()); // "Je suis Marie Dupont"',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-red-500 to-red-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Object'
+  },
+  {
+    name: 'Chaînes de caractères',
+    description: 'Manipuler du texte',
+    usage: 'Les chaînes de caractères (strings) représentent du texte. Utilisez des guillemets simples (\'\'), doubles (""), ou backticks (``) pour les template literals qui permettent d\'insérer des variables avec ${variable}. Les strings ont de nombreuses méthodes utiles : toUpperCase(), toLowerCase(), split(), trim(), includes(), replace(). Les template literals sont la méthode moderne pour construire des chaînes dynamiques.',
+    example: '// Différentes syntaxes\nconst texte1 = \'Bonjour\';\nconst texte2 = "au revoir";\nconst nom = "Marie";\n\n// Template literals (moderne)\nconst message = `Bonjour ${nom}!`;\nconsole.log(message); // "Bonjour Marie!"\n\n// Méthodes utiles\nconst phrase = "  JavaScript  ";\nconsole.log(phrase.trim()); // "JavaScript"\nconsole.log(phrase.toUpperCase()); // "  JAVASCRIPT  "\nconsole.log(phrase.includes("Script")); // true',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-indigo-500 to-indigo-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/String'
+  },
+  {
+    name: 'Opérateurs',
+    description: 'Effectuer des opérations',
+    usage: 'Les opérateurs permettent d\'effectuer des calculs et comparaisons. Arithmétiques : +, -, *, /, % (modulo). Comparaison : === (égal), !== (différent), >, <, >=, <=. Logiques : && (ET), || (OU), ! (NON). Utilisez toujours === au lieu de == pour éviter la conversion de type automatique qui peut causer des bugs subtils. L\'opérateur ++ incrémente, -- décrémente.',
+    example: '// Arithmétiques\nconst somme = 10 + 5; // 15\nconst produit = 4 * 3; // 12\nconst reste = 10 % 3; // 1 (modulo)\n\n// Comparaison (toujours ===)\nconsole.log(5 === 5); // true\nconsole.log(5 === "5"); // false\nconsole.log(10 > 5); // true\n\n// Logiques\nconst age = 20;\nif (age >= 18 && age < 65) {\n  console.log("Actif");\n}',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-emerald-500 to-emerald-600',
+    mdnLink: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_and_Operators'
+  }
+];
+
 const resources = [
   {
     id: 'html-basics',
@@ -223,8 +367,7 @@ const resources = [
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    category: 'JavaScript',
-    comingSoon: true
+    category: 'JavaScript'
   }
 ];
 
@@ -339,7 +482,12 @@ export default function ResourcesPage() {
 
             {/* Quick Reference */}
             <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-              <h3 className="mb-6 text-2xl font-bold">📖 Référence rapide</h3>
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Référence rapide
+              </h3>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -384,7 +532,13 @@ export default function ResourcesPage() {
 
             {/* Other Important Tags */}
             <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-              <h3 className="mb-6 text-2xl font-bold">🔧 Autres balises importantes</h3>
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Autres balises importantes
+              </h3>
               <p className="mb-8 text-gray-400">
                 Ces balises complètent votre boîte à outils HTML. Cliquez sur une balise pour accéder à sa documentation complète sur MDN.
               </p>
@@ -646,7 +800,12 @@ export default function ResourcesPage() {
 
             {/* CSS Properties Grid */}
             <div className="mb-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-              <h3 className="mb-6 text-2xl font-bold">🎨 Propriétés CSS essentielles</h3>
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                Propriétés CSS essentielles
+              </h3>
               <p className="mb-8 text-gray-400">
                 Cliquez sur une propriété pour accéder à sa documentation complète sur MDN.
               </p>
@@ -982,7 +1141,12 @@ position: absolute;</pre>
 
             {/* CSS Selectors */}
             <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-              <h3 className="mb-6 text-2xl font-bold">🎯 Sélecteurs CSS</h3>
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                Sélecteurs CSS
+              </h3>
               <p className="mb-8 text-gray-400">
                 Les sélecteurs permettent de cibler les éléments HTML à styliser.
               </p>
@@ -1025,11 +1189,22 @@ p &#123;
 
             {/* Other CSS Properties by Category */}
             <div className="mt-12 space-y-8">
-              <h3 className="text-2xl font-bold">🔧 Autres propriétés CSS par catégorie</h3>
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Autres propriétés CSS par catégorie
+              </h3>
               
               {/* Texte & Typographie */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">📝 Texte & Typographie</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Texte & Typographie
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {/* Text-align */}
                 <a
@@ -1179,7 +1354,12 @@ p &#123;
 
               {/* Dimensions & Tailles */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">📏 Dimensions & Tailles</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                  Dimensions & Tailles
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Max-width */}
                   <a
@@ -1265,7 +1445,13 @@ p &#123;
 
               {/* Positionnement */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">📍 Positionnement & Empilement</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Positionnement & Empilement
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Z-index */}
                   <a
@@ -1319,7 +1505,12 @@ p &#123;
 
               {/* Flexbox Avancé */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">🔲 Flexbox Avancé</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
+                  </svg>
+                  Flexbox Avancé
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Align-items */}
                   <a
@@ -1405,7 +1596,12 @@ p &#123;
 
               {/* Effets Visuels */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">✨ Effets Visuels</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                  Effets Visuels
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Opacity */}
                   <a
@@ -1475,7 +1671,13 @@ p &#123;
 
               {/* Animations & Transformations */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">🎬 Animations & Transformations</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Animations & Transformations
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Transition */}
                   <a
@@ -1529,7 +1731,12 @@ p &#123;
 
               {/* Médias & Images */}
               <div className="rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
-                <h4 className="mb-6 text-xl font-bold text-[#ff2600]">🖼️ Médias & Images</h4>
+                <h4 className="mb-6 flex items-center gap-2 text-xl font-bold text-[#ff2600]">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Médias & Images
+                </h4>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Object-fit */}
                   <a
@@ -1548,6 +1755,353 @@ p &#123;
                   </a>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* JavaScript Content */}
+        {selectedResource === 'javascript-intro' && (
+          <div className="animate-fade-in">
+            <div className="mb-8 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <div className="mb-4 flex items-center gap-4">
+                <div className="text-[#ff2600]">
+                  <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-bold">Introduction à JavaScript</h2>
+              </div>
+              <p className="text-gray-400">
+                JavaScript est le langage de programmation qui rend vos pages web interactives. Découvrez les concepts essentiels pour créer des applications web dynamiques.
+              </p>
+            </div>
+
+            {/* JS Concepts Grid */}
+            <div className="space-y-6">
+              {jsConcepts.map((concept, index) => (
+                <div
+                  key={index}
+                  className="group rounded-2xl border border-gray-700 bg-gradient-to-br from-gray-900 to-black p-8 transition hover:border-[#ff2600]/50"
+                >
+                  <div className="mb-6 flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className={`flex-shrink-0 rounded-xl bg-gradient-to-br ${concept.color} p-3 text-white`}>
+                        {concept.svg}
+                      </div>
+                      <div>
+                        <h3 className="mb-2 text-2xl font-bold text-white">{concept.name}</h3>
+                        <p className="mb-3 text-sm font-semibold text-gray-400">{concept.description}</p>
+                        <p className="text-sm leading-relaxed text-gray-300">{concept.usage}</p>
+                      </div>
+                    </div>
+                    <a
+                      href={concept.mdnLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-gray-700 bg-black/50 px-4 py-2 text-sm font-semibold text-gray-300 transition hover:border-[#ff2600] hover:text-[#ff2600]"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                      Documentation MDN
+                    </a>
+                  </div>
+
+                  {/* Code Example */}
+                  <div className="rounded-xl border border-gray-700 bg-black p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Exemple de code</p>
+                    </div>
+                    <pre className="overflow-x-auto text-sm text-gray-300">
+                      <code>{concept.example}</code>
+                    </pre>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Interactive Examples Section */}
+            <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold text-white">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+                Exemples interactifs
+              </h3>
+              <p className="mb-8 text-gray-400">
+                Voici quelques exemples pratiques de JavaScript en action. Essayez les boutons pour voir le code s'exécuter !
+              </p>
+
+              <div className="space-y-6">
+                {/* Example 1: Click Counter */}
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <h4 className="mb-4 text-lg font-bold text-white">Compteur de clics</h4>
+                  <div className="mb-4 flex items-center gap-4">
+                    <button
+                      onClick={(e) => {
+                        const countElement = e.currentTarget.nextElementSibling;
+                        if (countElement) {
+                          const currentCount = parseInt(countElement.textContent || '0');
+                          countElement.textContent = (currentCount + 1).toString();
+                        }
+                      }}
+                      className="rounded-lg bg-[#ff2600] px-6 py-3 font-semibold text-white transition hover:bg-[#ff4433]"
+                    >
+                      Cliquez-moi !
+                    </button>
+                    <span className="text-2xl font-bold text-white">0</span>
+                  </div>
+                  <div className="rounded-lg bg-gray-900 p-4">
+                    <pre className="overflow-x-auto text-xs text-gray-300">
+                      <code>{`const bouton = document.querySelector("#bouton");
+let compteur = 0;
+
+bouton.addEventListener("click", () => {
+  compteur++;
+  document.querySelector("#compteur").textContent = compteur;
+});`}</code>
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Example 2: Text Change */}
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <h4 className="mb-4 text-lg font-bold text-white">Modifier du texte</h4>
+                  <div className="mb-4">
+                    <p id="text-demo" className="mb-4 text-lg text-gray-300">
+                      Texte original
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        const textElement = e.currentTarget.parentElement?.querySelector('#text-demo');
+                        if (textElement) {
+                          textElement.textContent = textElement.textContent === 'Texte original' 
+                            ? 'Texte modifié par JavaScript !' 
+                            : 'Texte original';
+                        }
+                      }}
+                      className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+                    >
+                      Changer le texte
+                    </button>
+                  </div>
+                  <div className="rounded-lg bg-gray-900 p-4">
+                    <pre className="overflow-x-auto text-xs text-gray-300">
+                      <code>{`const texte = document.querySelector("#texte");
+const bouton = document.querySelector("#bouton");
+
+bouton.addEventListener("click", () => {
+  texte.textContent = "Texte modifié par JavaScript !";
+});`}</code>
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Example 3: Toggle Visibility */}
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <h4 className="mb-4 text-lg font-bold text-white">Afficher / Masquer</h4>
+                  <div className="mb-4">
+                    <div className="mb-4 rounded-lg bg-purple-900/30 p-4">
+                      <p className="text-gray-300" id="toggle-demo">
+                        Ce contenu peut être affiché ou masqué !
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        const contentElement = e.currentTarget.parentElement?.querySelector('#toggle-demo');
+                        if (contentElement) {
+                          const currentDisplay = window.getComputedStyle(contentElement).display;
+                          (contentElement as HTMLElement).style.display = currentDisplay === 'none' ? 'block' : 'none';
+                        }
+                      }}
+                      className="rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-700"
+                    >
+                      Basculer
+                    </button>
+                  </div>
+                  <div className="rounded-lg bg-gray-900 p-4">
+                    <pre className="overflow-x-auto text-xs text-gray-300">
+                      <code>{`const contenu = document.querySelector("#contenu");
+const bouton = document.querySelector("#bouton");
+
+bouton.addEventListener("click", () => {
+  if (contenu.style.display === "none") {
+    contenu.style.display = "block";
+  } else {
+    contenu.style.display = "none";
+  }
+});`}</code>
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Example 4: Change Colors */}
+                <div className="rounded-xl border border-gray-700 bg-black/50 p-6">
+                  <h4 className="mb-4 text-lg font-bold text-white">Changer les couleurs</h4>
+                  <div className="mb-4">
+                    <div 
+                      id="color-box" 
+                      className="mb-4 rounded-lg bg-gray-700 p-8 text-center font-bold text-white transition-colors"
+                    >
+                      Boîte colorée
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={(e) => {
+                          const box = e.currentTarget.parentElement?.parentElement?.querySelector('#color-box') as HTMLElement;
+                          if (box) box.style.backgroundColor = '#ff2600';
+                        }}
+                        className="flex-1 rounded-lg bg-[#ff2600] px-4 py-2 font-semibold text-white transition hover:bg-[#ff4433]"
+                      >
+                        Rouge
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          const box = e.currentTarget.parentElement?.parentElement?.querySelector('#color-box') as HTMLElement;
+                          if (box) box.style.backgroundColor = '#3b82f6';
+                        }}
+                        className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700"
+                      >
+                        Bleu
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          const box = e.currentTarget.parentElement?.parentElement?.querySelector('#color-box') as HTMLElement;
+                          if (box) box.style.backgroundColor = '#10b981';
+                        }}
+                        className="flex-1 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white transition hover:bg-green-700"
+                      >
+                        Vert
+                      </button>
+                    </div>
+                  </div>
+                  <div className="rounded-lg bg-gray-900 p-4">
+                    <pre className="overflow-x-auto text-xs text-gray-300">
+                      <code>{`const boite = document.querySelector("#boite");
+const boutonRouge = document.querySelector("#rouge");
+const boutonBleu = document.querySelector("#bleu");
+
+boutonRouge.addEventListener("click", () => {
+  boite.style.backgroundColor = "red";
+});
+
+boutonBleu.addEventListener("click", () => {
+  boite.style.backgroundColor = "blue";
+});`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Resources & Learning Links */}
+            <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+              <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold text-white">
+                <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                Ressources pour aller plus loin
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <a
+                  href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <h4 className="mb-2 text-lg font-bold text-white">MDN JavaScript Guide</h4>
+                  <p className="text-sm text-gray-400">
+                    Le guide complet et officiel de Mozilla pour apprendre JavaScript en profondeur.
+                  </p>
+                </a>
+                <a
+                  href="https://javascript.info/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <h4 className="mb-2 text-lg font-bold text-white">JavaScript.info</h4>
+                  <p className="text-sm text-gray-400">
+                    Un tutoriel moderne et détaillé couvrant tous les aspects de JavaScript.
+                  </p>
+                </a>
+                <a
+                  href="https://www.w3schools.com/js/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <h4 className="mb-2 text-lg font-bold text-white">W3Schools JavaScript</h4>
+                  <p className="text-sm text-gray-400">
+                    Des tutoriels interactifs avec des exercices pratiques pour débutants.
+                  </p>
+                </a>
+                <a
+                  href="https://eloquentjavascript.net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                >
+                  <h4 className="mb-2 text-lg font-bold text-white">Eloquent JavaScript</h4>
+                  <p className="text-sm text-gray-400">
+                    Un livre gratuit en ligne pour une introduction approfondie à la programmation JavaScript.
+                  </p>
+                </a>
+              </div>
+            </div>
+
+            {/* Best Practices */}
+            <div className="mt-12 rounded-2xl border border-yellow-800/50 bg-gradient-to-br from-yellow-900/20 to-black p-8">
+              <div className="mb-4 flex items-center gap-3">
+                <svg className="h-8 w-8 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <h3 className="text-2xl font-bold text-yellow-500">Bonnes pratiques JavaScript</h3>
+              </div>
+              <ul className="space-y-3 text-gray-300">
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Utilisez const par défaut</strong> : Déclarez vos variables avec <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">const</code> et utilisez <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">let</code> uniquement si vous devez modifier la valeur.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Nommez clairement</strong> : Utilisez des noms de variables explicites comme <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">userEmail</code> plutôt que <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">e</code>.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Toujours === au lieu de ==</strong> : L'opérateur <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">===</code> compare sans conversion de type et évite les bugs.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Fonctions fléchées modernes</strong> : Préférez <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">const maFonction = () =&gt; {'{}'}</code> pour une syntaxe plus concise.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Template literals</strong> : Utilisez les backticks <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">`Bonjour ${'{nom}'}`</code> pour insérer des variables dans les chaînes.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Console.log pour débugger</strong> : Utilisez <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">console.log()</code> pour afficher des valeurs et comprendre votre code.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Commentez votre code</strong> : Ajoutez des commentaires <code className="rounded bg-gray-800 px-2 py-1 text-sm text-yellow-400">// comme ceci</code> pour expliquer les parties complexes.</span>
+                </li>
+              </ul>
             </div>
           </div>
         )}
@@ -1621,14 +2175,23 @@ function renderTagDemo(tagName: string) {
     case '<a>':
       return (
         <div className="space-y-3 rounded-lg bg-cyan-500/10 p-4">
-          <a href="#" className="block text-[#ff2600] underline transition hover:text-[#ff4433]">
-            🔗 Lien hypertexte cliquable
+          <a href="#" className="flex items-center gap-2 text-[#ff2600] underline transition hover:text-[#ff4433]">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Lien hypertexte cliquable
           </a>
-          <a href="#" className="block text-blue-400 underline transition hover:text-blue-300">
-            🔗 Lien vers une autre page
+          <a href="#" className="flex items-center gap-2 text-blue-400 underline transition hover:text-blue-300">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Lien vers une autre page
           </a>
           <a href="#" className="inline-flex items-center gap-2 text-green-400 underline transition hover:text-green-300">
-            🔗 Lien avec icône
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Lien avec icône
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
@@ -1640,21 +2203,29 @@ function renderTagDemo(tagName: string) {
         <div className="space-y-4">
           <div className="flex items-center justify-center rounded-lg bg-pink-500/10 p-6">
             <div className="text-center">
-              <div className="mb-3 flex h-32 w-32 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 text-6xl">
-                🖼️
+              <div className="mb-3 flex h-32 w-32 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-purple-600">
+                <svg className="h-16 w-16 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
               </div>
               <p className="text-sm text-gray-400">Exemple d'image</p>
             </div>
           </div>
           <div className="flex gap-3">
-            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-3xl">
-              🌄
+            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
+              <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
-            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 text-3xl">
-              🏔️
+            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-500">
+              <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
-            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-red-500 text-3xl">
-              🌅
+            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-red-500">
+              <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
           </div>
         </div>
