@@ -113,7 +113,11 @@ export default function AdminPage() {
     const fetchEngagementData = async () => {
       try {
         const allUsers = await getDocs(collection(db, "users"));
-        const engagement: TutorialEngagement[] = [];
+        const engagement: TutorialEngagement[] = tutorials.map(t => ({
+          tutorialId: t.id,
+          tutorialTitle: t.title,
+          students: []
+        }));
 
         for (const userDoc of allUsers.docs) {
           const watchSessionsCollection = collection(userDoc.ref, "watchSessions");
@@ -124,21 +128,16 @@ export default function AdminPage() {
             const tutorialId = sessionDoc.id;
 
             let tutorialEngagement = engagement.find((e) => e.tutorialId === tutorialId);
-            if (!tutorialEngagement) {
-              const tutorialData = tutorials.find((t) => t.id === tutorialId);
-              tutorialEngagement = {
-                tutorialId,
-                tutorialTitle: tutorialData?.title || "Tutoriel sans titre",
-                students: [],
-              };
-              engagement.push(tutorialEngagement);
-            }
 
-            tutorialEngagement.students.push({
-              userId: userDoc.id,
-              totalMinutesWatched: data.totalMinutesWatched || 0,
-              lastUpdated: data.lastUpdated?.toDate?.() || new Date(),
-            });
+            // If for some reason the tutorial is not in our list (e.g. deleted but still in sessions), ignore or handle it.
+            // For now we only care about existing tutorials.
+            if (tutorialEngagement) {
+              tutorialEngagement.students.push({
+                userId: userDoc.id,
+                totalMinutesWatched: data.totalMinutesWatched || 0,
+                lastUpdated: data.lastUpdated?.toDate?.() || new Date(),
+              });
+            }
           }
         }
 
@@ -162,12 +161,12 @@ export default function AdminPage() {
 
   const handleChange =
     (field: keyof typeof initialForm) =>
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormValues((prev) => ({
-        ...prev,
-        [field]: event.target.value,
-      }));
-    };
+      (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormValues((prev) => ({
+          ...prev,
+          [field]: event.target.value,
+        }));
+      };
 
   const resetForm = () => {
     setFormValues(initialForm);
@@ -243,9 +242,9 @@ export default function AdminPage() {
 
   const handleFAQChange =
     (field: keyof typeof initialFAQForm) =>
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFaqFormValues({ ...faqFormValues, [field]: event.target.value });
-    };
+      (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFaqFormValues({ ...faqFormValues, [field]: event.target.value });
+      };
 
   const handleFAQSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -319,21 +318,19 @@ export default function AdminPage() {
             <div className="flex gap-4">
               <button
                 onClick={() => setActiveTab("form")}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-                  activeTab === "form"
-                    ? "bg-white text-black"
-                    : "border border-gray-700 text-white hover:border-gray-600"
-                }`}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${activeTab === "form"
+                  ? "bg-white text-black"
+                  : "border border-gray-700 text-white hover:border-gray-600"
+                  }`}
               >
                 Ajouter un contenu
               </button>
               <button
                 onClick={() => setActiveTab("engagement")}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-                  activeTab === "engagement"
-                    ? "bg-white text-black"
-                    : "border border-gray-700 text-white hover:border-gray-600"
-                }`}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${activeTab === "engagement"
+                  ? "bg-white text-black"
+                  : "border border-gray-700 text-white hover:border-gray-600"
+                  }`}
               >
                 Engagement ({engagementData.length})
               </button>
@@ -341,243 +338,243 @@ export default function AdminPage() {
           </header>
 
           {activeTab === "form" && (
-          <section className="grid gap-8 rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)] lg:grid-cols-[1.2fr_1fr]">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-semibold text-white">
-                  Ajouter un contenu
-                </h2>
-                <p className="mt-2 text-sm text-gray-400">
-                  Renseignez les informations nécessaires pour intégrer un nouveau
-                  tutoriel dans votre parcours Recap.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-gray-300"
-                  htmlFor="title"
-                >
-                  Titre du cours
-                </label>
-                <input
-                  id="title"
-                  name="title"
-                  value={formValues.title}
-                  onChange={handleChange("title")}
-                  placeholder="Leadership Studio — Module 03"
-                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-gray-300"
-                  htmlFor="description"
-                >
-                  Description détaillée
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={5}
-                  value={formValues.description}
-                  onChange={handleChange("description")}
-                  placeholder="Objectifs pédagogiques, activités proposées, points de vigilance..."
-                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-gray-300"
-                  htmlFor="technicalDescription"
-                >
-                  Description technique (pour l&apos;IA)
-                </label>
-                <textarea
-                  id="technicalDescription"
-                  name="technicalDescription"
-                  rows={4}
-                  value={formValues.technicalDescription}
-                  onChange={handleChange("technicalDescription")}
-                  placeholder="Détails techniques, concepts clés, vocabulaire important pour l'IA..."
-                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-gray-300"
-                  htmlFor="videoUrl"
-                >
-                  Lien vidéo YouTube
-                </label>
-                <input
-                  id="videoUrl"
-                  name="videoUrl"
-                  type="url"
-                  value={formValues.videoUrl}
-                  onChange={handleChange("videoUrl")}
-                  placeholder="https://youtu.be/..."
-                  className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
-                  required
-                />
-              </div>
-
-              {formError ? (
-                <div className="rounded-2xl border border-red-900/50 bg-red-950/50 px-4 py-3 text-sm text-red-400">
-                  {formError}
+            <section className="grid gap-8 rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)] lg:grid-cols-[1.2fr_1fr]">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-semibold text-white">
+                    Ajouter un contenu
+                  </h2>
+                  <p className="mt-2 text-sm text-gray-400">
+                    Renseignez les informations nécessaires pour intégrer un nouveau
+                    tutoriel dans votre parcours Recap.
+                  </p>
                 </div>
-              ) : null}
 
-              <div className="flex items-center gap-3">
-                <button
-                  type="submit"
-                  disabled={status === "saving"}
-                  className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-white/15 transition hover:bg-gray-200 disabled:cursor-wait disabled:opacity-80"
-                >
-                  {status === "saving" ? "Enregistrement..." : "Ajouter au catalogue"}
-                </button>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="rounded-full border border-gray-700 px-5 py-3 text-sm font-semibold text-gray-300 transition hover:border-gray-600 hover:text-white"
-                >
-                  Réinitialiser
-                </button>
-                {status === "saved" ? (
-                  <span className="text-sm font-medium text-emerald-400">
-                    Contenu enregistré
-                  </span>
-                ) : null}
-                {status === "error" ? (
-                  <span className="text-sm font-medium text-red-400">
-                    Erreur lors de l&apos;enregistrement
-                  </span>
-                ) : null}
-              </div>
-            </form>
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-gray-300"
+                    htmlFor="title"
+                  >
+                    Titre du cours
+                  </label>
+                  <input
+                    id="title"
+                    name="title"
+                    value={formValues.title}
+                    onChange={handleChange("title")}
+                    placeholder="Leadership Studio — Module 03"
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                    required
+                  />
+                </div>
 
-            <aside className="flex flex-col gap-5 rounded-3xl border border-gray-800 bg-gray-900 p-6 shadow-inner">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                  Prévisualisation
-                </p>
-                <h3 className="mt-2 text-xl font-semibold text-white">
-                  Playlist en cours
-                </h3>
-                <p className="mt-2 text-sm text-gray-400">
-                  Les ressources ajoutées ici apparaissent instantanément côté
-                  étudiant.
-                </p>
-              </div>
-              <div className="flex-1 space-y-4">
-                {tutorials.length === 0 ? (
-                  <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border border-dashed border-gray-700 bg-gray-950 px-6 text-center text-sm text-gray-500">
-                    <p>Ajoutez un premier contenu pour le visualiser ici.</p>
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-gray-300"
+                    htmlFor="description"
+                  >
+                    Description détaillée
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows={5}
+                    value={formValues.description}
+                    onChange={handleChange("description")}
+                    placeholder="Objectifs pédagogiques, activités proposées, points de vigilance..."
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-gray-300"
+                    htmlFor="technicalDescription"
+                  >
+                    Description technique (pour l&apos;IA)
+                  </label>
+                  <textarea
+                    id="technicalDescription"
+                    name="technicalDescription"
+                    rows={4}
+                    value={formValues.technicalDescription}
+                    onChange={handleChange("technicalDescription")}
+                    placeholder="Détails techniques, concepts clés, vocabulaire important pour l'IA..."
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-gray-300"
+                    htmlFor="videoUrl"
+                  >
+                    Lien vidéo YouTube
+                  </label>
+                  <input
+                    id="videoUrl"
+                    name="videoUrl"
+                    type="url"
+                    value={formValues.videoUrl}
+                    onChange={handleChange("videoUrl")}
+                    placeholder="https://youtu.be/..."
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                    required
+                  />
+                </div>
+
+                {formError ? (
+                  <div className="rounded-2xl border border-red-900/50 bg-red-950/50 px-4 py-3 text-sm text-red-400">
+                    {formError}
                   </div>
-                ) : (
-                  tutorials.map((tutorial) => (
-                    <div
-                      key={tutorial.id}
-                      className="rounded-3xl border border-gray-800 bg-black px-5 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-gray-400">
-                            {tutorial.createdAt.toLocaleDateString("fr-FR", {
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <p className="mt-2 text-lg font-semibold text-white">
-                            {tutorial.title}
-                          </p>
-                          {tutorial.description ? (
-                            <p className="mt-1 text-sm text-gray-300">
-                              {tutorial.description}
+                ) : null}
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="submit"
+                    disabled={status === "saving"}
+                    className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-white/15 transition hover:bg-gray-200 disabled:cursor-wait disabled:opacity-80"
+                  >
+                    {status === "saving" ? "Enregistrement..." : "Ajouter au catalogue"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="rounded-full border border-gray-700 px-5 py-3 text-sm font-semibold text-gray-300 transition hover:border-gray-600 hover:text-white"
+                  >
+                    Réinitialiser
+                  </button>
+                  {status === "saved" ? (
+                    <span className="text-sm font-medium text-emerald-400">
+                      Contenu enregistré
+                    </span>
+                  ) : null}
+                  {status === "error" ? (
+                    <span className="text-sm font-medium text-red-400">
+                      Erreur lors de l&apos;enregistrement
+                    </span>
+                  ) : null}
+                </div>
+              </form>
+
+              <aside className="flex flex-col gap-5 rounded-3xl border border-gray-800 bg-gray-900 p-6 shadow-inner">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                    Prévisualisation
+                  </p>
+                  <h3 className="mt-2 text-xl font-semibold text-white">
+                    Playlist en cours
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-400">
+                    Les ressources ajoutées ici apparaissent instantanément côté
+                    étudiant.
+                  </p>
+                </div>
+                <div className="flex-1 space-y-4">
+                  {tutorials.length === 0 ? (
+                    <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border border-dashed border-gray-700 bg-gray-950 px-6 text-center text-sm text-gray-500">
+                      <p>Ajoutez un premier contenu pour le visualiser ici.</p>
+                    </div>
+                  ) : (
+                    tutorials.map((tutorial) => (
+                      <div
+                        key={tutorial.id}
+                        className="rounded-3xl border border-gray-800 bg-black px-5 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-gray-400">
+                              {tutorial.createdAt.toLocaleDateString("fr-FR", {
+                                month: "long",
+                                day: "numeric",
+                              })}
                             </p>
-                          ) : null}
-                          {tutorial.ownerName ? (
-                            <p className="mt-2 text-xs text-gray-400">
-                              Publié par {tutorial.ownerName}
+                            <p className="mt-2 text-lg font-semibold text-white">
+                              {tutorial.title}
                             </p>
-                          ) : null}
-                        </div>
-                        <div className="flex shrink-0 flex-col gap-2">
-                          <a
-                            href={tutorial.videoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-xs font-semibold text-[#ff2600]-400 transition hover:border-[#ff2600]-800 hover:bg-[#ff2600]-900"
-                          >
-                            Ouvrir la vidéo
-                            <svg
-                              className="h-3.5 w-3.5"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
+                            {tutorial.description ? (
+                              <p className="mt-1 text-sm text-gray-300">
+                                {tutorial.description}
+                              </p>
+                            ) : null}
+                            {tutorial.ownerName ? (
+                              <p className="mt-2 text-xs text-gray-400">
+                                Publié par {tutorial.ownerName}
+                              </p>
+                            ) : null}
+                          </div>
+                          <div className="flex shrink-0 flex-col gap-2">
+                            <a
+                              href={tutorial.videoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-xs font-semibold text-[#ff2600]-400 transition hover:border-[#ff2600]-800 hover:bg-[#ff2600]-900"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 5h10m0 0v10m0-10L5 19"
-                              />
-                            </svg>
-                          </a>
-                          <a
-                            href={`/stats/${tutorial.id}`}
-                            className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/50 bg-emerald-950 px-3 py-1 text-xs font-semibold text-emerald-400 transition hover:border-emerald-800 hover:bg-emerald-900"
-                          >
-                            Voir les stats
-                            <svg
-                              className="h-3.5 w-3.5"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
+                              Ouvrir la vidéo
+                              <svg
+                                className="h-3.5 w-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 5h10m0 0v10m0-10L5 19"
+                                />
+                              </svg>
+                            </a>
+                            <a
+                              href={`/stats/${tutorial.id}`}
+                              className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/50 bg-emerald-950 px-3 py-1 text-xs font-semibold text-emerald-400 transition hover:border-emerald-800 hover:bg-emerald-900"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                              />
-                            </svg>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteTutorial(tutorial)}
-                            className="inline-flex items-center justify-center gap-2 rounded-full border border-red-900/50 bg-red-950 px-3 py-1 text-xs font-semibold text-red-400 transition hover:border-red-800 hover:bg-red-900"
-                          >
-                            Supprimer
-                            <svg
-                              className="h-3.5 w-3.5"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
+                              Voir les stats
+                              <svg
+                                className="h-3.5 w-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                />
+                              </svg>
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteTutorial(tutorial)}
+                              className="inline-flex items-center justify-center gap-2 rounded-full border border-red-900/50 bg-red-950 px-3 py-1 text-xs font-semibold text-red-400 transition hover:border-red-800 hover:bg-red-900"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
+                              Supprimer
+                              <svg
+                                className="h-3.5 w-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </aside>
-          </section>
+                    ))
+                  )}
+                </div>
+              </aside>
+            </section>
           )}
 
           {activeTab === "faq" && (
@@ -699,184 +696,295 @@ export default function AdminPage() {
           )}
 
           {activeTab === "engagement" && (
-          <section className="rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
-            <h3 className="text-2xl font-semibold text-white">
-              Suivi d&apos;engagement par tutoriel
-            </h3>
-            <p className="mt-2 text-sm text-gray-400">
-              Consultez le temps de visionnage de chaque étudiant pour chaque tutoriel
-            </p>
+            <section className="rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-2xl font-semibold text-white">
+                    Suivi d&apos;engagement par tutoriel
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-400">
+                    Consultez le temps de visionnage de chaque étudiant pour chaque tutoriel
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={async () => {
+                      try {
+                        const usersSnapshot = await getDocs(collection(db, "users"));
+                        const headers = ['Nom Prénom', 'Ville', 'Email', 'Numéro'];
+                        const rows = usersSnapshot.docs.map(doc => {
+                          const data = doc.data();
+                          return [
+                            `"${(data.displayName || '').replace(/"/g, '""')}"`,
+                            `"${(data.city || '').replace(/"/g, '""')}"`,
+                            `"${(data.email || '').replace(/"/g, '""')}"`,
+                            `"${(data.phoneNumber || '').replace(/"/g, '""')}"`
+                          ];
+                        });
 
-            {engagementData.length === 0 ? (
-              <div className="mt-8 rounded-2xl border border-dashed border-gray-700 bg-gray-900 px-6 py-12 text-center text-sm text-gray-400">
-                Aucune donnée d&apos;engagement pour le moment. Les étudiants doivent visionner des tutoriels pour que les données apparaissent.
+                        const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const link = document.createElement('a');
+                        if (link.download !== undefined) {
+                          const url = URL.createObjectURL(blob);
+                          link.setAttribute('href', url);
+                          link.setAttribute('download', 'export_utilisateurs.csv');
+                          link.style.visibility = 'hidden';
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }
+                      } catch (error) {
+                        console.error("Erreur lors de l'exportation des utilisateurs:", error);
+                      }
+                    }}
+                    className="flex items-center gap-2 rounded-full border border-emerald-700 bg-emerald-900/50 px-5 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-800/50"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Exporter les utilisateurs
+                  </button>
+                  <button
+                    onClick={() => {
+                      const headers = ['Titre du cours', 'Lien YouTube'];
+                      const rows = tutorials.map(tutorial => {
+                        return [
+                          `"${tutorial.title.replace(/"/g, '""')}"`,
+                          `"${tutorial.videoUrl.replace(/"/g, '""')}"`
+                        ];
+                      });
+
+                      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                      const link = document.createElement('a');
+                      if (link.download !== undefined) {
+                        const url = URL.createObjectURL(blob);
+                        link.setAttribute('href', url);
+                        link.setAttribute('download', 'export_ressources.csv');
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }
+                    }}
+                    className="flex items-center gap-2 rounded-full border border-blue-700 bg-blue-900/50 px-5 py-2 text-sm font-semibold text-blue-300 transition hover:bg-blue-800/50"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Exporter les ressources
+                  </button>
+                  <button
+                    onClick={() => {
+                      const headers = ['Tutoriel', 'Nombre de vues', 'Temps total (min)', 'Temps moyen (min)'];
+                      const rows = engagementData.map(item => {
+                        const totalViewers = item.students.length;
+                        const totalViewMinutes = item.students.reduce((acc, curr) => acc + curr.totalMinutesWatched, 0);
+                        const averageWatchTime = totalViewers > 0 ? Math.round(totalViewMinutes / totalViewers) : 0;
+
+                        return [
+                          `"${item.tutorialTitle.replace(/"/g, '""')}"`,
+                          totalViewers,
+                          totalViewMinutes,
+                          averageWatchTime
+                        ];
+                      });
+
+                      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                      const link = document.createElement('a');
+                      if (link.download !== undefined) {
+                        const url = URL.createObjectURL(blob);
+                        link.setAttribute('href', url);
+                        link.setAttribute('download', 'export_engagement.csv');
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }
+                    }}
+                    className="flex items-center gap-2 rounded-full border border-gray-700 bg-gray-800 px-5 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Exporter l&apos;engagement
+                  </button>
+                </div>
               </div>
-            ) : (
-              <div className="mt-6 space-y-6">
-                {/* Tutorial Selection */}
-                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
-                  <p className="mb-3 text-sm font-semibold text-gray-300">Sélectionner un tutoriel</p>
-                  <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-                    {engagementData.map((engagement) => (
-                      <button
-                        key={engagement.tutorialId}
-                        onClick={() => setSelectedTutorialId(engagement.tutorialId)}
-                        className={`rounded-lg px-4 py-3 text-left text-sm font-medium transition ${
-                          selectedTutorialId === engagement.tutorialId
+
+              {engagementData.length === 0 ? (
+                <div className="mt-8 rounded-2xl border border-dashed border-gray-700 bg-gray-900 px-6 py-12 text-center text-sm text-gray-400">
+                  Aucune donnée d&apos;engagement pour le moment. Les étudiants doivent visionner des tutoriels pour que les données apparaissent.
+                </div>
+              ) : (
+                <div className="mt-6 space-y-6">
+                  {/* Tutorial Selection */}
+                  <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
+                    <p className="mb-3 text-sm font-semibold text-gray-300">Sélectionner un tutoriel</p>
+                    <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+                      {engagementData.map((engagement) => (
+                        <button
+                          key={engagement.tutorialId}
+                          onClick={() => setSelectedTutorialId(engagement.tutorialId)}
+                          className={`rounded-lg px-4 py-3 text-left text-sm font-medium transition ${selectedTutorialId === engagement.tutorialId
                             ? "border-2 border-[#ff2600]-600 bg-[#ff2600]-950 text-[#ff2600]-300"
                             : "border border-gray-700 bg-black text-gray-300 hover:border-gray-600"
-                        }`}
-                      >
-                        <p className="font-semibold">{engagement.tutorialTitle}</p>
-                        <p className="text-xs text-gray-500">
-                          {engagement.students.length} étudiant(s)
-                        </p>
-                      </button>
-                    ))}
+                            }`}
+                        >
+                          <p className="font-semibold">{engagement.tutorialTitle}</p>
+                          <p className="text-xs text-gray-500">
+                            {engagement.students.length} étudiant(s)
+                          </p>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+
+                  {/* Selected Tutorial Details */}
+                  {selectedEngagement && (
+                    <div className="rounded-2xl border border-gray-800 bg-black p-6">
+                      <h4 className="text-lg font-semibold text-white">
+                        {selectedEngagement.tutorialTitle}
+                      </h4>
+                      <p className="mt-1 text-sm text-gray-400">
+                        {selectedEngagement.students.length} étudiant(s) ayant suivi ce tutoriel
+                      </p>
+
+                      {selectedEngagement.students.length === 0 ? (
+                        <div className="mt-6 rounded-xl border border-dashed border-gray-700 bg-gray-900 px-4 py-6 text-center text-sm text-gray-400">
+                          Aucun suivi enregistré pour ce tutoriel.
+                        </div>
+                      ) : (
+                        <div className="mt-6 overflow-x-auto">
+                          <table className="w-full">
+                            <thead>
+                              <tr className="border-b border-gray-800">
+                                <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+                                  ID Étudiant
+                                </th>
+                                <th className="px-4 py-3 text-right text-sm font-semibold text-white">
+                                  Minutes visionnées
+                                </th>
+                                <th className="px-4 py-3 text-right text-sm font-semibold text-white">
+                                  Dernière activité
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {selectedEngagement.students
+                                .sort(
+                                  (a, b) => b.totalMinutesWatched - a.totalMinutesWatched,
+                                )
+                                .map((student) => (
+                                  <tr
+                                    key={student.userId}
+                                    className="border-b border-gray-800 transition hover:bg-gray-900"
+                                  >
+                                    <td className="px-4 py-4 text-sm font-mono text-gray-300">
+                                      {student.userId.substring(0, 12)}...
+                                    </td>
+                                    <td className="px-4 py-4 text-right">
+                                      <span className="inline-flex items-center rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-sm font-semibold text-[#ff2600]-400">
+                                        {student.totalMinutesWatched} min
+                                      </span>
+                                    </td>
+                                    <td className="px-4 py-4 text-right text-sm text-gray-300">
+                                      {student.lastUpdated.toLocaleDateString(
+                                        "fr-FR",
+                                        {
+                                          day: "2-digit",
+                                          month: "short",
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        },
+                                      )}
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-
-                {/* Selected Tutorial Details */}
-                {selectedEngagement && (
-                  <div className="rounded-2xl border border-gray-800 bg-black p-6">
-                    <h4 className="text-lg font-semibold text-white">
-                      {selectedEngagement.tutorialTitle}
-                    </h4>
-                    <p className="mt-1 text-sm text-gray-400">
-                      {selectedEngagement.students.length} étudiant(s) ayant suivi ce tutoriel
-                    </p>
-
-                    {selectedEngagement.students.length === 0 ? (
-                      <div className="mt-6 rounded-xl border border-dashed border-gray-700 bg-gray-900 px-4 py-6 text-center text-sm text-gray-400">
-                        Aucun suivi enregistré pour ce tutoriel.
-                      </div>
-                    ) : (
-                      <div className="mt-6 overflow-x-auto">
-                        <table className="w-full">
-                          <thead>
-                            <tr className="border-b border-gray-800">
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-white">
-                                ID Étudiant
-                              </th>
-                              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
-                                Minutes visionnées
-                              </th>
-                              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
-                                Dernière activité
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {selectedEngagement.students
-                              .sort(
-                                (a, b) => b.totalMinutesWatched - a.totalMinutesWatched,
-                              )
-                              .map((student) => (
-                                <tr
-                                  key={student.userId}
-                                  className="border-b border-gray-800 transition hover:bg-gray-900"
-                                >
-                                  <td className="px-4 py-4 text-sm font-mono text-gray-300">
-                                    {student.userId.substring(0, 12)}...
-                                  </td>
-                                  <td className="px-4 py-4 text-right">
-                                    <span className="inline-flex items-center rounded-full border border-[#ff2600]-900/50 bg-[#ff2600]-950 px-3 py-1 text-sm font-semibold text-[#ff2600]-400">
-                                      {student.totalMinutesWatched} min
-                                    </span>
-                                  </td>
-                                  <td className="px-4 py-4 text-right text-sm text-gray-300">
-                                    {student.lastUpdated.toLocaleDateString(
-                                      "fr-FR",
-                                      {
-                                        day: "2-digit",
-                                        month: "short",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      },
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
+              )}
+            </section>
           )}
         </div>
-      </div>
+      </div >
 
-      {pendingDelete ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/10 text-rose-400">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+      {
+        pendingDelete ? (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm" >
+            <div className="w-full max-w-lg rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/10 text-rose-400">
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v4m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-400">
+                    Confirmation
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold text-white">
+                    Supprimer ce tutoriel ?
+                  </h2>
+                </div>
+              </div>
+
+              <p className="mt-6 text-sm leading-relaxed text-slate-300">
+                Vous êtes sur le point de supprimer{" "}
+                <span className="font-semibold text-white">
+                  {pendingDelete.title || "ce tutoriel"}
+                </span>
+                . Cette action est définitive et retirera immédiatement la ressource des
+                espaces étudiants.
+              </p>
+
+              {deleteError ? (
+                <div className="mt-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                  {deleteError}
+                </div>
+              ) : null}
+
+              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => (isDeleting ? null : setPendingDelete(null))}
+                  className="rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-white transition hover:border-slate-500 hover:bg-slate-800"
+                  disabled={isDeleting}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9v4m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0Z"
-                  />
-                </svg>
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDeleteTutorial}
+                  className="rounded-full bg-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/30 transition hover:bg-rose-400 disabled:cursor-wait disabled:opacity-70"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Suppression..." : "Confirmer la suppression"}
+                </button>
               </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-400">
-                  Confirmation
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">
-                  Supprimer ce tutoriel ?
-                </h2>
-              </div>
-            </div>
-
-            <p className="mt-6 text-sm leading-relaxed text-slate-300">
-              Vous êtes sur le point de supprimer{" "}
-              <span className="font-semibold text-white">
-                {pendingDelete.title || "ce tutoriel"}
-              </span>
-              . Cette action est définitive et retirera immédiatement la ressource des
-              espaces étudiants.
-            </p>
-
-            {deleteError ? (
-              <div className="mt-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                {deleteError}
-              </div>
-            ) : null}
-
-            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => (isDeleting ? null : setPendingDelete(null))}
-                className="rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-white transition hover:border-slate-500 hover:bg-slate-800"
-                disabled={isDeleting}
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                onClick={confirmDeleteTutorial}
-                className="rounded-full bg-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/30 transition hover:bg-rose-400 disabled:cursor-wait disabled:opacity-70"
-                disabled={isDeleting}
-              >
-                {isDeleting ? "Suppression..." : "Confirmer la suppression"}
-              </button>
             </div>
           </div>
-        </div>
-      ) : null}
-    </RequireAuth>
+        ) : null
+      }
+    </RequireAuth >
   );
 }
 

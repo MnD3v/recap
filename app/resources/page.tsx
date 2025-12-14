@@ -198,6 +198,276 @@ interface JSConcept {
   mdnLink: string;
 }
 
+interface SQLConcept {
+  name: string;
+  description: string;
+  usage: string;
+  example: string;
+  svg: React.ReactNode;
+  color: string;
+  mdnLink: string;
+}
+
+const sqlConcepts: SQLConcept[] = [
+  {
+    name: 'SELECT',
+    description: 'Récupérer des données',
+    usage: 'La commande SELECT est utilisée pour sélectionner des données depuis une base de données. Les données retournées sont stockées dans une table de résultats. Vous pouvez spécifier les colonnes exactes à récupérer ou utiliser * pour tout sélectionner.',
+    example: '-- Tout sélectionner\nSELECT * FROM utilisateurs;\n\n-- Sélectionner des colonnes spécifiques\nSELECT nom, email FROM utilisateurs;',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-blue-500 to-blue-600',
+    mdnLink: 'https://sql.sh/cours/select'
+  },
+  {
+    name: 'WHERE',
+    description: 'Filtrer les résultats',
+    usage: 'La clause WHERE est utilisée pour filtrer les enregistrements. Elle permet d\'extraire uniquement les enregistrements qui satisfont une condition spécifique. Elle peut être utilisée avec SELECT, UPDATE, DELETE, etc.',
+    example: 'SELECT * FROM clients\nWHERE pays = \'France\';\n\nSELECT * FROM produits\nWHERE prix > 100 AND stock > 0;',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-purple-500 to-purple-600',
+    mdnLink: 'https://sql.sh/cours/where'
+  },
+  {
+    name: 'INSERT INTO',
+    description: 'Ajouter des données',
+    usage: 'L\'instruction INSERT INTO est utilisée pour insérer de nouveaux enregistrements dans une table. Vous pouvez spécifier les colonnes à remplir ou insérer des valeurs pour toutes les colonnes.',
+    example: 'INSERT INTO clients (nom, ville)\nVALUES (\'Dupont\', \'Paris\');',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 4v16m8-8H4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-green-500 to-green-600',
+    mdnLink: 'https://sql.sh/cours/insert-into'
+  },
+  {
+    name: 'UPDATE',
+    description: 'Modifier des données',
+    usage: 'L\'instruction UPDATE est utilisée pour modifier les enregistrements existants dans une table. Attention : si vous omettez la clause WHERE, TOUS les enregistrements seront mis à jour !',
+    example: 'UPDATE clients\nSET ville = \'Lyon\', code_postal = 69000\nWHERE id = 1;',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-orange-500 to-orange-600',
+    mdnLink: 'https://sql.sh/cours/update'
+  },
+  {
+    name: 'DELETE',
+    description: 'Supprimer des données',
+    usage: 'L\'instruction DELETE est utilisée pour supprimer des enregistrements existants dans une table. Comme pour UPDATE, si vous omettez la clause WHERE, TOUS les enregistrements seront supprimés !',
+    example: 'DELETE FROM clients\nWHERE nom = \'Dupont\';',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-red-500 to-red-600',
+    mdnLink: 'https://sql.sh/cours/delete'
+  },
+  {
+    name: 'JOIN',
+    description: 'Joindre des tables',
+    usage: 'La clause JOIN est utilisée pour combiner les lignes de deux ou plusieurs tables, sur la base d\'une colonne commune entre elles. Les types courants sont INNER JOIN, LEFT JOIN, RIGHT JOIN.',
+    example: 'SELECT commandes.id, clients.nom\nFROM commandes\nINNER JOIN clients ON commandes.client_id = clients.id;',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-pink-500 to-pink-600',
+    mdnLink: 'https://sql.sh/cours/jointures'
+  },
+  {
+    name: 'CREATE TABLE',
+    description: 'Créer une table',
+    usage: 'La commande CREATE TABLE permet de créer une nouvelle table dans la base de données. Vous devez spécifier le nom de la table et définir les colonnes avec leurs types de données.',
+    example: 'CREATE TABLE utilisateurs (\n  id INT PRIMARY KEY,\n  nom VARCHAR(50),\n  email VARCHAR(100)\n);',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-teal-500 to-teal-600',
+    mdnLink: 'https://sql.sh/cours/create-table'
+  },
+  {
+    name: 'ALTER TABLE',
+    description: 'Modifier une table',
+    usage: 'La commande ALTER TABLE permet de modifier la structure d\'une table existante (ajouter, supprimer ou modifier des colonnes).',
+    example: 'ALTER TABLE utilisateurs\nADD date_naissance DATE;',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-amber-500 to-amber-600',
+    mdnLink: 'https://sql.sh/cours/alter-table'
+  },
+  {
+    name: 'PRIMARY KEY',
+    description: 'Clé Primaire',
+    usage: 'Une PRIMARY KEY est une contrainte qui identifie de manière unique chaque enregistrement dans une table. Elle ne peut pas contenir de valeurs NULL et doit être unique.',
+    example: 'CREATE TABLE produits (\n  id INT PRIMARY KEY,\n  nom VARCHAR(50)\n);',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-yellow-500 to-yellow-600',
+    mdnLink: 'https://sql.sh/cours/primary-key'
+  },
+  {
+    name: 'FOREIGN KEY',
+    description: 'Clé Étrangère',
+    usage: 'Une FOREIGN KEY est une clé utilisée pour lier deux tables ensemble. C\'est un champ (ou une collection de champs) dans une table qui fait référence à la PRIMARY KEY d\'une autre table.',
+    example: 'CREATE TABLE commandes (\n  id INT PRIMARY KEY,\n  client_id INT,\n  FOREIGN KEY (client_id) REFERENCES clients(id)\n);',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-indigo-500 to-indigo-600',
+    mdnLink: 'https://sql.sh/cours/foreign-key'
+  }
+];
+
+interface PHPConcept {
+  name: string;
+  description: string;
+  usage: string;
+  example: string;
+  svg: React.ReactNode;
+  color: string;
+  mdnLink: string;
+}
+
+const phpConcepts: PHPConcept[] = [
+  {
+    name: 'Variables',
+    description: 'Stocker des données',
+    usage: 'En PHP, les variables commencent par le signe $. Elles peuvent contenir différents types de données (chaînes, nombres, tableaux, etc.).',
+    example: '$nom = "Jean";\n$age = 25;\necho "Je m\'appelle $nom et j\'ai $age ans.";',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-indigo-400 to-indigo-500',
+    mdnLink: 'https://www.php.net/manual/fr/language.variables.php'
+  },
+  {
+    name: 'Tableaux (Arrays)',
+    description: 'Listes de données',
+    usage: 'Les tableaux permettent de stocker plusieurs valeurs dans une seule variable. PHP supporte les tableaux indexés et associatifs.',
+    example: '$fruits = ["Pomme", "Banane", "Orange"];\necho $fruits[0]; // Affiche "Pomme"\n\n$user = ["nom" => "Jean", "age" => 25];\necho $user["nom"]; // Affiche "Jean"',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 6h16M4 10h16M4 14h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-blue-400 to-blue-500',
+    mdnLink: 'https://www.php.net/manual/fr/language.types.array.php'
+  },
+  {
+    name: 'Boucles (Loops)',
+    description: 'Répéter des actions',
+    usage: 'Les boucles (foreach, for, while) permettent d\'exécuter un bloc de code plusieurs fois, souvent pour parcourir des tableaux.',
+    example: 'foreach ($fruits as $fruit) {\n  echo $fruit . "<br>";\n}',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-green-400 to-green-500',
+    mdnLink: 'https://www.php.net/manual/fr/language.control-structures.foreach.php'
+  },
+  {
+    name: 'Fonctions',
+    description: 'Blocs de code réutilisables',
+    usage: 'Les fonctions permettent d\'encapsuler du code pour le réutiliser. Elles peuvent prendre des paramètres et retourner une valeur.',
+    example: 'function direBonjour($nom) {\n  return "Bonjour " . $nom;\n}\n\necho direBonjour("Marie");',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-purple-400 to-purple-500',
+    mdnLink: 'https://www.php.net/manual/fr/language.functions.php'
+  },
+  {
+    name: 'Superglobales',
+    description: 'Variables globales',
+    usage: 'PHP possède des variables prédéfinies accessibles partout, comme $_GET, $_POST, $_SESSION, etc.',
+    example: '// Récupérer une donnée d\'URL\n$id = $_GET["id"];\n\n// Récupérer une donnée de formulaire\n$email = $_POST["email"];',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-red-400 to-red-500',
+    mdnLink: 'https://www.php.net/manual/fr/language.variables.superglobals.php'
+  },
+  {
+    name: 'Connexion PDO',
+    description: 'Connexion Base de Données (Recommandé)',
+    usage: 'PDO (PHP Data Objects) est une interface légère et cohérente pour accéder aux bases de données en PHP. Elle supporte plusieurs types de bases de données et offre une meilleure sécurité.',
+    example: 'try {\n  $pdo = new PDO("mysql:host=localhost;dbname=ma_base", "user", "password");\n  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);\n  echo "Connexion réussie";\n} catch(PDOException $e) {\n  echo "Erreur : " . $e->getMessage();\n}',
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-cyan-500 to-cyan-600',
+    mdnLink: 'https://www.php.net/manual/fr/book.pdo.php'
+  },
+  {
+    name: 'Connexion MySQLi',
+    description: 'Connexion MySQL Improved',
+    usage: 'MySQLi est une extension spécifique pour MySQL. Elle supporte l\'approche procédurale et orientée objet.',
+    example: `// 1. Connexion
+$mysqli = new mysqli("localhost", "user", "password", "ma_base");
+
+// Vérifier la connexion
+if ($mysqli->connect_error) {
+  die("Erreur de connexion : " . $mysqli->connect_error);
+}
+
+// 2. Exécution d'une requête
+$sql = "SELECT id, nom FROM utilisateurs";
+$result = $mysqli->query($sql);
+
+// 3. Traitement des résultats
+if ($result->num_rows > 0) {
+  // Parcourir chaque ligne de résultat
+  while($row = $result->fetch_assoc()) {
+    echo "ID: " . $row["id"] . " - Nom: " . $row["nom"] . "<br>";
+  }
+} else {
+  echo "0 résultats";
+}
+
+// 4. Fermeture de la connexion
+$mysqli->close();`,
+    svg: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    color: 'from-orange-400 to-orange-500',
+    mdnLink: 'https://www.php.net/manual/fr/book.mysqli.php'
+  }
+];
+
 const jsConcepts: JSConcept[] = [
   {
     name: 'Variables (let, const)',
@@ -376,6 +646,28 @@ const resources: Resource[] = [
       </svg>
     ),
     category: 'JavaScript'
+  },
+  {
+    id: 'sql-basics',
+    title: 'Les bases du SQL',
+    description: 'Apprenez à interagir avec les bases de données relationnelles',
+    icon: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    category: 'SQL'
+  },
+  {
+    id: 'php-basics',
+    title: 'Les bases de PHP',
+    description: 'Découvrez le langage serveur le plus populaire du web',
+    icon: (
+      <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    category: 'PHP'
   }
 ];
 
@@ -419,8 +711,8 @@ export default function ResourcesPage() {
               key={resource.id}
               onClick={() => setSelectedResource(resource.id)}
               className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition cursor-pointer ${selectedResource === resource.id
-                  ? 'border-[#ff2600] bg-[#ff2600]/10'
-                  : 'border-gray-700 bg-gray-900 hover:border-gray-600'
+                ? 'border-[#ff2600] bg-[#ff2600]/10'
+                : 'border-gray-700 bg-gray-900 hover:border-gray-600'
                 }`}
             >
               <div className="mb-4 text-gray-400">{resource.icon}</div>
@@ -2106,6 +2398,204 @@ boutonBleu.addEventListener("click", () => {
             </div>
           </div>
         )}
+
+        {/* SQL Content */}
+        {
+          selectedResource === 'sql-basics' && (
+            <div className="animate-fade-in">
+              <div className="mb-8 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="text-[#ff2600]">
+                    <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <h2 className="text-3xl font-bold">Les bases du SQL</h2>
+                </div>
+                <p className="text-gray-400">
+                  SQL (Structured Query Language) est le langage standard pour gérer les bases de données. Découvrez les commandes essentielles pour manipuler vos données.
+                </p>
+              </div>
+
+              {/* SQL Concepts Grid */}
+              <div className="space-y-6">
+                {sqlConcepts.map((concept, index) => (
+                  <div
+                    key={index}
+                    className="group rounded-2xl border border-gray-700 bg-gradient-to-br from-gray-900 to-black p-8 transition hover:border-[#ff2600]/50"
+                  >
+                    <div className="mb-6 flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className={`flex-shrink-0 rounded-xl bg-gradient-to-br ${concept.color} p-3 text-white`}>
+                          {concept.svg}
+                        </div>
+                        <div>
+                          <h3 className="mb-2 text-2xl font-bold text-white">{concept.name}</h3>
+                          <p className="mb-3 text-sm font-semibold text-gray-400">{concept.description}</p>
+                          <p className="text-sm leading-relaxed text-gray-300">{concept.usage}</p>
+                        </div>
+                      </div>
+                      <a
+                        href={concept.mdnLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-gray-700 bg-black/50 px-4 py-2 text-sm font-semibold text-gray-300 transition hover:border-[#ff2600] hover:text-[#ff2600]"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        Documentation
+                      </a>
+                    </div>
+
+                    {/* Code Example */}
+                    <div className="rounded-xl border border-gray-700 bg-black p-4">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Exemple de code</p>
+                      </div>
+                      <pre className="overflow-x-auto text-sm text-gray-300">
+                        <code>{concept.example}</code>
+                      </pre>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Resources & Learning Links */}
+              <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+                <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold text-white">
+                  <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  Ressources pour aller plus loin
+                </h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <a
+                    href="https://sql.sh/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                  >
+                    <h4 className="mb-2 text-lg font-bold text-white">SQL.sh</h4>
+                    <p className="text-sm text-gray-400">
+                      Cours et tutoriels SQL gratuits pour apprendre le langage.
+                    </p>
+                  </a>
+                  <a
+                    href="https://www.w3schools.com/sql/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                  >
+                    <h4 className="mb-2 text-lg font-bold text-white">W3Schools SQL</h4>
+                    <p className="text-sm text-gray-400">
+                      Tutoriels interactifs avec des exercices pratiques.
+                    </p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {/* PHP Content */}
+        {
+          selectedResource === 'php-basics' && (
+            <div className="animate-fade-in">
+              <div className="mb-8 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="text-[#ff2600]">
+                    <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <h2 className="text-3xl font-bold">Les bases de PHP</h2>
+                </div>
+                <p className="text-gray-400">
+                  PHP (Hypertext Preprocessor) est un langage de script côté serveur utilisé pour le développement web. Il permet de créer des pages dynamiques et d'interagir avec des bases de données.
+                </p>
+              </div>
+
+              {/* PHP Concepts Grid */}
+              <div className="space-y-6">
+                {phpConcepts.map((concept, index) => (
+                  <div
+                    key={index}
+                    className="group rounded-2xl border border-gray-700 bg-gradient-to-br from-gray-900 to-black p-8 transition hover:border-[#ff2600]/50"
+                  >
+                    <div className="mb-6 flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className={`flex-shrink-0 rounded-xl bg-gradient-to-br ${concept.color} p-3 text-white`}>
+                          {concept.svg}
+                        </div>
+                        <div>
+                          <h3 className="mb-2 text-2xl font-bold text-white">{concept.name}</h3>
+                          <p className="mb-3 text-sm font-semibold text-gray-400">{concept.description}</p>
+                          <p className="text-sm leading-relaxed text-gray-300">{concept.usage}</p>
+                        </div>
+                      </div>
+                      <a
+                        href={concept.mdnLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-gray-700 bg-black/50 px-4 py-2 text-sm font-semibold text-gray-300 transition hover:border-[#ff2600] hover:text-[#ff2600]"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        Documentation
+                      </a>
+                    </div>
+
+                    {/* Code Example */}
+                    <div className="rounded-xl border border-gray-700 bg-black p-4">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Exemple de code</p>
+                      </div>
+                      <pre className="overflow-x-auto text-sm text-gray-300">
+                        <code>{concept.example}</code>
+                      </pre>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Resources & Learning Links */}
+              <div className="mt-12 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-8">
+                <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold text-white">
+                  <svg className="h-6 w-6 text-[#ff2600]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  Ressources pour aller plus loin
+                </h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <a
+                    href="https://www.php.net/manual/fr/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                  >
+                    <h4 className="mb-2 text-lg font-bold text-white">Manuel PHP</h4>
+                    <p className="text-sm text-gray-400">
+                      La documentation officielle et complète de PHP.
+                    </p>
+                  </a>
+                  <a
+                    href="https://www.w3schools.com/php/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-gray-700 bg-black/50 p-6 transition hover:border-[#ff2600] hover:bg-[#ff2600]/10"
+                  >
+                    <h4 className="mb-2 text-lg font-bold text-white">W3Schools PHP</h4>
+                    <p className="text-sm text-gray-400">
+                      Tutoriels interactifs pour apprendre PHP pas à pas.
+                    </p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )
+        }
       </div>
     </div>
   );

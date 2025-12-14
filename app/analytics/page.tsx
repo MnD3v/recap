@@ -176,12 +176,60 @@ export default function AnalyticsPage() {
               Suivi du temps de visionnage par tutoriel et étudiant
             </p>
           </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              const downloadCSV = (content: string, fileName: string) => {
+                const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                if (link.download !== undefined) {
+                  const url = URL.createObjectURL(blob);
+                  link.setAttribute('href', url);
+                  link.setAttribute('download', fileName);
+                  link.style.visibility = 'hidden';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }
+              };
+
+              if (activeTab === 'tutorials') {
+                const headers = ['Tutoriel', 'Visualisations', 'Temps moyen (min)', 'Total minutes'];
+                const rows = tutorialAnalytics.map(t => [
+                  `"${t.tutorialTitle.replace(/"/g, '""')}"`,
+                  t.totalViewers,
+                  t.averageWatchTime,
+                  t.totalViewMinutes
+                ]);
+                const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                downloadCSV(csvContent, 'analytics_tutoriels.csv');
+              } else {
+                const headers = ['ID Étudiant', 'Tutoriel', 'Minutes visionnées', 'Dernière mise à jour', 'Questions posées'];
+                const rows = studentSessions.map(s => [
+                  `"${s.userId}"`,
+                  `"${s.tutorialTitle.replace(/"/g, '""')}"`,
+                  s.totalMinutesWatched,
+                  `"${s.lastUpdated.toISOString()}"`,
+                  s.questions ? s.questions.length : 0
+                ]);
+                const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                downloadCSV(csvContent, 'suivi_etudiants.csv');
+              }
+            }}
+            className="flex items-center gap-2 rounded-full border border-gray-700 bg-gray-800 px-5 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Exporter
+          </button>
           <button
             onClick={() => router.push('/admin')}
             className="rounded-full border border-gray-700 px-5 py-2 text-sm font-semibold text-white transition hover:border-gray-600"
           >
             Administration
           </button>
+        </div>
         </header>
 
         <main className="mx-auto w-full max-w-6xl px-6">

@@ -3,6 +3,8 @@ import { Montserrat_Alternates } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 
+// Force rebuild
+
 const montserratAlternates = Montserrat_Alternates({
   variable: "--font-montserrat-alternates",
   subsets: ["latin"],
