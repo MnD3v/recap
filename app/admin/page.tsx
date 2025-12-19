@@ -11,10 +11,20 @@ import {
   orderBy,
   query,
   Timestamp,
+  writeBatch,
 } from "firebase/firestore";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
 import { db } from "@/lib/firebase";
+
+type Playlist = {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
+  createdAt: Date;
+};
 
 type Tutorial = {
   id: string;
@@ -24,6 +34,7 @@ type Tutorial = {
   videoUrl: string;
   createdAt: Date;
   ownerName?: string | null;
+  playlistId?: string | null;
 };
 
 type StudentWatchData = {
@@ -43,6 +54,7 @@ const initialForm = {
   description: "",
   technicalDescription: "",
   videoUrl: "",
+  playlistId: "",
 };
 
 const initialFAQForm = {
@@ -52,25 +64,94 @@ const initialFAQForm = {
   videoUrl: "",
 };
 
+const initialPlaylistForm = {
+  name: "",
+  description: "",
+  color: "from-blue-500 to-blue-600",
+  icon: "📚",
+};
+
 export default function AdminPage() {
   const { user } = useAuth();
   const [formValues, setFormValues] = useState(initialForm);
   const [faqFormValues, setFaqFormValues] = useState(initialFAQForm);
+  const [playlistFormValues, setPlaylistFormValues] = useState(initialPlaylistForm);
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [engagementData, setEngagementData] = useState<TutorialEngagement[]>([]);
   const [selectedTutorialId, setSelectedTutorialId] = useState<string | null>(null);
+  const [selectedPlaylistForEdit, setSelectedPlaylistForEdit] = useState<Playlist | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
     "idle",
   );
   const [faqStatus, setFaqStatus] = useState<"idle" | "saving" | "saved" | "error">(
     "idle",
   );
+  const [playlistStatus, setPlaylistStatus] = useState<"idle" | "saving" | "saved" | "error">(
+    "idle",
+  );
   const [formError, setFormError] = useState<string | null>(null);
   const [faqFormError, setFaqFormError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"form" | "engagement" | "faq">("form");
+  const [playlistFormError, setPlaylistFormError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"form" | "engagement" | "faq" | "playlists">("form");
   const [pendingDelete, setPendingDelete] = useState<Tutorial | null>(null);
+  const [pendingDeletePlaylist, setPendingDeletePlaylist] = useState<Playlist | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  // Gestion des vidéos de playlist
+  const [isManageVideosModalOpen, setIsManageVideosModalOpen] = useState(false);
+  const [selectedPlaylistForVideos, setSelectedPlaylistForVideos] = useState<Playlist | null>(null);
+  const [selectedVideoIds, setSelectedVideoIds] = useState<Set<string>>(new Set());
+  const [isSavingVideos, setIsSavingVideos] = useState(false);
+
+  const openManageVideosModal = (playlist: Playlist) => {
+    setSelectedPlaylistForVideos(playlist);
+    const currentVideoIds = tutorials
+      .filter(t => t.playlistId === playlist.id)
+      .map(t => t.id);
+    setSelectedVideoIds(new Set(currentVideoIds));
+    setIsManageVideosModalOpen(true);
+  };
+
+  const toggleVideoSelection = (tutorialId: string) => {
+    const newSelection = new Set(selectedVideoIds);
+    if (newSelection.has(tutorialId)) {
+      newSelection.delete(tutorialId);
+    } else {
+      newSelection.add(tutorialId);
+    }
+    setSelectedVideoIds(newSelection);
+  };
+
+  const handleSavePlaylistVideos = async () => {
+    if (!selectedPlaylistForVideos) return;
+    setIsSavingVideos(true);
+    try {
+      const batch = writeBatch(db);
+
+      tutorials.forEach(tutorial => {
+        const tutorialRef = doc(db, "tutorials", tutorial.id);
+        const isSelected = selectedVideoIds.has(tutorial.id);
+        const isInCurrentPlaylist = tutorial.playlistId === selectedPlaylistForVideos.id;
+
+        if (isSelected && !isInCurrentPlaylist) {
+          batch.update(tutorialRef, { playlistId: selectedPlaylistForVideos.id });
+        } else if (!isSelected && isInCurrentPlaylist) {
+          batch.update(tutorialRef, { playlistId: null });
+        }
+      });
+
+      await batch.commit();
+      setIsManageVideosModalOpen(false);
+      setSelectedPlaylistForVideos(null);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour des vidéos:", error);
+      alert("Une erreur est survenue lors de la mise à jour.");
+    } finally {
+      setIsSavingVideos(false);
+    }
+  };
 
   useEffect(() => {
     const tutorialsQuery = query(
@@ -92,6 +173,7 @@ export default function AdminPage() {
             technicalDescription: data.technicalDescription ?? "",
             videoUrl: data.videoUrl ?? "",
             ownerName: data.ownerName ?? null,
+            playlistId: data.playlistId ?? null,
             createdAt: timestamp?.toDate
               ? timestamp.toDate()
               : new Date(data.createdAt ?? Date.now()),
@@ -102,6 +184,42 @@ export default function AdminPage() {
       },
       (error) => {
         console.error("Erreur lors de la récupération des tutoriels", error);
+      },
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Load playlists
+  useEffect(() => {
+    const playlistsQuery = query(
+      collection(db, "playlists"),
+      orderBy("createdAt", "desc"),
+    );
+
+    const unsubscribe = onSnapshot(
+      playlistsQuery,
+      (snapshot) => {
+        const nextPlaylists: Playlist[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const timestamp = data.createdAt as Timestamp | undefined;
+
+          return {
+            id: doc.id,
+            name: data.name ?? "",
+            description: data.description ?? "",
+            color: data.color ?? "from-blue-500 to-blue-600",
+            icon: data.icon ?? "📚",
+            createdAt: timestamp?.toDate
+              ? timestamp.toDate()
+              : new Date(data.createdAt ?? Date.now()),
+          };
+        });
+
+        setPlaylists(nextPlaylists);
+      },
+      (error) => {
+        console.error("Erreur lors de la récupération des playlists", error);
       },
     );
 
@@ -221,6 +339,7 @@ export default function AdminPage() {
         title: formValues.title.trim(),
         description: formValues.description.trim(),
         videoUrl: formValues.videoUrl.trim(),
+        playlistId: formValues.playlistId || null,
         ownerId: user?.uid ?? null,
         ownerEmail: user?.email ?? null,
         ownerName: user?.displayName ?? null,
@@ -290,6 +409,91 @@ export default function AdminPage() {
     }
   };
 
+  // Playlist handlers
+  const handlePlaylistChange =
+    (field: keyof typeof initialPlaylistForm) =>
+      (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setPlaylistFormValues({ ...playlistFormValues, [field]: event.target.value });
+      };
+
+  const resetPlaylistForm = () => {
+    setPlaylistFormValues(initialPlaylistForm);
+    setSelectedPlaylistForEdit(null);
+  };
+
+  const handleEditPlaylist = (playlist: Playlist) => {
+    setSelectedPlaylistForEdit(playlist);
+    setPlaylistFormValues({
+      name: playlist.name,
+      description: playlist.description,
+      color: playlist.color,
+      icon: playlist.icon,
+    });
+  };
+
+  const handleDeletePlaylist = (playlist: Playlist) => {
+    setPendingDeletePlaylist(playlist);
+  };
+
+  const confirmDeletePlaylist = async () => {
+    if (!pendingDeletePlaylist) return;
+    setIsDeleting(true);
+    try {
+      await deleteDoc(doc(db, "playlists", pendingDeletePlaylist.id));
+      setPendingDeletePlaylist(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la playlist:", error);
+      setDeleteError("Impossible de supprimer cette playlist. Veuillez réessayer.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handlePlaylistSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPlaylistFormError(null);
+
+    if (!playlistFormValues.name) {
+      setPlaylistFormError("Merci de renseigner un nom pour la playlist.");
+      return;
+    }
+
+    try {
+      setPlaylistStatus("saving");
+
+      if (selectedPlaylistForEdit) {
+        // Update existing playlist
+        const { updateDoc } = await import("firebase/firestore");
+        await updateDoc(doc(db, "playlists", selectedPlaylistForEdit.id), {
+          name: playlistFormValues.name.trim(),
+          description: playlistFormValues.description.trim(),
+          color: playlistFormValues.color,
+          icon: playlistFormValues.icon,
+        });
+      } else {
+        // Create new playlist
+        await addDoc(collection(db, "playlists"), {
+          name: playlistFormValues.name.trim(),
+          description: playlistFormValues.description.trim(),
+          color: playlistFormValues.color,
+          icon: playlistFormValues.icon,
+          createdAt: Timestamp.now(),
+        });
+      }
+
+      resetPlaylistForm();
+      setPlaylistStatus("saved");
+      setTimeout(() => setPlaylistStatus("idle"), 1500);
+    } catch (error) {
+      console.error(error);
+      setPlaylistStatus("error");
+      setPlaylistFormError(
+        "Un incident est survenu lors de l'enregistrement. Merci de réessayer.",
+      );
+      setTimeout(() => setPlaylistStatus("idle"), 1500);
+    }
+  };
+
   return (
     <RequireAuth>
       <div className="min-h-screen bg-black pb-24">
@@ -333,6 +537,15 @@ export default function AdminPage() {
                   }`}
               >
                 Engagement ({engagementData.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("playlists")}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${activeTab === "playlists"
+                  ? "bg-white text-black"
+                  : "border border-gray-700 text-white hover:border-gray-600"
+                  }`}
+              >
+                📚 Playlists ({playlists.length})
               </button>
             </div>
           </header>
@@ -421,6 +634,32 @@ export default function AdminPage() {
                     className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-medium text-gray-300"
+                    htmlFor="playlistId"
+                  >
+                    Playlist (optionnel)
+                  </label>
+                  <select
+                    id="playlistId"
+                    name="playlistId"
+                    value={formValues.playlistId}
+                    onChange={(e) => setFormValues({ ...formValues, playlistId: e.target.value })}
+                    className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                  >
+                    <option value="">Aucune playlist</option>
+                    {playlists.map((playlist) => (
+                      <option key={playlist.id} value={playlist.id}>
+                        {playlist.icon} {playlist.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-400">
+                    Organisez vos tutoriels par thème (HTML/CSS, JS, PHP, SQL, etc.)
+                  </p>
                 </div>
 
                 {formError ? (
@@ -692,6 +931,201 @@ export default function AdminPage() {
                     "Publier la FAQ vidéo"}
                 </button>
               </form>
+            </section>
+          )}
+
+          {activeTab === "playlists" && (
+            <section className="rounded-[32px] border border-gray-800 bg-gray-950 p-10 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold text-white">Gestion des Playlists</h2>
+                <p className="mt-2 text-gray-400">
+                  Créez et organisez vos playlists de tutoriels par thématique (HTML/CSS, JavaScript, PHP, SQL, etc.)
+                </p>
+              </div>
+
+              <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr]">
+                {/* Formulaire de création/édition */}
+                <form onSubmit={handlePlaylistSubmit} className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">
+                      {selectedPlaylistForEdit ? "Modifier la playlist" : "Créer une playlist"}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-300" htmlFor="playlistName">
+                      Nom de la playlist
+                    </label>
+                    <input
+                      id="playlistName"
+                      name="name"
+                      type="text"
+                      required
+                      value={playlistFormValues.name}
+                      onChange={handlePlaylistChange("name")}
+                      placeholder="Ex: HTML & CSS, JavaScript, PHP, SQL..."
+                      className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-300" htmlFor="playlistDescription">
+                      Description
+                    </label>
+                    <textarea
+                      id="playlistDescription"
+                      name="description"
+                      rows={3}
+                      value={playlistFormValues.description}
+                      onChange={handlePlaylistChange("description")}
+                      placeholder="Décrivez le contenu de cette playlist..."
+                      className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-300" htmlFor="playlistIcon">
+                        Icône (emoji)
+                      </label>
+                      <input
+                        id="playlistIcon"
+                        name="icon"
+                        type="text"
+                        value={playlistFormValues.icon}
+                        onChange={handlePlaylistChange("icon")}
+                        placeholder="📚"
+                        maxLength={2}
+                        className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-300" htmlFor="playlistColor">
+                        Couleur (gradient)
+                      </label>
+                      <select
+                        id="playlistColor"
+                        name="color"
+                        value={playlistFormValues.color}
+                        onChange={(e) => setPlaylistFormValues({ ...playlistFormValues, color: e.target.value })}
+                        className="w-full rounded-2xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-gray-600 focus:bg-gray-800 focus:ring-2 focus:ring-gray-700"
+                      >
+                        <option value="from-red-500 to-red-600">Rouge (HTML)</option>
+                        <option value="from-blue-500 to-blue-600">Bleu (CSS)</option>
+                        <option value="from-yellow-500 to-yellow-600">Jaune (JavaScript)</option>
+                        <option value="from-purple-500 to-purple-600">Violet (PHP)</option>
+                        <option value="from-green-500 to-green-600">Vert (SQL)</option>
+                        <option value="from-orange-500 to-orange-600">Orange</option>
+                        <option value="from-pink-500 to-pink-600">Rose</option>
+                        <option value="from-indigo-500 to-indigo-600">Indigo</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {playlistFormError && (
+                    <div className="rounded-2xl border border-red-900/50 bg-red-950/50 px-4 py-3 text-sm text-red-400">
+                      {playlistFormError}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="submit"
+                      disabled={playlistStatus === "saving"}
+                      className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-white/15 transition hover:bg-gray-200 disabled:cursor-wait disabled:opacity-80"
+                    >
+                      {playlistStatus === "saving" ? "Enregistrement..." : (selectedPlaylistForEdit ? "Mettre à jour" : "Créer la playlist")}
+                    </button>
+                    {selectedPlaylistForEdit && (
+                      <button
+                        type="button"
+                        onClick={resetPlaylistForm}
+                        className="rounded-full border border-gray-700 px-5 py-3 text-sm font-semibold text-gray-300 transition hover:border-gray-600 hover:text-white"
+                      >
+                        Annuler
+                      </button>
+                    )}
+                    {playlistStatus === "saved" && (
+                      <span className="text-sm font-medium text-emerald-400">
+                        {selectedPlaylistForEdit ? "Playlist mise à jour" : "Playlist créée"}
+                      </span>
+                    )}
+                  </div>
+                </form>
+
+                {/* Liste des playlists */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-white">
+                    Playlists existantes ({playlists.length})
+                  </h3>
+
+                  {playlists.length === 0 ? (
+                    <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-gray-700 bg-gray-900/50 px-6 text-center">
+                      <p className="text-gray-400">Aucune playlist créée</p>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Créez votre première playlist pour organiser vos tutoriels
+                      </p>
+                    </div>
+                  ) : (
+                    playlists.map((playlist) => {
+                      const tutorialsInPlaylist = tutorials.filter(t => t.playlistId === playlist.id);
+                      return (
+                        <div
+                          key={playlist.id}
+                          className="group rounded-3xl border border-gray-800 bg-gray-900 p-6 transition hover:border-gray-700"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3">
+                                <span className="text-3xl">{playlist.icon}</span>
+                                <div>
+                                  <h4 className="text-lg font-semibold text-white">
+                                    {playlist.name}
+                                  </h4>
+                                  <p className="mt-1 text-sm text-gray-400">
+                                    {playlist.description || "Aucune description"}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-4 flex items-center gap-4">
+                                <div className={`rounded-full bg-linear-to-r ${playlist.color} px-3 py-1 text-xs font-semibold text-white`}>
+                                  {tutorialsInPlaylist.length} tutoriel{tutorialsInPlaylist.length !== 1 ? 's' : ''}
+                                </div>
+                                <p className="text-xs text-gray-500">
+                                  Créée le {playlist.createdAt.toLocaleDateString("fr-FR")}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex shrink-0 flex-col gap-2">
+                              <button
+                                onClick={() => openManageVideosModal(playlist)}
+                                className="rounded-full border border-gray-700 bg-gray-800 px-3 py-1 text-xs font-semibold text-white transition hover:border-gray-600 hover:bg-gray-700"
+                              >
+                                Gérer les vidéos
+                              </button>
+                              <button
+                                onClick={() => handleEditPlaylist(playlist)}
+                                className="rounded-full border border-blue-900/50 bg-blue-950 px-3 py-1 text-xs font-semibold text-blue-400 transition hover:border-blue-800 hover:bg-blue-900"
+                              >
+                                Modifier
+                              </button>
+                              <button
+                                onClick={() => handleDeletePlaylist(playlist)}
+                                className="rounded-full border border-red-900/50 bg-red-950 px-3 py-1 text-xs font-semibold text-red-400 transition hover:border-red-800 hover:bg-red-900"
+                              >
+                                Supprimer
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </section>
           )}
 
@@ -982,8 +1416,137 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
-        ) : null
-      }
+        ) : null}
+
+      {/* Modal de suppression de playlist */}
+      {pendingDeletePlaylist && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="w-full max-w-md rounded-3xl border border-gray-800 bg-gray-950 p-8 shadow-2xl">
+            <h3 className="text-2xl font-bold text-white">
+              Confirmer la suppression
+            </h3>
+            <p className="mt-4 text-gray-400">
+              Êtes-vous sûr de vouloir supprimer la playlist{" "}
+              <span className="font-semibold text-white">
+                {pendingDeletePlaylist.icon} {pendingDeletePlaylist.name}
+              </span>{" "}
+              ?
+            </p>
+            <p className="mt-2 text-sm text-red-400">
+              Les tutoriels ne seront pas supprimés, ils seront simplement retirés de cette playlist.
+            </p>
+            {deleteError && (
+              <p className="mt-4 text-sm text-red-400">{deleteError}</p>
+            )}
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={confirmDeletePlaylist}
+                disabled={isDeleting}
+                className="flex-1 rounded-full bg-red-600 py-3 font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
+              >
+                {isDeleting ? "Suppression..." : "Supprimer"}
+              </button>
+              <button
+                onClick={() => setPendingDeletePlaylist(null)}
+                disabled={isDeleting}
+                className="flex-1 rounded-full border border-gray-700 py-3 font-semibold text-gray-300 transition hover:border-gray-600 hover:text-white disabled:opacity-50"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de gestion des vidéos de playlist */}
+      {isManageVideosModalOpen && selectedPlaylistForVideos && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <div className="flex h-[80vh] w-full max-w-2xl flex-col rounded-3xl border border-gray-800 bg-gray-950 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-gray-800 p-6">
+              <div>
+                <h3 className="text-xl font-bold text-white">
+                  Gérer les vidéos de la playlist
+                </h3>
+                <p className="text-sm text-gray-400">
+                  {selectedPlaylistForVideos.icon} {selectedPlaylistForVideos.name}
+                </p>
+              </div>
+              <button
+                onClick={() => setIsManageVideosModalOpen(false)}
+                className="rounded-full p-2 text-gray-400 hover:bg-gray-800 hover:text-white"
+              >
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-4">
+                {tutorials.length === 0 ? (
+                  <p className="text-center text-gray-400">Aucun tutoriel disponible.</p>
+                ) : (
+                  tutorials.map((tutorial) => {
+                    const isSelected = selectedVideoIds.has(tutorial.id);
+                    const isInAnotherPlaylist = tutorial.playlistId && tutorial.playlistId !== selectedPlaylistForVideos.id;
+                    const otherPlaylist = playlists.find(p => p.id === tutorial.playlistId);
+
+                    return (
+                      <div
+                        key={tutorial.id}
+                        onClick={() => toggleVideoSelection(tutorial.id)}
+                        className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${isSelected
+                            ? "border-blue-500 bg-blue-900/20"
+                            : "border-gray-800 bg-gray-900/50 hover:border-gray-700 hover:bg-gray-900"
+                          }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`flex h-6 w-6 items-center justify-center rounded-full border transition ${isSelected ? "border-blue-500 bg-blue-500 text-white" : "border-gray-600"
+                            }`}>
+                            {isSelected && (
+                              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          <div>
+                            <h4 className={`font-medium ${isSelected ? "text-white" : "text-gray-300"}`}>
+                              {tutorial.title}
+                            </h4>
+                            {isInAnotherPlaylist && otherPlaylist && (
+                              <p className="text-xs text-yellow-500">
+                                Actuellement dans : {otherPlaylist.icon} {otherPlaylist.name}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-800 p-6">
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setIsManageVideosModalOpen(false)}
+                  className="rounded-full border border-gray-700 px-6 py-3 text-sm font-semibold text-gray-300 transition hover:border-gray-600 hover:text-white"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleSavePlaylistVideos}
+                  disabled={isSavingVideos}
+                  className="rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-500 disabled:cursor-wait disabled:opacity-70"
+                >
+                  {isSavingVideos ? "Enregistrement..." : `Enregistrer (${selectedVideoIds.size} vidéos)`}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </RequireAuth >
   );
 }
